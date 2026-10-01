@@ -1,0 +1,27 @@
+# Dependencias y salidas de compilación
+node_modules/
+dist/
+.astro/
+*.tsbuildinfo
+
+# Configuración local y secretos
+.env
+.env.*
+!.env.example
+
+# Registros de herramientas Node.js
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Configuración personal de VS Code
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+
+# Archivos generados por Windows
+Thumbs.db
+Desktop.ini
