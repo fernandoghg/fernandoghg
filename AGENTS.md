@@ -11,14 +11,17 @@
 ## Decisiones y arquitectura
 
 - El sitio es personal y principalmente estático, asociado a fernandoghg.com y fernandoghg.es.
-- fernandoghg.com es el candidato a dominio canónico principal; se prevé conservar fernandoghg.es y redirigirlo al .com. Estas decisiones siguen pendientes de confirmación.
-- Astro + TypeScript está en evaluación y no es una decisión irreversible. No lo presentes como tecnología seleccionada.
-- Se prevé contenido principalmente en Markdown/MDX y en español e inglés. No presupongas que todo contenido tiene traducción.
+- El dominio canónico será https://fernandoghg.com. Conserva fernandoghg.es; posteriormente se redirigirán permanentemente fernandoghg.es, www.fernandoghg.com y www.fernandoghg.es al dominio canónico.
+- Astro es el framework/generador seleccionado. Utiliza TypeScript cuando sea necesario para desarrollo y lógica, prioriza HTML5 semántico y genera contenido estático siempre que sea posible.
+- No introduzcas backend, base de datos ni procesamiento dinámico en servidor salvo necesidad funcional futura expresamente justificada.
+- El sitio será bilingüe español/inglés, con URLs simétricas /es/ y /en/. Se prevé contenido principalmente en Markdown/MDX. No presupongas que todo contenido tiene traducción; permite relacionar versiones traducidas y contempla SEO multilingüe, canonical y hreflang. No inventes una política automática de detección o redirección por idioma.
 - Marca como **por decidir** lo que no esté acordado y actualiza la documentación cuando el usuario tome decisiones.
-- Minimiza dependencias y mantenimiento. Usa JavaScript únicamente cuando aporte funcionalidad real.
+- Minimiza dependencias y mantenimiento. Minimiza el JavaScript enviado al navegador y no lo incorpores cuando HTML/CSS sean suficientes.
+- Mantén páginas ligeras: minimiza y optimiza CSS, JavaScript, imágenes, fuentes y demás recursos para reducir tamaño, transferencia y tiempos de carga. Evita recursos externos innecesarios y favorece buen rendimiento también en conexiones y dispositivos modestos.
 - Trata accesibilidad, SEO, rendimiento y seguridad como requisitos del proyecto.
 - Trata el coste de infraestructura como criterio de primer nivel; el objetivo inicial de alojamiento es próximo a 0 EUR/mes.
-- Evalúa AWS S3 + CloudFront, AWS Amplify, Cloudflare Pages y GitHub Pages antes de decidir alojamiento. No introduzcas servicios AWS simplemente porque estén disponibles.
+- Cloudflare Pages es el alojamiento seleccionado inicialmente. GitHub seguirá siendo el repositorio y sistema de control de versiones; su integración para despliegue será posterior. AWS S3 + CloudFront, AWS Amplify y GitHub Pages no están seleccionados inicialmente ni pendientes de elección.
+- Todavía no existe cuenta/configuración de Cloudflare para este proyecto. No crees ni modifiques servicios externos en esta fase, ni DNS o configuración de IONOS. Blogger debe seguir funcionando mientras se desarrolla la nueva web.
 
 ## Privacidad y seguridad
 
@@ -26,7 +29,7 @@
 - No uses cookies salvo necesidad futura expresamente justificada.
 - No uses localStorage, fingerprinting ni identificadores persistentes para seguimiento.
 - No recopiles datos personales salvo necesidad futura expresamente aprobada. Considera también registros y datos tratados por proveedores de alojamiento.
-- No uses Google Analytics, Google Tag Manager ni píxeles publicitarios.
+- La primera versión se desarrollará sin analítica. No uses Google Analytics, Google Tag Manager, Cloudflare Web Analytics, píxeles publicitarios ni ningún otro sistema de seguimiento o analítica por ahora. La posible analítica futura respetuosa con la privacidad se evaluará separadamente.
 - Evita recursos externos que permitan seguimiento de visitantes. Prefiere recursos autocontenidos y fuentes locales si se utilizan fuentes personalizadas.
 - Exige HTTPS en producción y redirección de HTTP a HTTPS. Prefiere certificados TLS gratuitos con renovación automática siempre que sea posible.
 - No guardes secretos, credenciales ni datos personales en el repositorio.

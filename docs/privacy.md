@@ -7,12 +7,12 @@ La privacidad es un requisito de arquitectura desde el inicio. El proyecto debe 
 - No usar cookies salvo necesidad futura expresamente justificada.
 - No usar localStorage, fingerprinting ni identificadores persistentes para seguimiento.
 - No recopilar datos personales salvo necesidad futura expresamente aprobada.
-- No utilizar Google Analytics, Google Tag Manager ni píxeles publicitarios.
+- La primera versión se desarrollará sin sistema de analítica. No utilizar Google Analytics, Google Tag Manager, Cloudflare Web Analytics, píxeles publicitarios ni ningún otro sistema de seguimiento o analítica por ahora.
 - Evitar recursos externos que permitan seguimiento de visitantes; preferir recursos autocontenidos y fuentes locales si se utilizan fuentes personalizadas.
 - Minimizar datos, dependencias y servicios externos.
 - Proteger las comunicaciones de producción con HTTPS y redirigir HTTP a HTTPS.
 
-Estos principios también deben guiar la selección del alojamiento. Un sitio estático puede implicar tratamiento de direcciones IP y otros datos en registros del proveedor; no se debe asumir ausencia de tratamiento por el mero hecho de no incluir formularios o analítica.
+Estos principios también deben guiar la configuración futura de Cloudflare Pages, el alojamiento seleccionado inicialmente, y su integración con GitHub. Todavía no existe cuenta/configuración de Cloudflare para este proyecto y esta fase no autoriza crear ni modificar servicios externos. Un sitio estático puede implicar tratamiento de direcciones IP y otros datos en registros del proveedor; no se debe asumir ausencia de tratamiento por el mero hecho de no incluir formularios o analítica.
 
 ## Evaluación pendiente antes de publicar
 
@@ -22,3 +22,5 @@ Estos principios también deben guiar la selección del alojamiento. Un sitio es
 - Verificar el comportamiento real del sitio: cookies, almacenamiento del navegador, solicitudes externas y ausencia de mecanismos de seguimiento.
 
 Si surge una necesidad de recoger datos personales, deberá obtenerse aprobación expresa antes de implementarla y documentarse su finalidad y tratamiento. Cualquier futura necesidad de cookies deberá justificarse expresamente y evaluarse conforme a la normativa aplicable antes de introducirlas.
+
+La posibilidad de incorporar analítica respetuosa con la privacidad se evaluará separadamente en el futuro; no está aprobada para la primera versión.
