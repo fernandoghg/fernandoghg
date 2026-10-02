@@ -32,7 +32,7 @@ El dominio canónico será **https://fernandoghg.com**. Se conservará fernandog
 
 HTTP deberá redirigir siempre a HTTPS y HTTPS será obligatorio en producción. Los dominios permanecen registrados en IONOS y no se transferirán. Blogger debe seguir funcionando mientras se desarrolla la nueva web.
 
-Estas decisiones no autorizan cambios externos en esta fase: no se creará ni modificará Cloudflare, DNS, configuración de IONOS ni ningún servicio externo. Tampoco se inicializará Astro; esa fase requiere una tarea posterior expresamente autorizada.
+Estas decisiones no autorizan cambios externos en esta fase: no se creará ni modificará Cloudflare, DNS, configuración de IONOS ni ningún servicio externo. La inicialización local mínima de Astro con TypeScript y npm ya está autorizada; no incluye despliegue.
 
 ## Por decidir
 
@@ -41,7 +41,7 @@ Estas decisiones no autorizan cambios externos en esta fase: no se creará ni mo
 | Publicación y configuración de producción | **Por decidir**: detalles de integración GitHub–Cloudflare Pages, configuración efectiva de HTTPS, certificados y redirecciones ya aprobadas, y transición desde Blogger. |
 | Organización interna del contenido | **Por decidir**: modelo de contenido y mecanismo para relacionar traducciones, manteniendo /es/ y /en/ y permitiendo publicaciones sin traducción. |
 | Comportamiento de la raíz y selección de idioma | **Por decidir**. No hay política automática de detección o redirección por idioma aprobada. |
-| Herramientas y comprobaciones de desarrollo | **Por decidir**: versiones de Node.js, gestor de paquetes, comandos y herramientas de pruebas. |
+| Herramientas y comprobaciones de desarrollo | Node.js v24.20.0 y npm 11.19.0; comandos de Astro y comprobación de tipos documentados en [desarrollo](development.md). Herramientas adicionales de pruebas **por decidir**. |
 | Configuración y evaluación de privacidad | **Pendiente** antes de publicar, incluidos registros y datos tratados por los proveedores. |
 
 La configuración futura del alojamiento deberá considerar coste, mantenimiento, privacidad, seguridad, rendimiento y compatibilidad con los dominios y HTTPS previstos. El proveedor está seleccionado, pero los costes efectivos y la configuración de infraestructura aún no están verificados ni definidos. Se mantiene el objetivo próximo a 0 EUR/mes. No se introducirán servicios AWS por su mera disponibilidad.

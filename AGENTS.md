@@ -3,7 +3,8 @@
 ## Alcance y autorización
 
 - Modifica archivos locales de este repositorio cuando el usuario lo solicite y dentro del alcance autorizado.
-- En la fase inicial, crea y mantén únicamente documentación y `.gitignore`. No instales dependencias, inicialices Astro, ejecutes npm ni generes código de aplicación hasta recibir una solicitud que autorice esa fase.
+- La fase documental inicial ha terminado. Está autorizada la implementación local de una base mínima de Astro con TypeScript y npm en este repositorio, incluida la instalación de dependencias necesarias y las comprobaciones y build. Mantén el alcance mínimo; no desarrolles todavía el diseño completo ni inventes contenido personal.
+- No añadas frameworks de UI (React, Vue, Svelte u otros), Tailwind ni frameworks CSS. No añadas SSR ni configuración de despliegue o Cloudflare en esta fase.
 - No hagas commit sin autorización explícita. No hagas push ni despliegues, ni modifiques infraestructura, DNS, dominios o servicios externos sin autorización explícita.
 - No transfieras los dominios ni modifiques DNS en la fase actual. Están registrados en IONOS.
 - Respeta los cambios del usuario y no incluyas archivos ajenos al trabajo solicitado.
@@ -41,4 +42,5 @@
 - Repositorio remoto: `https://github.com/fernandoghg/fernandoghg.git`.
 - Utiliza Conventional Commits cuando se autorice crear commits.
 - No inventes herramientas, comandos de aplicación o comprobaciones aún no seleccionadas. Documenta los que se acuerden en `docs/development.md`.
+- La base local utiliza npm y TypeScript estricto: `npm run check` comprueba tipos y archivos Astro; `npm run build` genera la salida estática en `dist/`.
 - Al finalizar una tarea, resume los archivos modificados, las comprobaciones realizadas y las decisiones pendientes relevantes.

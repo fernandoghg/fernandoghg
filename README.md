@@ -4,7 +4,7 @@ Repositorio del sitio web personal asociado a **fernandoghg.com** y **fernandogh
 
 ## Estado inicial
 
-El repositorio contiene únicamente documentación inicial y reglas de trabajo. No se ha inicializado la aplicación ni instalado dependencias.
+La fase documental inicial ha terminado. El repositorio contiene una base mínima de Astro con TypeScript estricto y npm, con páginas provisionales en `/`, `/es/` y `/en/`. Los comandos locales se documentan en [desarrollo](docs/development.md).
 
 Astro es el framework/generador seleccionado, con TypeScript cuando sea necesario para desarrollo y lógica. El sitio se generará principalmente como contenido estático, con HTML5 semántico, JavaScript mínimo y recursos optimizados para reducir tamaño, transferencia y tiempos de carga. Se mantendrán las dependencias al mínimo razonable, sin backend, base de datos ni procesamiento dinámico en servidor salvo necesidad funcional futura expresamente justificada.
 
@@ -16,7 +16,7 @@ El sitio será bilingüe español/inglés, con URLs simétricas **/es/** y **/en
 
 La primera versión no tendrá analítica ni seguimiento, incluido Cloudflare Web Analytics. Se mantienen los principios de privacidad por diseño y RGPD/ePrivacy.
 
-Esta fase sigue limitada a documentación: no se inicializará Astro, instalarán dependencias, ejecutará npm ni generará código de aplicación hasta una tarea posterior expresamente autorizada. No se modificará ningún servicio externo, DNS ni configuración de IONOS o Cloudflare.
+Esta fase autoriza la implementación local mínima, la instalación de dependencias, las comprobaciones y el build estático. El diseño completo y el contenido personal quedan para fases posteriores. No se modificará ningún servicio externo, DNS ni configuración de IONOS o Cloudflare.
 
 ## Documentación
 
