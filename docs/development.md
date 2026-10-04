@@ -73,4 +73,10 @@ La accesibilidad se revisará desde el diseño: semántica HTML5, encabezados, t
 
 V1 podrá seguir prefers-color-scheme; no se añadirá inicialmente un selector manual que necesite JavaScript, cookies o localStorage. No se cargarán fuentes externas ni feeds, widgets, scripts o publicaciones de redes sociales. No habrá correo público ni formulario de contacto.
 
-Para una actualización exclusivamente documental, revisar el diff, ejecutar git diff --check y git status, y resumir archivos modificados, contradicciones resueltas y decisiones realmente pendientes. No es necesario instalar dependencias ni ejecutar comprobaciones de Astro o build para estos cambios. No hacer git add, commit ni push sin autorización.
+Para una actualización exclusivamente documental, revisar el diff, ejecutar git diff --check, git diff --stat y git status, y resumir archivos modificados, contradicciones resueltas y decisiones realmente pendientes. No es necesario instalar dependencias ni ejecutar comprobaciones de Astro o build para estos cambios. No hacer git add, commit ni push sin autorización.
+
+## Siguiente fase prevista
+
+Después de aprobar y versionar esta documentación, la siguiente fase será implementar layout base, cabecera, navegación, footer, variables/tokens CSS básicos, responsive, modo claro/oscuro mediante preferencias del sistema y estructura visual inicial de las páginas existentes. Esta previsión no autoriza implementarlos durante la tarea documental actual.
+
+Se aplicarán las decisiones de [arquitectura](architecture.md): navegación móvil directamente accesible sin hamburguesa, enlaces de idioma a la traducción relacionada o a la portada alternativa y estructura básica que intente funcionar con cero JavaScript cliente. No se añadirá JavaScript para menú móvil, selector automático de idioma, animaciones decorativas ni modo oscuro automático. El posible JavaScript futuro deberá aportar una mejora real justificada. La implementación será propia y no copiará diseños, código, identidad visual ni textos de otros sitios.
