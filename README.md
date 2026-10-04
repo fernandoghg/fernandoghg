@@ -2,7 +2,7 @@
 
 Repositorio del sitio web personal asociado a **fernandoghg.com** y **fernandoghg.es**. El proyecto busca un sitio principalmente estático, con contenido en español e inglés, privacidad por diseño y especial atención a accesibilidad, SEO, rendimiento, seguridad, coste y mantenimiento.
 
-## Estado inicial
+## Estado actual
 
 La fase documental inicial ha terminado. El repositorio contiene una base mínima de Astro con TypeScript estricto y npm, con páginas provisionales en `/`, `/es/` y `/en/`. Los comandos locales se documentan en [desarrollo](docs/development.md).
 
@@ -12,11 +12,11 @@ Cloudflare Pages es el alojamiento seleccionado inicialmente; GitHub seguirá si
 
 El dominio canónico será **https://fernandoghg.com**. Se conservará fernandoghg.es y posteriormente se redirigirá permanentemente al .com, al igual que www.fernandoghg.com y www.fernandoghg.es. HTTP redirigirá siempre a HTTPS, obligatorio en producción. Los dominios permanecen en IONOS y no se transferirán. Blogger debe seguir funcionando mientras se desarrolla la nueva web.
 
-El sitio será bilingüe español/inglés, con URLs simétricas **/es/** y **/en/**. Se prevé contenido principalmente en Markdown/MDX, sin exigir traducción de todas las publicaciones. La arquitectura permitirá relacionar traducciones y contemplará SEO multilingüe, canonical y hreflang. No se ha aprobado una política automática de detección o redirección por idioma.
+El sitio será bilingüe español/inglés, con URLs simétricas **/es/** y **/en/**. Se prevé contenido principalmente en Markdown/MDX, sin exigir traducción de todas las publicaciones. La arquitectura permitirá relacionar traducciones y contemplará SEO multilingüe, canonical y hreflang. La raíz / redirigirá a /es/, sin cookies, localStorage, geolocalización ni tracking para seleccionar o recordar el idioma. Esta decisión aún no está implementada.
 
 La primera versión no tendrá analítica ni seguimiento, incluido Cloudflare Web Analytics. Se mantienen los principios de privacidad por diseño y RGPD/ePrivacy.
 
-Esta fase autoriza la implementación local mínima, la instalación de dependencias, las comprobaciones y el build estático. El diseño completo y el contenido personal quedan para fases posteriores. No se modificará ningún servicio externo, DNS ni configuración de IONOS o Cloudflare.
+La base mínima ya está inicializada. La tarea actual es exclusivamente documental: no autoriza cambios de código, instalación de dependencias, implementación de páginas ni cambios en servicios externos. Las decisiones aprobadas para V1 se detallan en [arquitectura](docs/architecture.md).
 
 ## Documentación
 
@@ -26,3 +26,11 @@ Esta fase autoriza la implementación local mínima, la instalación de dependen
 - [Entorno y flujo de desarrollo](docs/development.md).
 
 Repositorio remoto: <https://github.com/fernandoghg/fernandoghg.git>.
+
+## Dirección de V1
+
+La navegación principal será Inicio, Proyectos, Artículos y Sobre mí (Home, Projects, Articles y About). La V1 será deliberadamente pequeña e incluirá una página de privacidad antes de publicar. Se han seleccionado únicamente los dos artículos históricos de Top Eleven para migración, conservando sus fechas originales; no se migrará automáticamente el resto de Blogger.
+
+La portada tendrá sentido sin publicaciones frecuentes y podrá combinar presentación, proyectos y artículos destacados. Proyectos será independiente de Artículos; las categorías se crearán cuando el contenido las justifique. RSS/Atom no es requisito de V1.
+
+La identidad pública será **Fernando Garcia-Herrera Gomez**, presentada discretamente. GitHub e Instagram serán enlaces simples, sin contenido incrustado. V1 no tendrá correo público, formulario de contacto, publicidad ni localStorage para preferencias o seguimiento. El diseño será sobrio, legible y responsive/mobile-first, con fuentes del sistema y un único acento orientado a azul apagado, sin valores CSS definitivos. No se redacta ni implementa todavía contenido definitivo.
