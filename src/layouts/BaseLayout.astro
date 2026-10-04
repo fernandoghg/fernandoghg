@@ -1,8 +1,8 @@
 ---
 import '../styles/global.css';
 import { navigation, primaryPages, type Language, type Page } from '../data/navigation';
-interface Props { lang: Language; page: Page; title: string; description: string }
-const { lang, page, title, description } = Astro.props;
+interface Props { lang: Language; page: Page; title: string; description: string; languageHref?: string }
+const { lang, page, title, description, languageHref } = Astro.props;
 const links = navigation[lang];
 const other = lang === 'es' ? 'en' : 'es';
 const es = lang === 'es';
@@ -23,7 +23,7 @@ const es = lang === 'es';
       <nav class="primary-nav" aria-label={es ? 'Navegación principal' : 'Main navigation'}>
         <ul>{primaryPages.map((key) => <li><a href={links[key].href} aria-current={key === page ? 'page' : undefined}>{links[key].label}</a></li>)}</ul>
       </nav>
-      <a class="language-link" href={navigation[other][page].href} lang={other} aria-label={es ? 'Read this page in English' : 'Leer esta página en español'}>{other.toUpperCase()}</a>
+      <a class="language-link" href={languageHref ?? navigation[other][page].href} lang={other} aria-label={es ? 'Switch to English' : 'Cambiar a español'}>{other.toUpperCase()}</a>
     </header>
     <main id="main" class="container" tabindex="-1"><slot /></main>
     <footer class="site-footer container">

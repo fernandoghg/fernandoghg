@@ -1,0 +1,17 @@
+---
+import type { Language } from '../data/navigation';
+import type { Article } from '../lib/articles';
+import { articleCategoryLabels } from '../data/article-categories';
+import { articleUrl, formatArticleDate } from '../lib/article-model';
+interface Props { articles: Article[]; lang: Language }
+const { articles, lang } = Astro.props;
+---
+<ul class="article-list">
+  {articles.map((article) => (
+    <li>
+      <time datetime={article.data.published}>{formatArticleDate(article.data.published, lang)}</time>
+      <h3><a href={articleUrl(article)}>{article.data.title}</a></h3>
+      <span class="article-category">{articleCategoryLabels[article.data.category][lang]}</span>
+    </li>
+  ))}
+</ul>

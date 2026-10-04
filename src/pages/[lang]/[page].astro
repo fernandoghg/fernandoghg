@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleList from '../../components/ArticleList.astro';
+import { getPublicArticles } from '../../lib/articles';
 import { navigation, type Language, type Page } from '../../data/navigation';
 export function getStaticPaths() {
   return (['es', 'en'] as const).flatMap((lang) =>
@@ -12,12 +14,20 @@ export function getStaticPaths() {
 interface Props { lang: Language; page: Page }
 const { lang, page } = Astro.props;
 const title = navigation[lang][page].label;
+const articles = page === 'articles' ? await getPublicArticles(lang) : [];
+const years = [...new Set(articles.map((article) => article.data.published.slice(0, 4)))];
 const description = lang === 'es' ? 'Página provisional. El contenido se incorporará posteriormente.' : 'Temporary page. Content will be added later.';
 ---
 <BaseLayout lang={lang} page={page} title={title} description={description}>
   <div class="placeholder reading-width">
-    <p class="eyebrow">{lang === 'es' ? 'Contenido provisional' : 'Temporary content'}</p>
+    {page !== 'articles' && <p class="eyebrow">{lang === 'es' ? 'Contenido provisional' : 'Temporary content'}</p>}
     <h1>{title}</h1>
-    <p class="lead">{description}</p>
+    {page !== 'articles' && <p class="lead">{description}</p>}
   </div>
+  {page === 'articles' && (articles.length > 0 ? years.map((year) => (
+    <section class="article-year" aria-labelledby={`year-${year}`}>
+      <h2 id={`year-${year}`}>{year}</h2>
+      <ArticleList articles={articles.filter((article) => article.data.published.startsWith(year))} lang={lang} />
+    </section>
+  )) : <p class="empty-articles article-year">{lang === 'es' ? 'Todavía no hay artículos publicados.' : 'No articles have been published yet.'}</p>)}
 </BaseLayout>

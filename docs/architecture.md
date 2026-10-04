@@ -7,7 +7,7 @@
 - La arquitectura inicial evitará backend, base de datos y procesamiento dinámico en servidor mientras no exista una necesidad funcional expresamente justificada.
 - Los dominios están registrados actualmente en IONOS. No se transferirán ni se modificará DNS en esta fase.
 - Contenido previsto principalmente en Markdown/MDX, en español e inglés. No todo el contenido tendrá necesariamente traducción.
-- El sitio será bilingüe, con estructura de URLs simétrica /es/ y /en/. La arquitectura permitirá relacionar correctamente las versiones traducidas cuando existan y contemplará SEO multilingüe, canonical y hreflang al implementar las páginas. La raíz / redirigirá a /es/, sin cookies, localStorage, geolocalización ni tracking para seleccionar o recordar el idioma. Esta decisión aún no está implementada.
+- El sitio es bilingüe, con raíces /es/ y /en/. Las traducciones de artículos se relacionan mediante translationKey; canonical/hreflang multilingües quedan pendientes. La raíz redirige estáticamente a /es/, sin cookies, localStorage, geolocalización ni tracking para seleccionar o recordar idioma. Sin adaptador, Astro genera meta refresh; una redirección HTTP real depende del alojamiento posterior.
 - Privacidad por diseño y atención a RGPD/ePrivacy y normativa aplicable como requisitos de primer nivel.
 - Accesibilidad, SEO, rendimiento y seguridad como requisitos del proyecto.
 - Recursos preferentemente autocontenidos; fuentes locales si se emplean fuentes personalizadas. Evitar recursos externos que permitan seguimiento.
@@ -32,15 +32,15 @@ El dominio canónico será **https://fernandoghg.com**. Se conservará fernandog
 
 HTTP deberá redirigir siempre a HTTPS y HTTPS será obligatorio en producción. Los dominios permanecen registrados en IONOS y no se transferirán. Blogger debe seguir funcionando mientras se desarrolla la nueva web.
 
-Estas decisiones no autorizan cambios externos en esta fase: no se creará ni modificará Cloudflare, DNS, configuración de IONOS ni ningún servicio externo. La base local mínima de Astro con TypeScript y npm ya está inicializada. La tarea actual solo actualiza documentación, sin instalación de dependencias ni cambios de implementación o despliegue.
+Estas decisiones no autorizan cambios externos: no se creará ni modificará Cloudflare, DNS, configuración de IONOS ni ningún servicio externo. El diseño visual local está aprobado y la infraestructura inicial de artículos está implementada, sin nuevas dependencias ni despliegue.
 
 ## Por decidir
 
 | Tema | Estado y orientación actual |
 | --- | --- |
 | Publicación y configuración de producción | **Por decidir**: detalles de integración GitHub–Cloudflare Pages, configuración efectiva de HTTPS, certificados y redirecciones ya aprobadas, y transición desde Blogger. |
-| Organización interna del contenido | **Por decidir**: modelo de contenido y mecanismo para relacionar traducciones, manteniendo /es/ y /en/ y permitiendo publicaciones sin traducción. |
-| Diseño concreto y contenido definitivo | **Por decidir**: composición detallada dentro de la estructura conceptual aprobada, medidas, espaciados, escala tipográfica, valores de color y demás tokens CSS; textos definitivos, información de proyectos aprobada para publicar y posible reutilización de fotografías históricas. |
+| Organización interna del contenido | Artículos Markdown y translationKey implementados según el modelo descrito abajo. **Por decidir**: modelo de proyectos, eventual MDX y SEO multilingüe completo. |
+| Diseño concreto y contenido definitivo | Diseño visual inicial aprobado e implementado; se conserva la paleta, escala y anchuras actuales. **Por decidir**: textos definitivos, información de proyectos aprobada para publicar y posible reutilización de fotografías históricas. |
 | Herramientas y comprobaciones de desarrollo | Node.js v24.20.0 y npm 11.19.0; comandos de Astro y comprobación de tipos documentados en [desarrollo](development.md). Herramientas adicionales de pruebas **por decidir**. |
 | Configuración y evaluación de privacidad | **Pendiente** antes de publicar, incluidos registros y datos tratados por los proveedores. |
 
@@ -55,7 +55,7 @@ La configuración futura del alojamiento deberá considerar coste, mantenimiento
 | Artículos | Articles |
 | Sobre mí | About |
 
-Las raíces de idioma serán /es/ y /en/; / redirigirá a /es/. No se usarán cookies, localStorage, geolocalización ni tracking para seleccionar o recordar idioma. No se exige traducción de todo el contenido, incluidos los artículos. Las traducciones existentes deberán relacionarse explícitamente para navegación entre versiones, hreflang, canonical adecuado y SEO multilingüe. El modelo técnico de esa relación sigue **por decidir**; no se define en esta fase.
+Las raíces de idioma son /es/ y /en/; / redirige estáticamente a /es/. No se usan cookies, localStorage, geolocalización ni tracking para seleccionar o recordar idioma. No se exige traducción de todo el contenido. translationKey relaciona los artículos traducidos para navegar entre versiones públicas; hreflang, canonical adecuado y SEO multilingüe completo quedan para una fase posterior.
 
 Artículos será una sección principal. Tecnología, Juegos, Viajes, Simulación y otras clasificaciones serán categorías/etiquetas creadas únicamente cuando el contenido las justifique, sin elementos permanentes en el menú inicial. RSS/Atom queda como posibilidad futura, sin ser requisito de V1 ni implementarse ahora.
 
@@ -77,7 +77,7 @@ EC2 y swap, SSH a través de proxy, gestión/pruning de mensajes y SMTP Sender c
 ## Dirección visual y accesibilidad
 
 - Estilo sobrio, moderno, limpio y atemporal, con carácter personal y tecnológico sin resultar excesivamente corporativo.
-- Contenido y legibilidad como protagonistas, mucho espacio visual, pocos colores y un único acento orientado inicialmente a azul discreto/apagado. Los valores CSS definitivos siguen **por decidir**.
+- Contenido y legibilidad como protagonistas, mucho espacio visual, pocos colores y un único acento azul discreto/apagado. La paleta y los tokens iniciales de src/styles/global.css están aprobados e implementados; se mantienen 68rem de ancho máximo, 65ch de lectura y breakpoint principal de 48rem.
 - Evitar efectos innecesarios, animaciones gratuitas, glassmorphism, degradados llamativos y tendencias que envejezcan rápidamente.
 - Artículos con diseño editorial: legibilidad, columna de lectura cómoda, jerarquía tipográfica, código legible, imágenes bien integradas y ausencia de distracciones. Los proyectos podrán tener una presentación algo más visual.
 - Diseño responsive/mobile-first, sin depender de hover para funciones importantes.
@@ -101,7 +101,7 @@ V1 no publicará dirección de correo, no expondrá el correo personal ni tendr�
 
 La primera versión pública será deliberadamente pequeña: Inicio, Sobre mí, Proyectos, Artículos, Privacidad y los dos artículos históricos seleccionados de Top Eleven. Los proyectos públicos solo se incorporarán cuando se decida expresamente qué información mostrar. La página de privacidad debe existir antes de publicar, junto con la revisión final indicada en [privacidad](privacy.md).
 
-Estas decisiones documentan la dirección aprobada, sin implementar ahora páginas, diseño, migración ni contenido definitivo. RSS/Atom, un selector manual de tema y un posible correo público son posibilidades futuras, no requisitos pendientes de V1.
+El diseño inicial y la infraestructura de artículos están implementados, con páginas secundarias provisionales y sin migración ni contenido definitivo. RSS/Atom, un selector manual de tema y un posible correo público son posibilidades futuras, no requisitos pendientes de V1.
 
 ## Cabecera y navegación responsive
 
@@ -109,7 +109,22 @@ En escritorio, la navegación principal será Inicio · Proyectos · Artículos 
 
 En V1 no habrá menú hamburguesa. Los cuatro elementos permanecerán directamente accesibles también en móvil; en pantallas estrechas podrán distribuirse en varias líneas o reorganizarse mediante CSS. El diseño será mobile-first y no se añadirá JavaScript para gestionar la navegación.
 
-Cuando exista una traducción explícitamente relacionada, el enlace de idioma llevará a ella. Cuando no exista, el enlace seguirá disponible y llevará a la portada del otro idioma: /es/ ↔ /en/. No se crearán traducciones inexistentes. Esta regla orienta el futuro modelo de contenidos, sin definirlo ni implementarlo todavía.
+En artículos, el enlace de idioma lleva a la traducción pública relacionada por translationKey, si existe. Si no existe o es draft/futura, lleva a la portada del otro idioma. Las páginas de sección mantienen sus parejas explícitas ES/EN. No se crean traducciones inexistentes.
+
+## Modelo de artículos implementado
+
+- Colección articles en src/content.config.ts mediante defineCollection, glob y esquema Zod 4 estricto de astro/zod. Consulta con getCollection y renderizado con render(entry), sin JavaScript cliente ni dependencias adicionales.
+- Markdown en src/content/articles/es/<slug>.md y en/<slug>.md. Slug derivado del archivo e ID es/<slug> o en/<slug>, sin campo slug en frontmatter. Solo ASCII minúsculo, números y guiones; sin subdirectorios adicionales. Después de publicar, cambiar el nombre requiere revisar la URL y preparar redirección.
+- Campos obligatorios: title, description, published, lang y category. description tiene una sola línea y máximo 300 caracteres. draft es boolean con defecto true. Opcionales: updated, translationKey, series y seriesPart; se omiten si no se usan, nunca se dejan vacíos/null.
+- published y updated son strings ISO válidos YYYY-MM-DD entre comillas. updated >= published; solo se añade por actualización sustancial explícita. Migración, build, Git y fecha del archivo no alteran las fechas. Cada traducción conserva su propia published.
+- Fechas visibles largas con es-ES/en-GB y conversión UTC para conservar el día. El día de referencia pública es el día editorial de Europe/Madrid; las funciones aceptan una fecha explícita para pruebas deterministas.
+- Público significa draft === false y published <= día de referencia. Portada, listados, rutas y traducciones utilizan la misma regla central. No hay scheduler: cambiar de día no altera un build ya generado, hace falta reconstruirlo.
+- Rutas finas ES/EN: /es/articulos/<slug>/ y /en/articles/<slug>/, con getStaticPaths y utilidades compartidas. No se añade año/mes a la URL. El listado agrupa por año de published; la portada muestra hasta tres artículos públicos recientes. Sin artículos públicos, ambos muestran un estado vacío.
+- translationKey es identificador ASCII minúsculo/números/guiones, opcional. Máximo una entrada por clave e idioma; una traducción puede faltar o tener slug distinto.
+- series y seriesPart aparecen juntos o se omiten juntos. seriesPart es entero positivo; no se permiten partes duplicadas por serie e idioma. Se admiten huecos y traducciones parciales. Hay utilidad de ordenación por parte, sin navegación anterior/siguiente, total ni colección de series.
+- Única categoría inicial juegos, con enum y etiquetas Juegos/Games centralizados. Sin tags, colección de categorías, autor por artículo ni imagen destacada.
+- Carpeta/lang y formato de ID se validan al cargar. Duplicados se comprueban sobre todas las entradas, incluidos drafts y futuros, antes de cada consulta pública o generación de rutas; un fallo impide el build.
+- Las pruebas de integración generan y retiran fixtures temporales y reconstruyen dist al terminar. No se han migrado los artículos históricos de Top Eleven.
 
 ## Presentación de proyectos y artículos
 

@@ -3,7 +3,7 @@
 ## Alcance y autorización
 
 - Modifica archivos locales de este repositorio cuando el usuario lo solicite y dentro del alcance autorizado.
-- La base mínima de Astro con TypeScript y npm ya está inicializada. La tarea actual autoriza únicamente actualizar README.md, AGENTS.md, docs/architecture.md, docs/development.md y docs/privacy.md. No modifiques código o configuración, no instales dependencias ni implementes páginas o contenido definitivo en esta tarea.
+- La implementación visual inicial está aprobada. La fase actual autoriza la infraestructura estática de artículos, pruebas técnicas y documentación necesaria. No instales dependencias ni migres todavía artículos reales de Blogger/Top Eleven; no redactes contenido definitivo.
 - No añadas frameworks de UI (React, Vue, Svelte u otros), Tailwind ni frameworks CSS. No añadas SSR ni configuración de despliegue o Cloudflare en esta fase.
 - No hagas commit sin autorización explícita. No hagas push ni despliegues, ni modifiques infraestructura, DNS, dominios o servicios externos sin autorización explícita.
 - No transfieras los dominios ni modifiques DNS en la fase actual. Están registrados en IONOS.
@@ -15,7 +15,7 @@
 - El dominio canónico será https://fernandoghg.com. Conserva fernandoghg.es; posteriormente se redirigirán permanentemente fernandoghg.es, www.fernandoghg.com y www.fernandoghg.es al dominio canónico.
 - Astro es el framework/generador seleccionado. Utiliza TypeScript cuando sea necesario para desarrollo y lógica, prioriza HTML5 semántico y genera contenido estático siempre que sea posible.
 - No introduzcas backend, base de datos ni procesamiento dinámico en servidor salvo necesidad funcional futura expresamente justificada.
-- El sitio será bilingüe español/inglés, con URLs simétricas /es/ y /en/. Se prevé contenido principalmente en Markdown/MDX. No presupongas que todo contenido tiene traducción; permite relacionar versiones traducidas y contempla SEO multilingüe, canonical y hreflang. La raíz / redirigirá a /es/, sin cookies, localStorage, geolocalización ni tracking para seleccionar o recordar idioma. Las traducciones deberán relacionarse explícitamente; su modelo técnico sigue por decidir.
+- El sitio es bilingüe español/inglés, con URLs /es/ y /en/. La raíz redirige estáticamente a /es/, sin cookies, localStorage, geolocalización ni tracking. Los artículos utilizan Markdown y Content Collections modernas de Astro: src/content.config.ts, glob y Zod 4 de astro/zod. translationKey relaciona traducciones explícitamente, sin exigirlas ni compartir slug. Canonical/hreflang multilingües y MDX quedan para una fase posterior.
 - Marca como **por decidir** lo que no esté acordado y actualiza la documentación cuando el usuario tome decisiones.
 - Minimiza dependencias y mantenimiento. Minimiza el JavaScript enviado al navegador y no lo incorpores cuando HTML/CSS sean suficientes.
 - Mantén páginas ligeras: minimiza y optimiza CSS, JavaScript, imágenes, fuentes y demás recursos para reducir tamaño, transferencia y tiempos de carga. Evita recursos externos innecesarios y favorece buen rendimiento también en conexiones y dispositivos modestos.
@@ -52,7 +52,7 @@
 - La portada no será un blog cronológico tradicional y debe funcionar sin publicaciones frecuentes. No inventes contenido definitivo.
 - Migra únicamente los dos artículos de Top Eleven seleccionados en arquitectura, conservando carácter histórico y fecha original. Conserva las fotografías originales para evaluación posterior. Los temas técnicos antiguos son posibles inspiraciones para artículos nuevos revisados, no contenido pendiente de migración.
 - Aldarte es solo un candidato futuro: no documentes información interna/confidencial ni presupongas qué información será pública.
-- Diseña con sobriedad, legibilidad, espacio visual, pocos colores y un único acento inicialmente azul apagado, sin fijar aún valores CSS. Evita efectos innecesarios, animaciones gratuitas, glassmorphism y degradados llamativos.
+- Conserva el diseño visual aprobado: sobriedad, legibilidad, espacio visual, pocos colores y azul apagado. Los tokens actuales, 68rem de ancho máximo, 65ch de lectura y breakpoint de 48rem están implementados. Evita efectos innecesarios, animaciones gratuitas, glassmorphism y degradados llamativos.
 - Prioriza fuentes del sistema en V1; no cargues Google Fonts ni fuentes externas. Si se incorpora una fuente personalizada en el futuro, prefiere alojamiento local.
 - Aplica responsive/mobile-first y accesibilidad desde el inicio: HTML5 semántico, encabezados correctos, teclado, foco visible, contraste, textos alternativos pertinentes, lang correcto y enlaces descriptivos. No dependas exclusivamente del color ni de hover. No afirmes cumplimiento formal de WCAG sin verificarlo.
 - V1 podrá respetar prefers-color-scheme; no añadas inicialmente selector manual que necesite JavaScript, cookies o localStorage. Respeta prefers-reduced-motion cuando corresponda.
@@ -63,3 +63,12 @@
 - Sigue la estructura visual conceptual de arquitectura, sin convertir las páginas de proyecto en un esquema rígido. Prefiere listas editoriales para artículos, con agrupación por año en el listado y fechas históricas originales. Las imágenes de proyecto y la fotografía personal son opcionales; no crees una galería fotográfica por ahora.
 - Intenta que la estructura básica de V1 funcione con cero JavaScript cliente. No lo añadas para menú móvil, selector automático de idioma, animaciones decorativas o modo oscuro automático. Una necesidad futura deberá justificarse por una mejora real de funcionalidad o experiencia.
 - Realiza una implementación propia, sin copiar diseños, código, identidad visual ni textos de otros sitios.
+
+## Artículos
+
+- Sigue el modelo detallado en docs/architecture.md y docs/development.md. Usa src/content/articles/es/<slug>.md y en/<slug>.md; nombres ASCII en minúsculas, números y guiones, sin subdirectorios adicionales ni slug en frontmatter. El nombre es estable después de publicar.
+- Guarda published y updated como strings ISO entre comillas. Conserva published original; updated solo corresponde a una actualización sustancial explícita, nunca a migración, build, Git o fecha del archivo. Cada traducción tiene su propia fecha de publicación.
+- draft tiene valor por defecto true. Reutiliza getPublicArticles/getArticlePaths: solo draft === false y published <= día editorial de Europe/Madrid. No implementes publicación programada.
+- Valida todos los artículos, incluidos drafts: carpeta/lang, IDs, translationKey + lang y series + lang + seriesPart. series y seriesPart se omiten juntos o aparecen juntos; no añadas total de partes.
+- La única categoría inicial es juegos, con etiquetas Juegos/Games centralizadas. No añadas tags, autor por artículo, imagen destacada ni colecciones de categorías/series sin necesidad aprobada.
+- Las pruebas de build deben retirar sus fixtures temporales y reconstruir dist al terminar.

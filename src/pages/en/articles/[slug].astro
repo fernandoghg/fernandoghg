@@ -1,0 +1,7 @@
+---
+import ArticlePage from '../../../components/ArticlePage.astro';
+import { getArticlePaths, type ArticlePageProps } from '../../../lib/articles';
+type Props = ArticlePageProps;
+export async function getStaticPaths() { return getArticlePaths('en'); }
+---
+<ArticlePage {...Astro.props} />
