@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { navigation, type Language } from '../data/navigation';
+interface Props { lang: Language }
+const { lang } = Astro.props;
+const es = lang === 'es';
+const links = navigation[lang];
+const intro = es ? 'Este es mi espacio personal sobre tecnología, proyectos y otras cosas que me interesan.' : "This is my personal space for technology, projects, and other things I'm interested in.";
+---
+<BaseLayout lang={lang} page="home" title={links.home.label} description={intro}>
+  <section class="intro" aria-labelledby="intro-title">
+    <h1 id="intro-title">{es ? 'Hola, soy Fernando.' : "Hi, I'm Fernando."}</h1>
+    <p class="lead">{intro}</p>
+    <ul class="intro-links">
+      <li><a href={links.projects.href}>{es ? 'Explorar proyectos' : 'Explore projects'} <span aria-hidden="true">→</span></a></li>
+      <li><a href={links.articles.href}>{es ? 'Leer artículos' : 'Read articles'} <span aria-hidden="true">→</span></a></li>
+    </ul>
+  </section>
+  <section class="home-section" aria-labelledby="projects-title">
+    <div class="section-heading">
+      <h2 id="projects-title">{es ? 'Proyectos destacados' : 'Featured projects'}</h2>
+      <a href={links.projects.href}>{es ? 'Todos los proyectos' : 'All projects'}</a>
+    </div>
+    <article class="project">
+      <p class="eyebrow">{es ? 'Ejemplo ficticio' : 'Fictional example'}</p>
+      <h3><a href={links.projects.href}>{es ? 'Proyecto de ejemplo' : 'Example project'}</a></h3>
+      <p>{es ? 'Una breve descripción provisional para evaluar cómo se presenta un proyecto personal.' : 'A short temporary description to explore how a personal project is presented.'}</p>
+      <ul class="technologies" aria-label={es ? 'Tecnologías de ejemplo' : 'Example technologies'}><li>HTML</li><li>CSS</li><li>TypeScript</li></ul>
+      <a href={links.projects.href}>{es ? 'Ver proyecto de ejemplo' : 'View example project'} <span aria-hidden="true">→</span></a>
+    </article>
+  </section>
+  <section class="home-section" aria-labelledby="articles-title">
+    <div class="section-heading">
+      <h2 id="articles-title">{es ? 'Artículos recientes' : 'Recent articles'}</h2>
+      <a href={links.articles.href}>{es ? 'Todos los artículos' : 'All articles'}</a>
+    </div>
+    <ul class="article-list">
+      {[{ date: '2026-09-15', esDate: '15 sep 2026', enDate: '15 Sep 2026', number: 1 }, { date: '2026-06-02', esDate: '2 jun 2026', enDate: '2 Jun 2026', number: 2 }].map((item) => (
+        <li>
+          <time datetime={item.date}>{es ? item.esDate : item.enDate}</time>
+          <h3><a href={links.articles.href}>{es ? 'Título de artículo de ejemplo' : 'Example article title'} {item.number}</a></h3>
+          <span class="article-category">{es ? 'Categoría de ejemplo' : 'Example category'}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>

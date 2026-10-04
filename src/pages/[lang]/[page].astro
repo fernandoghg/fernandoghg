@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { navigation, type Language, type Page } from '../../data/navigation';
+export function getStaticPaths() {
+  return (['es', 'en'] as const).flatMap((lang) =>
+    (['projects', 'articles', 'about', 'privacy'] as const).map((key) => ({
+      params: { lang, page: navigation[lang][key].href.split('/')[2] },
+      props: { lang, page: key },
+    })),
+  );
+}
+interface Props { lang: Language; page: Page }
+const { lang, page } = Astro.props;
+const title = navigation[lang][page].label;
+const description = lang === 'es' ? 'Página provisional. El contenido se incorporará posteriormente.' : 'Temporary page. Content will be added later.';
+---
+<BaseLayout lang={lang} page={page} title={title} description={description}>
+  <div class="placeholder reading-width">
+    <p class="eyebrow">{lang === 'es' ? 'Contenido provisional' : 'Temporary content'}</p>
+    <h1>{title}</h1>
+    <p class="lead">{description}</p>
+  </div>
+</BaseLayout>
