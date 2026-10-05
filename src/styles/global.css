@@ -74,7 +74,7 @@ main { flex: 1; padding-bottom: var(--space-6); }
 .empty-articles { color: var(--muted); }
 .article-year { margin-top: var(--space-4); }
 .article-year > h2 { margin-bottom: var(--space-3); }
-.article-page { padding-top: var(--space-6); }
+.article-page { padding-top: var(--space-6); margin-inline: auto; max-width: 80ch; }
 .article-header, .article-body { overflow-wrap: anywhere; }
 .article-dates { color: var(--muted); font-size: .875rem; margin-top: var(--space-3); }
 .article-body { margin-top: var(--space-5); }

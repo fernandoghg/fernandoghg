@@ -14,7 +14,7 @@
 
 El repositorio contiene Astro con TypeScript estricto y npm, diseño visual inicial aprobado e infraestructura estática de artículos Markdown. No se ha creado otro repositorio Git ni un subdirectorio de proyecto.
 
-La fase actual implementa infraestructura de artículos, comprobaciones y documentación, sin instalar dependencias ni migrar contenido real. La base es estática, sin frameworks UI, Tailwind, frameworks CSS, backend, base de datos, SSR ni analítica. No se configura despliegue ni se crean commits o push sin autorización.
+La base incluye infraestructura de artículos, comprobaciones, documentación y el primer artículo histórico real migrado, «Mi experiencia con Top Eleven», publicado en español dentro del modelo de contenidos. Sus imágenes originales están almacenadas junto al artículo y Astro genera las versiones optimizadas durante el build. La segunda parte de Top Eleven todavía no se ha migrado. La base es estática, sin frameworks UI, Tailwind, frameworks CSS, backend, base de datos, SSR ni analítica. No se instalan dependencias, se configura despliegue ni se crean commits o push sin autorización.
 
 Entorno de inicio: Node.js v24.20.0, npm 11.19.0 y Git 2.55.0.windows.5. npm es el gestor de paquetes seleccionado. Las pruebas de artículos utilizan node:test y assert incluidos en Node 24, sin dependencias adicionales. Los detalles del flujo automatizado de publicación siguen **por decidir**.
 
@@ -91,6 +91,14 @@ La carpeta/lang y los nombres se comprueban en generateId al cargar. Antes de co
 
 Las rutas finas src/pages/es/articulos/[slug].astro y src/pages/en/articles/[slug].astro comparten getArticlePaths y ArticlePage.astro. Usan render(entry) y ArticleLayout.astro con ancho de lectura y CSS existentes. El selector enlaza a una traducción pública con slug propio; si falta o no es pública, lleva a la portada del otro idioma. Las series se pueden ordenar por parte mediante selectSeriesArticles; no hay navegación anterior/siguiente ni total de partes.
 
-Portada y listados comparten la consulta pública; los listados agrupan por año original. Las pruebas de integración crean fixtures propios, verifican exclusión de drafts/futuros y traducciones, rechazan duplicados y restauran el build. No se han migrado artículos de Top Eleven. Antes de ejecutar estas pruebas, cerrar el servidor dev; una interrupción forzada puede requerir retirar los archivos fixture-* temporales y repetir el build.
+Portada y listados comparten la consulta pública; los listados agrupan por año original. Las pruebas de integración crean fixtures propios, verifican exclusión de drafts/futuros y traducciones, rechazan duplicados y restauran el build. Antes de ejecutar estas pruebas, cerrar el servidor dev; una interrupción forzada puede requerir retirar los archivos fixture-* temporales y repetir el build.
 
 No hay autor por artículo, tags, imagen destacada, RSS, sitemap ni colecciones de categorías/series. Los borradores de un repositorio público son visibles en GitHub aunque no generen páginas. No guardar información confidencial en ellos. El posible JavaScript futuro deberá aportar una mejora real justificada; navegación, idioma y tema siguen sin JavaScript cliente.
+
+## Imágenes editoriales y archivos descargables
+
+- Las imágenes editoriales se almacenan junto al contenido dentro de `src/content/articles/`, en una carpeta con el slug del artículo junto a su Markdown, para que Astro pueda procesarlas y optimizarlas. Utilizar nombres descriptivos, cortos, en minúsculas y sin espacios.
+- Los originales no deben modificarse innecesariamente; Astro genera los recursos optimizados durante el build.
+- `public/downloads/` queda reservado para archivos que deban ofrecerse directamente para descarga sin transformación, como PDF, ZIP, XML, JSON, CSV u otros recursos estáticos. No crear subdirectorios de downloads hasta que exista contenido real que los necesite.
+- Antes de publicar archivos descargables, comprobar que no contienen secretos, credenciales, datos personales, datos sanitarios ni información privada o corporativa.
+- No incorporar recursos externos cuando podamos servirlos localmente.
