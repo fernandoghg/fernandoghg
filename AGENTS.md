@@ -43,6 +43,7 @@
 - Utiliza Conventional Commits cuando se autorice crear commits.
 - No inventes herramientas, comandos de aplicación o comprobaciones aún no seleccionadas. Documenta los que se acuerden en `docs/development.md`.
 - La base local utiliza npm y TypeScript estricto: `npm run check` comprueba tipos y archivos Astro; `npm run build` genera la salida estática en `dist/`.
+- Guarda los perfiles de navegadores automatizados y sus artefactos temporales (capturas, sesiones, cachés, etc.) fuera del directorio del proyecto, en un directorio temporal exclusivo por ejecución, preferentemente bajo la carpeta temporal del usuario de Windows. No utilices `.astro/`, `src/`, `public/` ni otras carpetas del repositorio para perfiles de navegador.
 - Al finalizar una tarea, resume los archivos modificados, las comprobaciones realizadas y las decisiones pendientes relevantes.
 
 ## Contenido, diseño y V1

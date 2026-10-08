@@ -4,7 +4,7 @@ import { articleCategoryLabels } from '../data/article-categories';
 import { formatArticleDate } from '../lib/article-model';
 import type { ArticlePageProps } from '../lib/articles';
 type Props = ArticlePageProps;
-const { article, languageHref } = Astro.props;
+const { article, languageHref, previous, next } = Astro.props;
 const { title, description, published, updated, lang, category } = article.data;
 const es = lang === 'es';
 ---
@@ -20,5 +20,19 @@ const es = lang === 'es';
       </div>
     </header>
     <div class="article-body"><slot /></div>
+    {(previous || next) && (
+      <nav class="series-navigation" aria-label={es ? 'Navegación de la serie' : 'Series navigation'}>
+        <ul>
+          {previous && <li><a href={previous.url}>
+            <span class="series-navigation-label"><span aria-hidden="true">← </span>{es ? 'Artículo anterior' : 'Previous article'}</span>
+            <span>{previous.title}</span>
+          </a></li>}
+          {next && <li class="series-navigation-next"><a href={next.url}>
+            <span class="series-navigation-label">{es ? 'Siguiente artículo' : 'Next article'}<span aria-hidden="true"> →</span></span>
+            <span>{next.title}</span>
+          </a></li>}
+        </ul>
+      </nav>
+    )}
   </article>
 </BaseLayout>

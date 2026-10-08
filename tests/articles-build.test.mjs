@@ -51,7 +51,7 @@ test('Build real: Markdown, traducciones públicas, exclusión de drafts/futuros
     mkdirSync(directory);
     createdDirectories.push(directory);
   }
-  function fixture(name, { lang, draft = false, published = '2013-05-17', translationKey } = {}) {
+  function fixture(name, { lang, draft = false, published = '2013-05-17', translationKey, series, seriesPart } = {}) {
     const file = resolve(root, 'src/content/articles', name);
     if (!owned.includes(file)) {
       assert.equal(existsSync(file), false, `No sobrescribir contenido existente: ${file}`);
@@ -64,7 +64,8 @@ test('Build real: Markdown, traducciones públicas, exclusión de drafts/futuros
       `published: "${published}"`,
       `updated: "${published > '2015-05-17' ? published : '2015-05-17'}"`,
       `lang: ${lang}`, 'category: juegos', `draft: ${draft}`,
-      ...(translationKey ? [`translationKey: ${translationKey}`] : []), '---',
+      ...(translationKey ? [`translationKey: ${translationKey}`] : []),
+      ...(series ? [`series: ${series}`, `seriesPart: ${seriesPart}`] : []), '---',
     ];
     const body = ['## Cuerpo técnico', '', 'Texto **Markdown**.', '', '- Una lista', '', '```text', 'Sin scripts', '```'];
     writeFileSync(file, frontmatter.join('\n') + '\n\n' + body.join('\n') + '\n');
@@ -97,6 +98,67 @@ test('Build real: Markdown, traducciones públicas, exclusión de drafts/futuros
     assert.match(output('es/articulos/index.html'), /id="year-2013"/);
     assert.doesNotMatch(es + en, /<script\b/);
 
+    // Published sequences share an identifier across languages, but never links.
+    fixture(names[0], { lang: 'es', translationKey: 'fixture', series: 'fixture-series', seriesPart: 1 });
+    fixture(names[1], { lang: 'en', translationKey: 'fixture', series: 'fixture-series', seriesPart: 1 });
+    fixture(names[2], { lang: 'es', draft: true, series: 'fixture-series', seriesPart: 2 });
+    fixture(names[3], { lang: 'en', published: '9999-12-31', series: 'fixture-series', seriesPart: 2 });
+    fixture('es/fixture-middle.md', { lang: 'es', series: 'fixture-series', seriesPart: 4, published: '2012-05-17' });
+    fixture('es/fixture-last.md', { lang: 'es', series: 'fixture-series', seriesPart: 8, published: '2011-05-17' });
+    fixture('es/fixture-series-future.md', { lang: 'es', series: 'fixture-series', seriesPart: 6, published: '9999-12-31' });
+    fixture('en/fixture-last.md', { lang: 'en', series: 'fixture-series', seriesPart: 4 });
+    fixture('es/fixture-single.md', { lang: 'es', series: 'fixture-single', seriesPart: 1 });
+    fixture('es/fixture-single-draft.md', { lang: 'es', series: 'fixture-single', seriesPart: 2, draft: true });
+    fixture('es/fixture-no-series.md', { lang: 'es' });
+    expectBuild();
+    function checkSeries(file, label, links) {
+      const html = output(file);
+      const nav = html.match(/<nav class="series-navigation"[\s\S]*?<\/nav>/)?.[0];
+      if (!links.length) { assert.equal(nav, undefined, file); return; }
+      assert.ok(nav, file);
+      assert.ok(nav.includes(`aria-label="${label}"`));
+      const actual = [...nav.matchAll(/<a href="([^"]+)"/g)].map((match) => match[1]);
+      assert.deepEqual(actual, links.map(([href]) => href));
+      for (const [href, direction, title] of links) {
+        assert.ok(nav.includes(direction), nav);
+        assert.ok(nav.includes(title), nav);
+        assert.ok(existsSync(resolve(root, 'dist', `.${href}index.html`)), href);
+      }
+    }
+    checkSeries('es/articulos/fixture-publico/index.html', 'Navegación de la serie', [
+      ['/es/articulos/fixture-middle/', 'Siguiente artículo', 'Fixture temporal es/fixture-middle.md'],
+    ]);
+    checkSeries('es/articulos/fixture-middle/index.html', 'Navegación de la serie', [
+      ['/es/articulos/fixture-publico/', 'Artículo anterior', 'Fixture temporal es/fixture-publico.md'],
+      ['/es/articulos/fixture-last/', 'Siguiente artículo', 'Fixture temporal es/fixture-last.md'],
+    ]);
+    checkSeries('es/articulos/fixture-last/index.html', 'Navegación de la serie', [
+      ['/es/articulos/fixture-middle/', 'Artículo anterior', 'Fixture temporal es/fixture-middle.md'],
+    ]);
+    checkSeries('en/articles/fixture-public/index.html', 'Series navigation', [
+      ['/en/articles/fixture-last/', 'Next article', 'Fixture temporal en/fixture-last.md'],
+    ]);
+    checkSeries('en/articles/fixture-last/index.html', 'Series navigation', [
+      ['/en/articles/fixture-public/', 'Previous article', 'Fixture temporal en/fixture-public.md'],
+    ]);
+    for (const slug of ['fixture-single', 'fixture-no-series']) checkSeries(`es/articulos/${slug}/index.html`, '', []);
+    checkSeries('es/articulos/mi-experiencia-top-eleven/index.html', 'Navegación de la serie', [
+      ['/es/articulos/mi-experiencia-top-eleven-un-mes-despues/', 'Siguiente artículo', 'Mi experiencia con Top Eleven (1 mes más tarde)'],
+    ]);
+    checkSeries('es/articulos/mi-experiencia-top-eleven-un-mes-despues/index.html', 'Navegación de la serie', [
+      ['/es/articulos/mi-experiencia-top-eleven/', 'Artículo anterior', 'Mi experiencia con Top Eleven'],
+    ]);
+    for (const file of readdirSync(resolve(root, 'dist'), { recursive: true }).filter((file) => file.endsWith('.html'))) {
+      const html = output(file);
+      assert.doesNotMatch(html, /href="[^"]*fixture-(?:draft|future|series-future|single-draft)\//);
+      for (const nav of html.matchAll(/<nav class="series-navigation"[\s\S]*?<\/nav>/g)) {
+        for (const link of nav[0].matchAll(/<a href="([^"]+)"/g)) {
+          assert.ok(existsSync(resolve(root, 'dist', `.${link[1]}index.html`)), link[1]);
+          assert.notEqual(link[1].slice(1) + 'index.html', file.replaceAll('\\', '/'));
+        }
+      }
+    }
+
     fixture(names[1], { lang: 'en', draft: true, translationKey: 'fixture' });
     expectBuild();
     assert.match(output('es/articulos/fixture-publico/index.html'), /class="language-link" href="\/en\/"/);
@@ -118,5 +180,8 @@ test('Build real: Markdown, traducciones públicas, exclusión de drafts/futuros
     }
     // Restore dist to the actual repository content even after a failed assertion.
     expectBuild();
+    const restoredHtml = readdirSync(resolve(root, 'dist'), { recursive: true }).filter((file) => file.endsWith('.html'));
+    assert.equal(restoredHtml.length, 13);
+    assert.ok(restoredHtml.every((file) => !file.includes('fixture-')));
   }
 });

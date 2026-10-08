@@ -101,7 +101,7 @@ V1 no publicará dirección de correo, no expondrá el correo personal ni tendr�
 
 La primera versión pública será deliberadamente pequeña: Inicio, Sobre mí, Proyectos, Artículos, Privacidad y los dos artículos históricos seleccionados de Top Eleven. Los proyectos públicos solo se incorporarán cuando se decida expresamente qué información mostrar. La página de privacidad debe existir antes de publicar, junto con la revisión final indicada en [privacidad](privacy.md).
 
-El diseño inicial y la infraestructura de artículos están implementados, con páginas secundarias provisionales y sin migración ni contenido definitivo. RSS/Atom, un selector manual de tema y un posible correo público son posibilidades futuras, no requisitos pendientes de V1.
+El diseño inicial y la infraestructura de artículos están implementados, con páginas secundarias provisionales y los dos artículos históricos de Top Eleven migrados. Los demás textos definitivos siguen pendientes. RSS/Atom, un selector manual de tema y un posible correo público son posibilidades futuras, no requisitos pendientes de V1.
 
 ## Cabecera y navegación responsive
 
@@ -121,10 +121,10 @@ En artículos, el enlace de idioma lleva a la traducción pública relacionada p
 - Público significa draft === false y published <= día de referencia. Portada, listados, rutas y traducciones utilizan la misma regla central. No hay scheduler: cambiar de día no altera un build ya generado, hace falta reconstruirlo.
 - Rutas finas ES/EN: /es/articulos/<slug>/ y /en/articles/<slug>/, con getStaticPaths y utilidades compartidas. No se añade año/mes a la URL. El listado agrupa por año de published; la portada muestra hasta tres artículos públicos recientes. Sin artículos públicos, ambos muestran un estado vacío.
 - translationKey es identificador ASCII minúsculo/números/guiones, opcional. Máximo una entrada por clave e idioma; una traducción puede faltar o tener slug distinto.
-- series y seriesPart aparecen juntos o se omiten juntos. seriesPart es entero positivo; no se permiten partes duplicadas por serie e idioma. Se admiten huecos y traducciones parciales. Hay utilidad de ordenación por parte, sin navegación anterior/siguiente, total ni colección de series.
+- series y seriesPart aparecen juntos o se omiten juntos. seriesPart es entero positivo; no se permiten partes duplicadas por serie e idioma. Se admiten huecos y traducciones parciales. La navegación anterior/siguiente enlaza las entregas públicas disponibles de la misma serie e idioma, ordenadas por parte. Se genera en el build, sin total ni colección de series.
 - Única categoría inicial juegos, con enum y etiquetas Juegos/Games centralizados. Sin tags, colección de categorías, autor por artículo ni imagen destacada.
 - Carpeta/lang y formato de ID se validan al cargar. Duplicados se comprueban sobre todas las entradas, incluidos drafts y futuros, antes de cada consulta pública o generación de rutas; un fallo impide el build.
-- Las pruebas de integración generan y retiran fixtures temporales y reconstruyen dist al terminar. No se han migrado los artículos históricos de Top Eleven.
+- Las pruebas de integración generan y retiran fixtures temporales y reconstruyen dist al terminar. Los dos artículos históricos de Top Eleven están migrados, conservando las fechas originales y con navegación anterior/siguiente de serie.
 
 ## Presentación de proyectos y artículos
 

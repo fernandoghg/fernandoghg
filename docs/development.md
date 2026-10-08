@@ -14,7 +14,7 @@
 
 El repositorio contiene Astro con TypeScript estricto y npm, diseño visual inicial aprobado e infraestructura estática de artículos Markdown. No se ha creado otro repositorio Git ni un subdirectorio de proyecto.
 
-La base incluye infraestructura de artículos, comprobaciones, documentación y el primer artículo histórico real migrado, «Mi experiencia con Top Eleven», publicado en español dentro del modelo de contenidos. Sus imágenes originales están almacenadas junto al artículo y Astro genera las versiones optimizadas durante el build. La segunda parte de Top Eleven todavía no se ha migrado. La base es estática, sin frameworks UI, Tailwind, frameworks CSS, backend, base de datos, SSR ni analítica. No se instalan dependencias, se configura despliegue ni se crean commits o push sin autorización.
+La base incluye infraestructura de artículos, comprobaciones, documentación y los dos artículos históricos reales migrados, «Mi experiencia con Top Eleven» y «Mi experiencia con Top Eleven (1 mes más tarde)», publicados en español dentro del modelo de contenidos. Sus imágenes originales están almacenadas junto a los artículos y Astro genera las versiones optimizadas durante el build. Con ambos artículos públicos, el build genera 13 páginas HTML. La base es estática, sin frameworks UI, Tailwind, frameworks CSS, backend, base de datos, SSR ni analítica. No se instalan dependencias, se configura despliegue ni se crean commits o push sin autorización.
 
 Entorno de inicio: Node.js v24.20.0, npm 11.19.0 y Git 2.55.0.windows.5. npm es el gestor de paquetes seleccionado. Las pruebas de artículos utilizan node:test y assert incluidos en Node 24, sin dependencias adicionales. Los detalles del flujo automatizado de publicación siguen **por decidir**.
 
@@ -37,6 +37,16 @@ Para desactivar la telemetría de la herramienta Astro en una sesión de PowerSh
 Versiones instaladas: Astro 7.3.5, TypeScript 6.0.3 y `@astrojs/check` 0.9.10. El sitio actual genera 11 páginas HTML estáticas mientras no haya artículos públicos, sin JavaScript cliente ni recursos externos automáticos. El aviso inicial de npm sobre el script de instalación de esbuild no requirió cambios para las comprobaciones y el build.
 
 ## Flujo de trabajo local
+
+### Pruebas visuales con Edge
+
+1. Crear un directorio temporal externo y exclusivo por ejecución bajo la carpeta temporal del usuario de Windows, por ejemplo mediante `Join-Path ([System.IO.Path]::GetTempPath()) ('fernandoghg-visual-' + [guid]::NewGuid().ToString('N'))` en PowerShell.
+2. Crear dentro los subdirectorios `browser-profile` y `screenshots`. Al iniciar Edge, pasar la ruta absoluta de `browser-profile` mediante `--user-data-dir` y guardar las capturas en `screenshots`.
+3. Cerrar el navegador de pruebas antes de limpiar sus archivos temporales y comprobar que ningún proceso sigue utilizando el perfil. No borrar perfiles que estén siendo utilizados.
+
+Mantener estos archivos fuera del repositorio evita que el watcher de Astro/Vite intente vigilar archivos bloqueados del navegador. No utilizar `.astro/`, `src/`, `public/` ni otras carpetas del proyecto para perfiles o artefactos temporales de estas pruebas.
+
+### Pasos habituales
 
 1. Revisar `AGENTS.md` y la documentación antes de modificar el proyecto.
 2. Mantener la implementación dentro del alcance autorizado y acordar las herramientas aún pendientes cuando sean necesarias.
@@ -89,7 +99,7 @@ src/lib/articles.ts consulta getCollection, valida todas las entradas y centrali
 
 La carpeta/lang y los nombres se comprueban en generateId al cargar. Antes de consultar artículos públicos o crear rutas, se comprueban IDs, translationKey + lang y series + lang + seriesPart sobre toda la colección, incluidos drafts y futuros. Las comprobaciones entre entradas se ejecutan durante el build mediante las consultas, no se presupone que astro check por sí solo las ejecute.
 
-Las rutas finas src/pages/es/articulos/[slug].astro y src/pages/en/articles/[slug].astro comparten getArticlePaths y ArticlePage.astro. Usan render(entry) y ArticleLayout.astro con ancho de lectura y CSS existentes. El selector enlaza a una traducción pública con slug propio; si falta o no es pública, lleva a la portada del otro idioma. Las series se pueden ordenar por parte mediante selectSeriesArticles; no hay navegación anterior/siguiente ni total de partes.
+Las rutas finas src/pages/es/articulos/[slug].astro y src/pages/en/articles/[slug].astro comparten getArticlePaths y ArticlePage.astro. Usan render(entry) y ArticleLayout.astro con ancho de lectura y CSS existentes. El selector enlaza a una traducción pública con slug propio; si falta o no es pública, lleva a la portada del otro idioma. selectSeriesNeighbors reutiliza selectSeriesArticles para obtener las entregas anterior y siguiente disponibles, sin exigir partes consecutivas. getArticlePaths usa la misma fecha editorial de publicación y pasa solo título y URL de los vecinos al layout. La navegación estática se omite si no hay vecinos; no hay total de partes.
 
 Portada y listados comparten la consulta pública; los listados agrupan por año original. Las pruebas de integración crean fixtures propios, verifican exclusión de drafts/futuros y traducciones, rechazan duplicados y restauran el build. Antes de ejecutar estas pruebas, cerrar el servidor dev; una interrupción forzada puede requerir retirar los archivos fixture-* temporales y repetir el build.
 

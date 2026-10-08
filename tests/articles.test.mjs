@@ -3,7 +3,7 @@ import test from 'node:test';
 import {
   articleSchema, articleLanguageHref, articleUrl, currentArticleDate,
   formatArticleDate, generateArticleId, selectPublicArticles, selectSeriesArticles,
-  validateArticles,
+  validateArticles, selectSeriesNeighbors,
 } from '../src/lib/article-model.ts';
 
 const metadata = {
@@ -102,4 +102,39 @@ test('Localización larga y día editorial de Madrid en horario de verano e invi
   assert.equal(currentArticleDate(new Date('2026-10-03T22:30:00Z')), '2026-10-04');
   assert.equal(currentArticleDate(new Date('2026-12-03T22:30:00Z')), '2026-12-03');
   assert.equal(currentArticleDate(new Date('2026-12-03T23:30:00Z')), '2026-12-04');
+});
+
+test('Vecinos: dos entregas, extremos, única entrega y artículo sin serie', () => {
+  const first = article('es/primero', { series: 'serie', seriesPart: 1 });
+  const last = article('es/ultimo', { series: 'serie', seriesPart: 2 });
+  const today = '2026-10-04';
+  assert.deepEqual(selectSeriesNeighbors(first, [last, first], today), { previous: undefined, next: last });
+  assert.deepEqual(selectSeriesNeighbors(last, [last, first], today), { previous: first, next: undefined });
+  assert.deepEqual(selectSeriesNeighbors(first, [first], today), { previous: undefined, next: undefined });
+  assert.deepEqual(selectSeriesNeighbors(article('es/sin-serie'), [first, last], today), { previous: undefined, next: undefined });
+  assert.deepEqual(selectSeriesNeighbors(last, [first], today), { previous: undefined, next: undefined });
+});
+
+test('Vecinos: huecos, orden por parte, fecha inclusiva, aislamiento y sin mutaciones', () => {
+  const today = '2026-10-04';
+  const first = article('es/primero', { series: 'serie', seriesPart: 1, published: today });
+  const middle = article('es/medio', { series: 'serie', seriesPart: 4, published: '2013-05-16' });
+  const last = article('es/ultimo', { series: 'serie', seriesPart: 8 });
+  const draft = article('es/borrador', { series: 'serie', seriesPart: 2, draft: true });
+  const future = article('es/futuro', { series: 'serie', seriesPart: 6, published: '2026-10-05' });
+  const enFirst = article('en/first', { lang: 'en', series: 'serie', seriesPart: 1 });
+  const enLast = article('en/last', { lang: 'en', series: 'serie', seriesPart: 5 });
+  const entries = [last, draft, enLast, first, future, middle, enFirst,
+    article('es/otra', { series: 'otra-serie', seriesPart: 3 }), article('es/sin-serie')];
+  const snapshot = structuredClone(entries);
+  entries.forEach((entry) => { Object.freeze(entry.data); Object.freeze(entry); });
+  Object.freeze(entries);
+  assert.deepEqual(selectSeriesNeighbors(middle, entries, today), { previous: first, next: last });
+  assert.deepEqual(selectSeriesNeighbors(first, entries, today), { previous: undefined, next: middle });
+  assert.deepEqual(selectSeriesNeighbors(last, entries, today), { previous: middle, next: undefined });
+  assert.deepEqual(selectSeriesNeighbors(enFirst, entries, today), { previous: undefined, next: enLast });
+  assert.deepEqual(selectSeriesNeighbors(enLast, entries, today), { previous: enFirst, next: undefined });
+  for (const hidden of [draft, future]) assert.deepEqual(selectSeriesNeighbors(hidden, entries, today), { previous: undefined, next: undefined });
+  assert.deepEqual(selectSeriesNeighbors(first, entries, '2026-10-03'), { previous: undefined, next: undefined });
+  assert.deepEqual(entries, snapshot);
 });

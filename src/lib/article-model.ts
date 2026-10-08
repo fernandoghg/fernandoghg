@@ -104,6 +104,14 @@ export function selectSeriesArticles<T extends ArticleRecord>(articles: readonly
     .sort((a, b) => a.data.seriesPart! - b.data.seriesPart!);
 }
 
+export function selectSeriesNeighbors<T extends ArticleRecord>(article: ArticleRecord, articles: readonly T[], today: string): { previous: T | undefined; next: T | undefined } {
+  if (article.data.series === undefined) return { previous: undefined, next: undefined };
+  const series = selectSeriesArticles(articles, article.data.series, article.data.lang, today);
+  const index = series.findIndex((candidate) => candidate.id === article.id);
+  if (index === -1) return { previous: undefined, next: undefined };
+  return { previous: series[index - 1], next: series[index + 1] };
+}
+
 export function formatArticleDate(value: string, lang: Language): string {
   isoDate.parse(value);
   return new Intl.DateTimeFormat(lang === 'es' ? 'es-ES' : 'en-GB', {
