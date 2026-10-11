@@ -31,10 +31,14 @@ La raíz / redirigirá a /es/, con /es/ y /en/ como raíces de idioma. No se uti
 
 V1 no tendrá publicidad ni tracking. Los enlaces a [GitHub](https://github.com/fernandoghg) e [Instagram](https://www.instagram.com/fernandoghg/) serán enlaces web normales, sin feeds, widgets, scripts ni publicaciones incrustadas. Al seguirlos, el visitante accederá al servicio externo y a sus condiciones de privacidad.
 
-La identidad pública aprobada es Fernando Garcia-Herrera Gomez. No se publicará dirección de correo electrónico ni se expondrá el correo personal; no habrá formulario de contacto. Si surge una necesidad futura, podrá evaluarse una dirección específica bajo fernandoghg.com.
+La identidad pública aprobada es Fernando Garcia-Herrera Gomez; las políticas aprobadas utilizan la grafía Fernando García-Herrera Gómez. No se expondrá el correo personal ni habrá formulario de contacto. Se ha aprobado publicar únicamente privacidad@fernandoghg.com como contacto para consultas de privacidad y ejercicio de derechos.
+
+privacidad@fernandoghg.com está **pendiente de configurar y verificar** antes del despliegue. Su enlace mailto no acredita que el buzón exista ni funcione. Comprobar recepción y respuesta de mensajes y el tratamiento de datos del servicio de correo que se seleccione; no se ha configurado ningún servicio externo en esta tarea.
 
 ## Revisión final y página pública de privacidad
 
-Antes de publicar deberá existir una página de privacidad adaptada al funcionamiento real del sitio. Este documento interno no sustituye esa página ni la revisión final de privacidad, RGPD/ePrivacy y obligaciones legales aplicables.
+Las rutas /es/privacidad/ y /en/privacy/ contienen las dos políticas aprobadas, con introducción y ocho secciones, mediante PrivacyContent.astro. Se mantienen noindex y los marcadores [fecha de publicación] / [publication date]. La fecha de actualización está **pendiente de publicación**; deberá fijarse al publicar, sin calcularla desde build, Git o la fecha del archivo.
+
+Antes de publicar deberá revisarse que la política corresponde al funcionamiento efectivo del sitio. Este documento interno y la incorporación del texto aprobado no sustituyen la revisión final de privacidad, RGPD/ePrivacy y obligaciones legales aplicables.
 
 La revisión incluirá la información del proveedor de alojamiento/CDN, logs y tratamiento técnico inevitable, así como la necesidad real de datos de contacto o información legal adicional. Se evaluarán estos puntos junto con los ya enumerados arriba, sin afirmar cumplimiento legal absoluto antes de la evaluación fundamentada. El alojamiento está seleccionado, pero su configuración efectiva aún no permite dar por verificados estos aspectos.

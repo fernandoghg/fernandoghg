@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ArticleList from '../../components/ArticleList.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
+import PrivacyContent from '../../components/PrivacyContent.astro';
 import { getPublicArticles } from '../../lib/articles';
 import { navigation, type Language, type Page } from '../../data/navigation';
 export function getStaticPaths() {
@@ -33,10 +34,9 @@ const aboutParagraphs = lang === 'es' ? [
 <BaseLayout lang={lang} page={page} title={title} description={description}>
   <div class="editorial-container page-start">
     <header>
-      {page === 'privacy' && <p class="eyebrow">{lang === 'es' ? 'Contenido provisional' : 'Temporary content'}</p>}
       <h1>{page === 'about' && lang === 'en' ? 'About me' : title}</h1>
-      {page === 'privacy' && <p class="lead">{description}</p>}
     </header>
+    {page === 'privacy' && <PrivacyContent lang={lang} />}
     {page === 'about' && <div class="page-content prose-stack">
       {aboutParagraphs.map((paragraph) => <p>{paragraph}</p>)}
     </div>}

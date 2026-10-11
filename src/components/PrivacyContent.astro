@@ -1,0 +1,48 @@
+---
+import type { Language } from '../data/navigation';
+interface Props { lang: Language }
+const { lang } = Astro.props;
+const es = lang === 'es';
+---
+<div class="page-content article-body">
+  <p><strong>{es ? 'Última actualización:' : 'Last updated:'}</strong> {es ? '[fecha de publicación]' : '[publication date]'}</p>
+  <p>{es ? 'La privacidad es importante para mí. Por eso, he diseñado esta web para que puedas navegar por ella sin registrarte, sin publicidad personalizada y sin herramientas de seguimiento de visitantes.' : "Privacy matters to me. That's why I've designed this website so you can browse it without registering, personalized advertising, or visitor tracking tools."}</p>
+
+  <h2>{es ? 'Responsable del tratamiento' : 'Data controller'}</h2>
+  <p>{es ? 'Esta web personal está gestionada por' : 'This personal website is managed by'} <strong>Fernando García-Herrera Gómez</strong>.</p>
+  <p>{es ? 'Para cualquier consulta relacionada con la privacidad o para ejercer tus derechos, puedes escribir a:' : 'For privacy-related questions or to exercise your data protection rights, you can contact me at:'}</p>
+  <p><a href="mailto:privacidad@fernandoghg.com"><strong>privacidad@fernandoghg.com</strong></a></p>
+
+  <h2>{es ? 'Qué datos se tratan' : 'What data is processed'}</h2>
+  <p>{es ? 'Puedes visitar esta web sin crear una cuenta ni proporcionar información personal mediante formularios.' : 'You can browse this website without creating an account or submitting personal information through forms.'}</p>
+  <p>{es ? 'No utilizo herramientas de analítica de visitantes, perfiles publicitarios ni sistemas propios para identificar o seguir tu actividad.' : "I don't use visitor analytics, advertising profiles, or my own systems to identify or track your activity."}</p>
+  <p>{es ? 'Al acceder a la web, el proveedor de alojamiento puede tratar determinados datos técnicos, como tu dirección IP, información del navegador y solicitudes realizadas al servidor, necesarios para entregar las páginas, mantener la disponibilidad del servicio y protegerlo.' : 'When you visit the website, the hosting provider may process certain technical information, such as your IP address, browser information, and server requests, to deliver pages, maintain availability, and protect the service.'}</p>
+  <p>{es ? 'Si me escribes por correo electrónico, trataré los datos que incluyas en tu mensaje y tu dirección de contacto únicamente para gestionar y responder a tu consulta.' : 'If you contact me by email, I will process your email address and the information you provide solely to manage and respond to your enquiry.'}</p>
+
+  <h2>{es ? 'Finalidades y bases jurídicas' : 'Purposes and legal bases'}</h2>
+  <p>{es ? 'Los datos técnicos necesarios para ofrecer y proteger la web se tratan sobre la base del interés legítimo en mantener su funcionamiento y seguridad, conforme al artículo 6.1.f del Reglamento General de Protección de Datos (RGPD), en la medida en que resulte aplicable.' : 'Technical data needed to operate and protect the website is processed on the basis of legitimate interests in maintaining its operation and security, under Article 6(1)(f) of the General Data Protection Regulation (GDPR), where applicable.'}</p>
+  <p>{es ? 'Los datos recibidos por correo electrónico se utilizan para atender las consultas y solicitudes. Su tratamiento se basa, según el caso, en el interés legítimo de responder a las comunicaciones recibidas o en el cumplimiento de obligaciones legales, especialmente cuando se ejercen derechos de protección de datos.' : 'Information received by email is used to respond to enquiries and requests. Depending on the circumstances, the legal basis is legitimate interests in responding to communications or compliance with legal obligations, particularly when handling data protection rights requests.'}</p>
+
+  <h2>{es ? 'Cookies y seguimiento' : 'Cookies and tracking'}</h2>
+  <p>{es ? 'Esta web no incorpora herramientas propias de analítica, publicidad personalizada ni seguimiento de visitantes.' : 'This website does not include its own analytics, personalized advertising, or visitor tracking tools.'}</p>
+  <p>{es ? 'No está previsto utilizar cookies que requieran consentimiento. Si el proveedor de alojamiento emplea cookies técnicas o mecanismos de seguridad, se revisarán y describirán según corresponda antes de la publicación.' : 'I do not intend to use cookies that require consent. Any technical cookies or security mechanisms used by the hosting provider will be reviewed and described where necessary before publication.'}</p>
+
+  <h2>{es ? 'Alojamiento y servicios externos' : 'Hosting and external services'}</h2>
+  <p>{es ? 'Está previsto que esta web se aloje en' : 'This website is intended to be hosted on'} <strong>Cloudflare Pages</strong>.</p>
+  <p>{es ? 'Cloudflare puede tratar información técnica necesaria para prestar el servicio y proteger su infraestructura. Según la finalidad del tratamiento, puede actuar como encargado del tratamiento por cuenta del titular de la web o como responsable independiente de sus propios tratamientos.' : 'Cloudflare may process technical information to provide its services and protect its infrastructure. Depending on the purpose, Cloudflare may act as a data processor on behalf of the website owner or as an independent data controller.'}</p>
+  <p>{es ? 'Cuando actúe como encargado, las solicitudes relacionadas con los tratamientos bajo mi responsabilidad podrán dirigirse al correo de privacidad indicado anteriormente. Para los tratamientos en los que Cloudflare actúe como responsable independiente, puedes consultar su' : 'For processing activities under my responsibility, you can contact me using the privacy email address above. For processing activities where Cloudflare acts as an independent controller, please refer to its'} <a href="https://www.cloudflare.com/privacypolicy/">{es ? 'política de privacidad' : 'privacy policy'}</a>.</p>
+  <p>{es ? 'Esta web también puede incluir enlaces a páginas externas. Cuando accedas a ellas, se aplicarán sus propias condiciones y políticas de privacidad.' : 'This website may also contain links to external websites. Their own privacy policies and terms will apply when you visit them.'}</p>
+
+  <h2>{es ? 'Conservación de los datos' : 'Data retention'}</h2>
+  <p>{es ? 'No mantengo una base de datos de visitantes ni un historial individual de navegación.' : 'I do not maintain a visitor database or individual browsing histories.'}</p>
+  <p>{es ? 'Los datos técnicos tratados por el proveedor de alojamiento se conservarán conforme a las condiciones y plazos aplicables a los servicios utilizados.' : 'Technical information processed by the hosting provider is retained according to the applicable terms and retention periods of the services used.'}</p>
+  <p>{es ? 'Los mensajes recibidos por correo electrónico se conservarán durante el tiempo necesario para atender la consulta y, cuando proceda, durante los plazos exigidos para cumplir obligaciones legales o acreditar su atención.' : 'Emails are retained for as long as necessary to respond to the enquiry and, where applicable, to comply with legal obligations or demonstrate that a request has been handled.'}</p>
+
+  <h2>{es ? 'Derechos de protección de datos' : 'Your data protection rights'}</h2>
+  <p>{es ? 'Puedes solicitar, cuando corresponda, el acceso, rectificación, supresión, oposición, limitación del tratamiento o portabilidad de tus datos personales.' : 'Where applicable, you may request access to, rectification or erasure of your personal data, restriction of processing, data portability, or object to processing.'}</p>
+  <p>{es ? 'Para ejercer estos derechos, escribe a' : 'To exercise these rights, contact'} <a href="mailto:privacidad@fernandoghg.com"><strong>privacidad@fernandoghg.com</strong></a>.</p>
+  <p>{es ? 'También puedes presentar una reclamación ante la' : 'You may also lodge a complaint with the'} <a href="https://www.aepd.es/">{es ? 'Agencia Española de Protección de Datos' : 'Spanish Data Protection Agency (AEPD)'}</a>.</p>
+
+  <h2>{es ? 'Cambios en esta política' : 'Changes to this policy'}</h2>
+  <p>{es ? 'Esta política podrá actualizarse cuando cambien las características de la web o los servicios utilizados. La fecha de la última actualización aparecerá al principio de esta página.' : 'This policy may be updated when the website or the services it uses change. The latest update date will appear at the top of this page.'}</p>
+</div>

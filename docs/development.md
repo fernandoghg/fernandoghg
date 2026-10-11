@@ -83,7 +83,7 @@ La implementación utiliza fuentes del sistema, recursos autocontenidos, cero Ja
 
 La accesibilidad se revisará desde el diseño: semántica HTML5, encabezados, teclado, foco visible, contraste, alternativas textuales, lang, enlaces descriptivos y ausencia de funciones dependientes solo de color o hover. Se respetará prefers-reduced-motion cuando corresponda. No se afirmará cumplimiento formal de WCAG sin verificación.
 
-V1 podrá seguir prefers-color-scheme; no se añadirá inicialmente un selector manual que necesite JavaScript, cookies o localStorage. No se cargarán fuentes externas ni feeds, widgets, scripts o publicaciones de redes sociales. No habrá correo público ni formulario de contacto.
+V1 podrá seguir prefers-color-scheme; no se añadirá inicialmente un selector manual que necesite JavaScript, cookies o localStorage. No se cargarán fuentes externas ni feeds, widgets, scripts o publicaciones de redes sociales. No habrá formulario de contacto ni se expondrá el correo personal. El contacto público aprobado para privacidad es privacidad@fernandoghg.com, pendiente de configurar y verificar conforme a docs/privacy.md.
 
 Para una actualización exclusivamente documental, revisar el diff, ejecutar git diff --check, git diff --stat y git status, y resumir archivos modificados, contradicciones resueltas y decisiones realmente pendientes. No es necesario instalar dependencias ni ejecutar comprobaciones de Astro o build para estos cambios. No hacer git add, commit ni push sin autorización.
 
@@ -91,7 +91,9 @@ Para una actualización exclusivamente documental, revisar el diff, ejecutar git
 
 src/data/projects.ts contiene únicamente los datos públicos aprobados de Aldarte, localizados en ES/EN: nombre, estado, descripción breve, subtítulo, dos párrafos, nota final y rutas. Las rutas se forman a partir de navigation y el segmento estable aldarte. No hay Content Collection de proyectos, validadores adicionales ni campos para funcionalidades, tecnologías, fechas o información interna.
 
-ProjectCard.astro comparte la ficha de Inicio (h3) y Proyectos (h2), como fila editorial con nombre enlazado, descripción y estado secundario, sin enlaces redundantes. Home.astro conserva los textos aprobados y los artículos recientes automáticos. src/pages/[lang]/[page].astro muestra contenido real solo en la rama de Proyectos; Artículos, Sobre mí y Privacidad mantienen su funcionamiento anterior.
+ProjectCard.astro comparte la ficha de Inicio (h3) y Proyectos (h2), como fila editorial con nombre enlazado, descripción y estado secundario, sin enlaces redundantes. Home.astro conserva los textos aprobados y los artículos recientes automáticos. src/pages/[lang]/[page].astro conserva el listado de artículos, muestra los cuatro párrafos aprobados de Sobre mí / About me e incorpora PrivacyContent.astro únicamente para Privacidad / Privacy.
+
+PrivacyContent.astro renderiza estáticamente las dos políticas aprobadas, con fecha pendiente, introducción y ocho H2. Reutiliza .article-body dentro del contenedor editorial de 56rem; no añade CSS ni JavaScript cliente. Correo, Cloudflare y AEPD son enlaces normales, sin solicitudes automáticas a servicios externos. No incorpora cookies ni banner. El buzón y la fecha de publicación quedan pendientes según docs/privacy.md; se mantienen los metadatos existentes y noindex.
 
 AldartePage.astro comparte una única estructura entre src/pages/es/proyectos/aldarte.astro y src/pages/en/projects/aldarte.astro. Reutiliza BaseLayout con page="projects", descripción breve como meta description y languageHref hacia la otra página de Aldarte. El contenido visible se limita a estado, H1, subtítulo, dos párrafos, nota y regreso a Proyectos. Se mantiene noindex, sin imágenes, logotipos, enlaces externos a Aldarte, nuevas dependencias ni JavaScript cliente.
 

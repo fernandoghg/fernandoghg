@@ -96,13 +96,13 @@ Sobre mí será breve y personal, no un CV exhaustivo. Podrá incluir nombre pú
 
 Se prevén enlaces web normales a [GitHub](https://github.com/fernandoghg) e [Instagram](https://www.instagram.com/fernandoghg/), sin feeds, widgets, scripts ni publicaciones incrustadas, evitando dependencias externas, tracking adicional y coste de rendimiento.
 
-V1 no publicará dirección de correo, no expondrá el correo personal ni tendrá formulario de contacto. GitHub e Instagram serán inicialmente los enlaces públicos. Si surge una necesidad futura, podrá evaluarse un correo específico bajo fernandoghg.com.
+V1 no expondrá el correo personal ni tendrá formulario de contacto. GitHub e Instagram son los enlaces públicos aprobados. La política de privacidad incorpora privacidad@fernandoghg.com como contacto específico aprobado; el buzón está pendiente de configurar y verificar antes de publicar, según docs/privacy.md.
 
 ## Alcance conceptual de V1
 
 La primera versión pública será deliberadamente pequeña: Inicio, Sobre mí, Proyectos, Artículos, Privacidad y los dos artículos históricos seleccionados de Top Eleven. Los proyectos públicos solo se incorporarán cuando se decida expresamente qué información mostrar. La página de privacidad debe existir antes de publicar, junto con la revisión final indicada en [privacidad](privacy.md).
 
-El diseño inicial, la presentación de Inicio, la presentación pública bilingüe de Aldarte y la infraestructura de artículos están implementados, con los dos artículos históricos de Top Eleven migrados. Sobre mí y Privacidad mantienen contenido provisional. Los metadatos de las páginas existentes se conservan, incluida la descripción provisional de Proyectos; las páginas nuevas de Aldarte usan su descripción breve aprobada y mantienen noindex. Los demás textos definitivos siguen pendientes. RSS/Atom, un selector manual de tema y un posible correo público son posibilidades futuras, no requisitos pendientes de V1.
+El diseño inicial, la presentación de Inicio, la presentación pública bilingüe de Aldarte y la infraestructura de artículos están implementados, con los dos artículos históricos de Top Eleven migrados. Sobre mí / About me y Privacidad / Privacy contienen sus textos aprobados; la fecha de actualización de la política sigue pendiente de publicación. Los metadatos de las páginas existentes se conservan, incluida la descripción provisional de Proyectos; las páginas nuevas de Aldarte usan su descripción breve aprobada y mantienen noindex. Se mantiene pendiente la revisión de privacidad y configuración efectiva antes de publicar. RSS/Atom y un selector manual de tema son posibilidades futuras, no requisitos pendientes de V1.
 
 ## Cabecera y navegación responsive
 

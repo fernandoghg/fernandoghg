@@ -17,6 +17,33 @@ function expectBuild() {
 }
 function output(file) { return readFileSync(resolve(root, 'dist', file), 'utf8'); }
 
+function checkPrivacyPages() {
+  const sections = {
+    es: ['Responsable del tratamiento', 'Qué datos se tratan', 'Finalidades y bases jurídicas', 'Cookies y seguimiento', 'Alojamiento y servicios externos', 'Conservación de los datos', 'Derechos de protección de datos', 'Cambios en esta política'],
+    en: ['Data controller', 'What data is processed', 'Purposes and legal bases', 'Cookies and tracking', 'Hosting and external services', 'Data retention', 'Your data protection rights', 'Changes to this policy'],
+  };
+  for (const [lang, page, title, date, intro] of [
+    ['es', 'privacidad', 'Privacidad', '[fecha de publicación]', 'La privacidad es importante para mí.'],
+    ['en', 'privacy', 'Privacy', '[publication date]', 'Privacy matters to me.'],
+  ]) {
+    const html = output(`${lang}/${page}/index.html`);
+    const main = html.match(/<main\b[\s\S]*?<\/main>/)?.[0];
+    assert.ok(main);
+    assert.match(html, /<meta name="robots" content="noindex"/);
+    assert.match(main, new RegExp(`<h1>${title}</h1>`));
+    assert.deepEqual([...main.matchAll(/<h2>([^<]+)<\/h2>/g)].map((match) => match[1]), sections[lang]);
+    assert.equal([...main.matchAll(/<p\b/g)].length, 24);
+    assert.ok(main.includes(date));
+    assert.ok(main.includes(intro));
+    assert.ok(main.indexOf(intro) < main.indexOf('<h2>'));
+    assert.ok(main.includes('<strong>Fernando García-Herrera Gómez</strong>'));
+    assert.equal([...main.matchAll(/href="mailto:privacidad@fernandoghg.com"/g)].length, 2);
+    assert.ok(main.includes('href="https://www.cloudflare.com/privacypolicy/"'));
+    assert.ok(main.includes('href="https://www.aepd.es/"'));
+    assert.doesNotMatch(main, /Contenido provisional|Temporary content|Página provisional|Temporary page/);
+  }
+}
+
 function checkProjectPages() {
   for (const [lang, section, other, otherSection, status, back] of [
     ['es', 'proyectos', 'en', 'projects', 'En desarrollo', 'Volver a Proyectos'],
@@ -231,5 +258,6 @@ test('Build real: Markdown, traducciones públicas, exclusión de drafts/futuros
     assert.equal(restoredHtml.length, 15);
     assert.ok(restoredHtml.every((file) => !file.includes('fixture-')));
     checkProjectPages();
+    checkPrivacyPages();
   }
 });
