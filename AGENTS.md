@@ -16,7 +16,7 @@
 - El dominio canónico será https://fernandoghg.com. Conserva fernandoghg.es; posteriormente se redirigirán permanentemente fernandoghg.es, www.fernandoghg.com y www.fernandoghg.es al dominio canónico.
 - Astro es el framework/generador seleccionado. Utiliza TypeScript cuando sea necesario para desarrollo y lógica, prioriza HTML5 semántico y genera contenido estático siempre que sea posible.
 - No introduzcas backend, base de datos ni procesamiento dinámico en servidor salvo necesidad funcional futura expresamente justificada.
-- El sitio es bilingüe español/inglés, con URLs /es/ y /en/. La raíz redirige estáticamente a /es/, sin cookies, localStorage, geolocalización ni tracking. Los artículos utilizan Markdown y Content Collections modernas de Astro: src/content.config.ts, glob y Zod 4 de astro/zod. translationKey relaciona traducciones explícitamente, sin exigirlas ni compartir slug. Canonical/hreflang multilingües y MDX quedan para una fase posterior.
+- El sitio es bilingüe español/inglés, con URLs /es/ y /en/. La raíz redirige estáticamente a /es/, sin cookies, localStorage, geolocalización ni tracking. Los artículos utilizan Markdown y Content Collections modernas de Astro: src/content.config.ts, glob y Zod 4 de astro/zod. translationKey relaciona traducciones explícitamente, sin exigirlas ni compartir slug. Canonical/hreflang multilingües están implementados para páginas equivalentes reales; MDX queda para una fase posterior. El sitemap se genera durante el build y excluye la raíz y la 404 bilingüe. Mantén noindex hasta que se autorice el lanzamiento.
 - Marca como **por decidir** lo que no esté acordado y actualiza la documentación cuando el usuario tome decisiones.
 - Minimiza dependencias y mantenimiento. Minimiza el JavaScript enviado al navegador y no lo incorpores cuando HTML/CSS sean suficientes.
 - Mantén páginas ligeras: minimiza y optimiza CSS, JavaScript, imágenes, fuentes y demás recursos para reducir tamaño, transferencia y tiempos de carga. Evita recursos externos innecesarios y favorece buen rendimiento también en conexiones y dispositivos modestos.
@@ -42,7 +42,7 @@
 - Permite buscadores tradicionales, buscadores con IA y agentes que navegan por petición del usuario, siempre que sea posible distinguir sus finalidades.
 - En casos de finalidades compartidas, prioriza evitar el entrenamiento, aceptando las limitaciones correspondientes para búsqueda o recuperación con IA.
 - La decisión actual para Google-Extended es bloquearlo, aceptando las limitaciones para ciertos usos de Gemini/Vertex; no bloquees Googlebot por esta decisión.
-- Esta política está aprobada, pero sus reglas técnicas siguen pendientes. No implementes todavía robots.txt ni controles de Cloudflare sin autorización expresa para esa tarea.
+- Las reglas aprobadas están implementadas en public/robots.txt: permite buscadores y agentes iniciados por usuarios, y solicita excluir GPTBot, ClaudeBot, Google-Extended y CCBot. robots.txt no impone control de acceso ni garantiza protección frente a bots abusivos. Los controles de Cloudflare siguen pendientes y requieren autorización expresa.
 
 ## Desarrollo
 

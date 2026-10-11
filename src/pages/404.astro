@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout lang="es" title="Página no encontrada / Page not found" description="La dirección que buscas no existe o ha cambiado. / The page you're looking for doesn't exist or may have moved." languageHref="#not-found-en" isErrorPage>
+  <div class="editorial-container page-start section-stack">
+    <section lang="es" aria-labelledby="not-found-es">
+      <h1 id="not-found-es">Página no encontrada</h1>
+      <p>La dirección que buscas no existe o ha cambiado.</p>
+      <p><a href="/es/">Volver al inicio</a></p>
+    </section>
+    <section lang="en" aria-labelledby="not-found-en">
+      <h2 id="not-found-en">Page not found</h2>
+      <p>The page you're looking for doesn't exist or may have moved.</p>
+      <p><a href="/en/">Back to home</a></p>
+    </section>
+  </div>
+</BaseLayout>

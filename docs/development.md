@@ -14,7 +14,7 @@
 
 El repositorio contiene Astro con TypeScript estricto y npm, diseño visual inicial aprobado e infraestructura estática de artículos Markdown. No se ha creado otro repositorio Git ni un subdirectorio de proyecto.
 
-La base incluye infraestructura de artículos, comprobaciones, documentación y los dos artículos históricos reales migrados, «Mi experiencia con Top Eleven» y «Mi experiencia con Top Eleven (1 mes más tarde)», publicados en español dentro del modelo de contenidos. Sus imágenes originales están almacenadas junto a los artículos y Astro genera las versiones optimizadas durante el build. Incluye también la presentación pública aprobada de Aldarte en español e inglés. Con ambos artículos públicos y las dos páginas individuales de Aldarte, el build genera 15 páginas HTML. La base es estática, sin frameworks UI, Tailwind, frameworks CSS, backend, base de datos, SSR ni analítica. No se instalan dependencias, se configura despliegue ni se crean commits o push sin autorización.
+La base incluye infraestructura de artículos, comprobaciones, documentación y los dos artículos históricos reales migrados, «Mi experiencia con Top Eleven» y «Mi experiencia con Top Eleven (1 mes más tarde)», publicados en español dentro del modelo de contenidos. Sus imágenes originales están almacenadas junto a los artículos y Astro genera las versiones optimizadas durante el build. Incluye también la presentación pública aprobada de Aldarte en español e inglés. Con ambos artículos públicos, las dos páginas individuales de Aldarte y la 404 bilingüe, el build genera 16 páginas HTML. La base es estática, sin frameworks UI, Tailwind, frameworks CSS, backend, base de datos, SSR ni analítica. No se instalan dependencias, se configura despliegue ni se crean commits o push sin autorización.
 
 Entorno de inicio: Node.js v24.20.0, npm 11.19.0 y Git 2.55.0.windows.5. npm es el gestor de paquetes seleccionado. Las pruebas de artículos utilizan node:test y assert incluidos en Node 24, sin dependencias adicionales. Los detalles del flujo automatizado de publicación siguen **por decidir**.
 
@@ -28,13 +28,23 @@ Entorno de inicio: Node.js v24.20.0, npm 11.19.0 y Git 2.55.0.windows.5. npm es 
 - `node --test tests/articles.test.mjs`: probar esquema, fechas, visibilidad, IDs, traducciones y series, sin build ni archivos temporales.
 - `node --test tests/articles-build.test.mjs`: probar la integración de Content Collections y rutas con builds reales y fixtures temporales, además de rutas, fichas, jerarquía y cambio de idioma de Aldarte. No ejecutar junto a otro build/dev: modifica temporalmente archivos fixture propios, los elimina en finally y reconstruye dist. No sobrescribe contenido existente.
 
-Las dependencias directas de desarrollo siguen siendo `astro`, `typescript` y `@astrojs/check`. TypeScript utiliza `astro/tsconfigs/strict`. La configuración declara `output: 'static'` y el dominio canónico, sin adaptadores ni integraciones. El diseño bilingüe tiene layout y CSS compartidos, modo claro/oscuro del sistema y redirección estática de / a /es/ mediante meta refresh. Se mantiene noindex, sin JavaScript cliente ni recursos externos automáticos. Los textos definitivos y el SEO multilingüe completo siguen **por decidir**.
+Las dependencias directas de desarrollo siguen siendo `astro`, `typescript` y `@astrojs/check`. TypeScript utiliza `astro/tsconfigs/strict`. La configuración declara `output: 'static'` y el dominio canónico, sin adaptadores ni integraciones. El diseño bilingüe tiene layout y CSS compartidos, modo claro/oscuro del sistema y redirección estática de / a /es/ mediante meta refresh. Se mantienen noindex, las metadescripciones aprobadas y canonical/hreflang entre equivalentes reales, sin JavaScript cliente ni recursos externos automáticos. La activación de la indexación requiere autorización de lanzamiento.
 
 `node_modules/`, `.astro/` y `dist/` son salidas locales ignoradas por Git. Se conserva el archivo de bloqueo de npm para instalaciones reproducibles, sin cambios de dependencias para artículos.
 
 Para desactivar la telemetría de la herramienta Astro en una sesión de PowerShell antes de ejecutar sus comandos: `$env:ASTRO_TELEMETRY_DISABLED='1'`. Esta variable afecta a la herramienta local; las páginas generadas no incluyen analítica.
 
-Versiones instaladas: Astro 7.3.5, TypeScript 6.0.3 y `@astrojs/check` 0.9.10. El sitio actual genera 15 páginas HTML estáticas con los dos artículos públicos y las páginas ES/EN de Aldarte, sin JavaScript cliente ni recursos externos automáticos. El aviso inicial de npm sobre el script de instalación de esbuild no requirió cambios para las comprobaciones y el build.
+Versiones instaladas: Astro 7.3.5, TypeScript 6.0.3 y `@astrojs/check` 0.9.10. El sitio actual genera 16 páginas HTML estáticas con los dos artículos públicos, las páginas ES/EN de Aldarte y la 404 bilingüe, sin JavaScript cliente ni recursos externos automáticos. El aviso inicial de npm sobre el script de instalación de esbuild no requirió cambios para las comprobaciones y el build.
+
+## Sitemap, rastreo y página 404
+
+`src/pages/sitemap.xml.ts` genera `dist/sitemap.xml` durante el build, sin SSR ni dependencias nuevas. Reutiliza las rutas de navegación, Aldarte y getArticlePaths para incluir solo artículos públicos y sus traducciones reales. Actualmente contiene 14 URL canónicas absolutas con relaciones ES/EN equivalentes a las del HTML. Excluye la raíz y la 404; no inventa lastmod. Las nuevas páginas generales o de proyecto deberán incorporarse a esta fuente de rutas y a las pruebas.
+
+`public/robots.txt` se copia a dist y referencia el sitemap. Permite rastreo ordinario para que los buscadores puedan leer noindex y permite los agentes identificados de búsqueda o navegación por petición del usuario. Solicita excluir GPTBot, ClaudeBot, Google-Extended y CCBot. La exclusión de Google-Extended acepta limitar algunos usos de Gemini/Vertex. Son reglas voluntarias, no protección absoluta frente a entrenamiento ni control de acceso contra bots abusivos; no hay controles externos de Cloudflare activados.
+
+`src/pages/404.astro` genera una única `dist/404.html`, con bloques ES/EN, enlaces a sus portadas, layout/CSS compartidos y noindex. No tiene canonical ni hreflang porque es una respuesta de error global, no una página de contenido traducida. Cloudflare Pages utiliza el 404.html superior para rutas inexistentes; el código HTTP y el contenido deberán comprobarse en el alojamiento real cuando se autorice el despliegue. No se añaden redirecciones ni detección de idioma.
+
+Las pruebas de integración existentes comprueban también sitemap/rutas/hreflang, robots.txt, la 404 y ausencia de JavaScript y recursos externos en cada build con fixtures, y restauran al terminar las 16 páginas reales y el sitemap de 14 URL. `npm run preview -- --host 127.0.0.1 --port 4327` permite revisar HTTP local; no equivale a validar Cloudflare Pages.
 
 ## Flujo de trabajo local
 
@@ -64,7 +74,7 @@ Codex puede modificar los archivos locales cuando se le solicite. La autorizaci�
 - Mantener páginas ligeras y dependencias al mínimo razonable. Minimizar y optimizar CSS, JavaScript, imágenes, fuentes y demás recursos para reducir transferencia y tiempos de carga, también en conexiones y dispositivos modestos.
 - Evitar recursos externos innecesarios y favorecer recursos autocontenidos.
 - No introducir backend, base de datos ni procesamiento dinámico en servidor salvo necesidad funcional futura expresamente justificada.
-- Mantener /es/ y /en/ y la redirección estática de / a /es/, sin cookies, localStorage, geolocalización ni tracking para seleccionar o recordar idioma. Las traducciones de artículos están relacionadas por translationKey; canonical y hreflang multilingües quedan para una fase posterior.
+- Mantener /es/ y /en/ y la redirección estática de / a /es/, sin cookies, localStorage, geolocalización ni tracking para seleccionar o recordar idioma. Las traducciones de artículos están relacionadas por translationKey; canonical es autorreferente y hreflang se emite solo para traducciones públicas reales.
 - Mantener la primera versión sin analítica ni seguimiento conforme a [los principios de privacidad](privacy.md).
 
 ## Publicación futura
@@ -119,7 +129,7 @@ Las rutas finas src/pages/es/articulos/[slug].astro y src/pages/en/articles/[slu
 
 Portada y listados comparten la consulta pública; los listados agrupan por año original. Las pruebas de integración crean fixtures propios, verifican exclusión de drafts/futuros y traducciones, rechazan duplicados y restauran el build. Antes de ejecutar estas pruebas, comprobar que no hay dev/build activos y no cerrar procesos ajenos sin autorización; una interrupción forzada puede requerir retirar los archivos fixture-* temporales y repetir el build.
 
-No hay autor por artículo, tags, imagen destacada, RSS, sitemap ni colecciones de categorías/series. Los borradores de un repositorio público son visibles en GitHub aunque no generen páginas. No guardar información confidencial en ellos. El posible JavaScript futuro deberá aportar una mejora real justificada; navegación, idioma y tema siguen sin JavaScript cliente.
+No hay autor por artículo, tags, imagen destacada, RSS ni colecciones de categorías/series. El sitemap incluye los artículos públicos. Los borradores de un repositorio público son visibles en GitHub aunque no generen páginas. No guardar información confidencial en ellos. El posible JavaScript futuro deberá aportar una mejora real justificada; navegación, idioma y tema siguen sin JavaScript cliente.
 
 ## Imágenes editoriales y archivos descargables
 

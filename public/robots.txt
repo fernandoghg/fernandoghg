@@ -1,0 +1,23 @@
+# Allow ordinary search crawlers to read the pages and their noindex metadata.
+User-agent: *
+Allow: /
+
+# Search and user-requested retrieval, independently of training crawlers.
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+Allow: /
+
+# Request exclusion from model training and reusable crawl datasets.
+# Google-Extended also controls some Gemini / Vertex AI grounding uses.
+User-agent: GPTBot
+User-agent: ClaudeBot
+User-agent: Google-Extended
+User-agent: CCBot
+Disallow: /
+
+# These voluntary rules do not enforce access control against abusive bots.
+Sitemap: https://fernandoghg.com/sitemap.xml

@@ -14,6 +14,7 @@ function expectBuild() {
   const result = build();
   assert.equal(result.status, 0, result.error?.message ?? result.stdout + result.stderr);
   checkGeneratedResources();
+  checkNavigationFiles();
 }
 function output(file) { return readFileSync(resolve(root, 'dist', file), 'utf8'); }
 
@@ -26,12 +27,14 @@ function seo(file) {
   const links = [...html.matchAll(/<link\b[^>]*>/g)].map(([tag]) => attributes(tag));
   const metas = [...html.matchAll(/<meta\b[^>]*>/g)].map(([tag]) => attributes(tag));
   const canonicals = links.filter((link) => link.rel === 'canonical');
-  assert.equal(canonicals.length, 1, `Canonical único: ${file}`);
+  const errorPage = file === '404.html';
+  assert.equal(canonicals.length, errorPage ? 0 : 1, `Canonical de contenido: ${file}`);
   const pathname = file === 'index.html' ? '/es/' : `/${file.replaceAll('\\', '/').replace(/index\.html$/, '')}`;
-  assert.equal(canonicals[0].href, `${canonicalOrigin}${pathname}`, file);
+  if (!errorPage) assert.equal(canonicals[0].href, `${canonicalOrigin}${pathname}`, file);
   const robots = metas.filter((meta) => meta.name === 'robots');
   assert.deepEqual(robots.map((meta) => meta.content), ['noindex'], file);
   const alternates = links.filter((link) => link.hreflang !== undefined);
+  if (errorPage) assert.deepEqual(alternates, [], file);
   assert.ok(alternates.every((link) => link.rel === 'alternate' && ['es', 'en'].includes(link.hreflang)), file);
   assert.equal(new Set(alternates.map((link) => link.hreflang)).size, alternates.length, file);
   if (file !== 'index.html') {
@@ -42,7 +45,78 @@ function seo(file) {
     }
     assert.equal(metas.filter((meta) => meta.name === 'description').length, 1, file);
   }
-  return { canonical: canonicals[0].href, alternates, description: metas.find((meta) => meta.name === 'description')?.content };
+  return { canonical: canonicals[0]?.href, alternates, description: metas.find((meta) => meta.name === 'description')?.content };
+}
+
+function checkNavigationFiles() {
+  const xml = output('sitemap.xml');
+  assert.match(xml, /^<\?xml version="1\.0" encoding="UTF-8"\?>\s*<urlset xmlns="http:\/\/www\.sitemaps\.org\/schemas\/sitemap\/0\.9" xmlns:xhtml="http:\/\/www\.w3\.org\/1999\/xhtml">/);
+  assert.match(xml, /<\/urlset>\s*$/);
+  assert.doesNotMatch(xml, /<lastmod>|<priority>|<changefreq>|x-default/);
+  const entries = [...xml.matchAll(/<url>\s*<loc>([^<]+)<\/loc>((?:\s*<xhtml:link\b[^>]*\/>)*\s*)<\/url>/g)];
+  assert.equal(entries.length, [...xml.matchAll(/<url>/g)].length);
+  const urls = entries.map(([, loc]) => loc);
+  assert.equal(new Set(urls).size, urls.length);
+  const files = readdirSync(resolve(root, 'dist'), { recursive: true }).filter((file) => file.endsWith('.html') && !['index.html', '404.html'].includes(file));
+  assert.deepEqual([...urls].sort(), files.map((file) => seo(file).canonical).sort());
+  assert.ok(!urls.includes(`${canonicalOrigin}/`));
+  assert.ok(!urls.some((url) => /\/404(?:\.html|\/)?$/.test(url)));
+  for (const [, loc, links] of entries) {
+    const url = new URL(loc);
+    assert.equal(url.origin, canonicalOrigin);
+    assert.equal(url.search + url.hash, '');
+    const metadata = seo(`${url.pathname.slice(1)}index.html`);
+    const alternates = [...links.matchAll(/<xhtml:link\b[^>]*\/>/g)].map(([tag]) => attributes(tag));
+    assert.deepEqual(alternates, metadata.alternates, loc);
+  }
+
+  const robots = output('robots.txt');
+  assert.equal(robots, readFileSync(resolve(root, 'public/robots.txt'), 'utf8'));
+  const groups = [];
+  const sitemaps = [];
+  let group;
+  for (const line of robots.split(/\r?\n/).map((line) => line.replace(/#.*$/, '').trim()).filter(Boolean)) {
+    const match = line.match(/^(User-agent|Allow|Disallow|Sitemap):\s*(\S+)$/i);
+    assert.ok(match, `Directiva robots inválida: ${line}`);
+    const [, name, value] = match;
+    if (name.toLowerCase() === 'sitemap') { sitemaps.push(value); continue; }
+    if (name.toLowerCase() === 'user-agent') {
+      if (!group || group.rules.length) { group = { agents: [], rules: [] }; groups.push(group); }
+      group.agents.push(value.toLowerCase());
+    } else {
+      assert.ok(group);
+      group.rules.push([name.toLowerCase(), value]);
+    }
+  }
+  assert.deepEqual(sitemaps, [`${canonicalOrigin}/sitemap.xml`]);
+  function rules(agent) {
+    return (groups.find((group) => group.agents.includes(agent.toLowerCase())) ?? groups.find((group) => group.agents.includes('*')))?.rules;
+  }
+  for (const agent of ['*', 'Googlebot', 'Bingbot', 'OAI-SearchBot', 'ChatGPT-User', 'Claude-SearchBot', 'Claude-User', 'PerplexityBot', 'Perplexity-User']) {
+    assert.deepEqual(rules(agent), [['allow', '/']], agent);
+  }
+  for (const agent of ['GPTBot', 'ClaudeBot', 'Google-Extended', 'CCBot']) assert.deepEqual(rules(agent), [['disallow', '/']], agent);
+  assert.deepEqual(groups.filter((group) => group.rules.some(([name]) => name === 'disallow')).flatMap((group) => group.agents).sort(), ['gptbot', 'claudebot', 'google-extended', 'ccbot'].sort());
+
+  const error = output('404.html');
+  assert.match(error, /<html lang="es"/);
+  assert.match(error, /<meta name="robots" content="noindex"/);
+  assert.doesNotMatch(error, /http-equiv="refresh"|aria-current="page"|rel="canonical"|hreflang=/);
+  assert.match(error, /class="skip-link" href="#main"/);
+  assert.match(error, /<main id="main"[^>]*tabindex="-1"/);
+  const main = error.match(/<main\b[\s\S]*?<\/main>/)?.[0];
+  assert.ok(main);
+  assert.deepEqual([...main.matchAll(/<h([1-6])\b/g)].map((match) => match[1]), ['1', '2']);
+  for (const [lang, id, title, text, label, href] of [
+    ['es', 'not-found-es', 'Página no encontrada', 'La dirección que buscas no existe o ha cambiado.', 'Volver al inicio', '/es/'],
+    ['en', 'not-found-en', 'Page not found', "The page you're looking for doesn't exist or may have moved.", 'Back to home', '/en/'],
+  ]) {
+    const section = main.match(new RegExp(`<section lang="${lang}" aria-labelledby="${id}">[\\s\\S]*?<\\/section>`))?.[0];
+    assert.ok(section, lang);
+    assert.ok(section.includes(`id="${id}">${title}</h`));
+    assert.ok(section.includes(`<p>${text}</p>`));
+    assert.ok(section.includes(`<a href="${href}">${label}</a>`));
+  }
 }
 function checkSeo(file, description, alternates) {
   const actual = seo(file);
@@ -336,8 +410,15 @@ test('Build real: Markdown, traducciones públicas, exclusión de drafts/futuros
     // Restore dist to the actual repository content even after a failed assertion.
     expectBuild();
     const restoredHtml = readdirSync(resolve(root, 'dist'), { recursive: true }).filter((file) => file.endsWith('.html'));
-    assert.equal(restoredHtml.length, 15);
+    assert.equal(restoredHtml.length, 16);
     assert.ok(restoredHtml.every((file) => !file.includes('fixture-')));
+    const expectedUrls = [
+      '/es/', '/en/', '/es/proyectos/', '/en/projects/', '/es/articulos/', '/en/articles/',
+      '/es/sobre-mi/', '/en/about/', '/es/privacidad/', '/en/privacy/',
+      '/es/proyectos/aldarte/', '/en/projects/aldarte/',
+      '/es/articulos/mi-experiencia-top-eleven/', '/es/articulos/mi-experiencia-top-eleven-un-mes-despues/',
+    ].map((path) => `${canonicalOrigin}${path}`);
+    assert.deepEqual([...output('sitemap.xml').matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]).sort(), expectedUrls.sort());
     checkProjectPages();
     checkPrivacyPages();
     checkSeoPages();
