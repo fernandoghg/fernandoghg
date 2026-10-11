@@ -18,14 +18,28 @@ const title = navigation[lang][page].label;
 const articles = page === 'articles' ? await getPublicArticles(lang) : [];
 const years = [...new Set(articles.map((article) => article.data.published.slice(0, 4)))];
 const description = lang === 'es' ? 'Página provisional. El contenido se incorporará posteriormente.' : 'Temporary page. Content will be added later.';
+const aboutParagraphs = lang === 'es' ? [
+  'Soy Fernando, ingeniero técnico en informática y alguien a quien siempre le ha gustado entender cómo funcionan las cosas.',
+  'La tecnología forma parte de mi vida profesional, pero también de muchas de mis aficiones. Me gusta desarrollar proyectos personales, experimentar con nuevas herramientas y aprender por el simple placer de descubrir algo nuevo.',
+  'También disfruto de los videojuegos, especialmente de aquellos que invitan a pensar, planificar o simular situaciones reales. La simulación de vuelo es uno de esos intereses en los que siempre encuentro algo nuevo que aprender.',
+  'Esta web es un espacio personal donde compartir experiencias, proyectos, ideas y cualquier otra cosa que me parezca interesante. No pretendo limitarla a un único tema: simplemente quiero tener un lugar propio donde escribir sobre lo que voy descubriendo.',
+] : [
+  "I'm Fernando. I have a degree in Computer Engineering (Technical Engineering), and I've always enjoyed understanding how things work.",
+  "Technology is part of my professional life, but it's also behind many of my hobbies. I enjoy working on personal projects, experimenting with new tools, and learning simply for the pleasure of discovering something new.",
+  "I also enjoy video games, especially those that involve thinking, planning, or simulating real-world situations. Flight simulation is one of those interests where there's always something new for me to learn.",
+  "This website is my own space to share experiences, projects, ideas, and anything else I find interesting. I don't want to limit it to a single topic. I simply want a place of my own to write about the things I discover along the way.",
+];
 ---
 <BaseLayout lang={lang} page={page} title={title} description={description}>
   <div class="editorial-container page-start">
     <header>
-      {page !== 'articles' && page !== 'projects' && <p class="eyebrow">{lang === 'es' ? 'Contenido provisional' : 'Temporary content'}</p>}
-      <h1>{title}</h1>
-      {page !== 'articles' && page !== 'projects' && <p class="lead">{description}</p>}
+      {page === 'privacy' && <p class="eyebrow">{lang === 'es' ? 'Contenido provisional' : 'Temporary content'}</p>}
+      <h1>{page === 'about' && lang === 'en' ? 'About me' : title}</h1>
+      {page === 'privacy' && <p class="lead">{description}</p>}
     </header>
+    {page === 'about' && <div class="page-content prose-stack">
+      {aboutParagraphs.map((paragraph) => <p>{paragraph}</p>)}
+    </div>}
     {page === 'projects' && <div class="page-content"><ProjectCard lang={lang} headingLevel={2} /></div>}
     {page === 'articles' && (articles.length > 0 ? years.map((year) => (
       <section class="article-year" aria-labelledby={`year-${year}`}>
