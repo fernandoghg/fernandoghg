@@ -17,6 +17,50 @@ function expectBuild() {
 }
 function output(file) { return readFileSync(resolve(root, 'dist', file), 'utf8'); }
 
+function checkProjectPages() {
+  for (const [lang, section, other, otherSection, status, back] of [
+    ['es', 'proyectos', 'en', 'projects', 'En desarrollo', 'Volver a Proyectos'],
+    ['en', 'projects', 'es', 'proyectos', 'In development', 'Back to Projects'],
+  ]) {
+    const href = `/${lang}/${section}/aldarte/`;
+    const detail = output(`${lang}/${section}/aldarte/index.html`);
+    assert.match(detail, new RegExp(`<html lang="${lang}"`));
+    assert.match(detail, /<title>Aldarte — fernandoghg\.com<\/title>/);
+    assert.match(detail, /<meta name="robots" content="noindex"/);
+    assert.ok(detail.includes(`class="language-link" href="/${other}/${otherSection}/aldarte/"`));
+    assert.ok(detail.includes(`href="/${lang}/${section}/" aria-current="page"`));
+    const main = detail.match(/<main\b[\s\S]*?<\/main>/)?.[0];
+    assert.ok(main);
+    assert.deepEqual([...main.matchAll(/<h([1-6])\b/g)].map((match) => match[1]), ['1']);
+    assert.match(main, /<h1>Aldarte<\/h1>/);
+    assert.ok(main.includes(status));
+    assert.ok(main.includes(`href="/${lang}/${section}/">${back}</a>`));
+    assert.doesNotMatch(main, /<(?:img|svg|iframe)\b|href="(?:https?:)?\/\//i);
+    const description = detail.match(/<meta name="description" content="([^"]+)"/)?.[1];
+    assert.ok(description);
+    for (const [file, level] of [[`${lang}/index.html`, '3'], [`${lang}/${section}/index.html`, '2']]) {
+      const html = output(file);
+      const card = html.match(/<article class="editorial-row project">[\s\S]*?<\/article>/)?.[0];
+      assert.ok(card, file);
+      assert.match(card, new RegExp(`<h${level}><a href="${href}">Aldarte</a></h${level}>`));
+      assert.ok(card.includes(description), file);
+      assert.ok(card.includes(status), file);
+      assert.equal([...card.matchAll(/<a\b/g)].length, 1, file);
+      assert.match(card, /class="project-status"/);
+      assert.doesNotMatch(card, /class="technologies"/);
+      assert.doesNotMatch(html, /Ejemplo ficticio|Fictional example|Proyecto de ejemplo|Example project/);
+      if (level === '2') {
+        const listing = html.match(/<main\b[\s\S]*?<\/main>/)?.[0];
+        assert.ok(listing);
+        assert.deepEqual([...listing.matchAll(/<h([1-6])\b/g)].map((match) => match[1]), ['1', '2']);
+        assert.doesNotMatch(listing, /Contenido provisional|Temporary content|Página provisional|Temporary page/);
+        // Existing section metadata is intentionally unchanged.
+        assert.ok(html.includes(lang === 'es' ? 'content="Página provisional. El contenido se incorporará posteriormente."' : 'content="Temporary page. Content will be added later."'));
+      }
+    }
+  }
+}
+
 function checkGeneratedResources() {
   const dist = resolve(root, 'dist');
   function visit(directory) {
@@ -94,6 +138,9 @@ test('Build real: Markdown, traducciones públicas, exclusión de drafts/futuros
       assert.ok(html.includes(`href="${publicHref}"`), `Artículo público ausente: ${file}`);
       const publicTitle = file.startsWith('es/') ? 'Fixture temporal es/fixture-publico.md' : 'Fixture temporal en/fixture-public.md';
       assert.ok(html.includes(publicTitle), `Título público ausente: ${file}`);
+      const date = file.startsWith('es/') ? '17 may.' : 'May 18';
+      const iso = file.startsWith('es/') ? '2013-05-17' : '2013-05-18';
+      assert.ok(html.includes(`<time datetime="${iso}">${date}</time>`), file);
     }
     assert.match(output('es/articulos/index.html'), /id="year-2013"/);
     assert.doesNotMatch(es + en, /<script\b/);
@@ -181,7 +228,8 @@ test('Build real: Markdown, traducciones públicas, exclusión de drafts/futuros
     // Restore dist to the actual repository content even after a failed assertion.
     expectBuild();
     const restoredHtml = readdirSync(resolve(root, 'dist'), { recursive: true }).filter((file) => file.endsWith('.html'));
-    assert.equal(restoredHtml.length, 13);
+    assert.equal(restoredHtml.length, 15);
     assert.ok(restoredHtml.every((file) => !file.includes('fixture-')));
+    checkProjectPages();
   }
 });

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   articleSchema, articleLanguageHref, articleUrl, currentArticleDate,
-  formatArticleDate, generateArticleId, selectPublicArticles, selectSeriesArticles,
+  formatArticleDate, formatArticleListDate, generateArticleId, selectPublicArticles, selectSeriesArticles,
   validateArticles, selectSeriesNeighbors,
 } from '../src/lib/article-model.ts';
 
@@ -102,6 +102,14 @@ test('Localización larga y día editorial de Madrid en horario de verano e invi
   assert.equal(currentArticleDate(new Date('2026-10-03T22:30:00Z')), '2026-10-04');
   assert.equal(currentArticleDate(new Date('2026-12-03T22:30:00Z')), '2026-12-03');
   assert.equal(currentArticleDate(new Date('2026-12-03T23:30:00Z')), '2026-12-04');
+});
+
+test('Fecha de listado localizada sin año y con el día original', () => {
+  assert.equal(formatArticleListDate('2026-10-08', 'es'), '8 oct.');
+  assert.equal(formatArticleListDate('2013-09-07', 'es'), '7 sept.');
+  assert.equal(formatArticleListDate('2026-10-08', 'en'), 'Oct 8');
+  assert.equal(formatArticleListDate('2013-09-07', 'en'), 'Sep 7');
+  assert.throws(() => formatArticleListDate('2026-02-30', 'es'));
 });
 
 test('Vecinos: dos entregas, extremos, única entrega y artículo sin serie', () => {

@@ -118,3 +118,16 @@ export function formatArticleDate(value: string, lang: Language): string {
     timeZone: 'UTC', day: 'numeric', month: 'long', year: 'numeric',
   }).format(new Date(`${value}T00:00:00Z`));
 }
+
+export function formatArticleListDate(value: string, lang: Language): string {
+  isoDate.parse(value);
+  const date = new Date(`${value}T00:00:00Z`);
+  if (lang === 'es') {
+    // Keep the approved editorial abbreviations stable across ICU versions.
+    const months = ['ene.', 'feb.', 'mar.', 'abr.', 'may.', 'jun.', 'jul.', 'ago.', 'sept.', 'oct.', 'nov.', 'dic.'];
+    return `${date.getUTCDate()} ${months[date.getUTCMonth()]}`;
+  }
+  return new Intl.DateTimeFormat('en-US', {
+    timeZone: 'UTC', day: 'numeric', month: 'short',
+  }).format(date);
+}

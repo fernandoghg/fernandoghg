@@ -39,8 +39,8 @@ Estas decisiones no autorizan cambios externos: no se creará ni modificará Clo
 | Tema | Estado y orientación actual |
 | --- | --- |
 | Publicación y configuración de producción | **Por decidir**: detalles de integración GitHub–Cloudflare Pages, configuración efectiva de HTTPS, certificados y redirecciones ya aprobadas, y transición desde Blogger. |
-| Organización interna del contenido | Artículos Markdown y translationKey implementados según el modelo descrito abajo. **Por decidir**: modelo de proyectos, eventual MDX y SEO multilingüe completo. |
-| Diseño concreto y contenido definitivo | Diseño visual inicial aprobado e implementado; se conserva la paleta, escala y anchuras actuales. **Por decidir**: textos definitivos, información de proyectos aprobada para publicar y posible reutilización de fotografías históricas. |
+| Organización interna del contenido | Artículos Markdown y translationKey implementados según el modelo descrito abajo. Aldarte utiliza datos públicos localizados y componentes compartidos, sin colección de proyectos. **Por decidir**: eventual evolución del modelo de proyectos, MDX y SEO multilingüe completo. |
+| Diseño concreto y contenido definitivo | Diseño visual inicial y presentación de Inicio aprobados e implementados. Presentación pública limitada de Aldarte aprobada en ES/EN. **Por decidir**: restantes textos definitivos, incorporación de otros proyectos y posible reutilización de fotografías históricas. |
 | Herramientas y comprobaciones de desarrollo | Node.js v24.20.0 y npm 11.19.0; comandos de Astro y comprobación de tipos documentados en [desarrollo](development.md). Herramientas adicionales de pruebas **por decidir**. |
 | Configuración y evaluación de privacidad | **Pendiente** antes de publicar, incluidos registros y datos tratados por los proveedores. |
 
@@ -61,7 +61,7 @@ Artículos será una sección principal. Tecnología, Juegos, Viajes, Simulació
 
 La portada de cada idioma no será un blog cronológico ni un CV. Su estructura conceptual será cabecera, presentación personal breve, accesos a Proyectos y Artículos, proyectos destacados, artículos recientes o destacados y footer. La web debe seguir teniendo sentido aunque no se publiquen artículos frecuentemente. La presentación podrá comenzar con una fórmula como «Hola, soy Fernando.», sin fijar el copy definitivo. El nombre completo no dominará visualmente la portada. Los accesos principales podrán ser enlaces claramente visibles, sin requerir grandes botones propios de una aplicación.
 
-Proyectos será independiente de Artículos y permitirá fichas o páginas propias de proyectos personales. Aldarte es un candidato futuro; no está decidido qué información se publicaría y no se documentará información interna o confidencial.
+Proyectos es independiente de Artículos. Aldarte tiene una presentación pública aprobada como proyecto personal en desarrollo relacionado con el bienestar emocional, la sencillez y la privacidad. Aparece en Inicio y Proyectos, con páginas propias en /es/proyectos/aldarte/ y /en/projects/aldarte/. Se muestra únicamente el contenido público aprobado: nombre, estado, descripción breve, subtítulo, dos párrafos y nota final. No se publican funcionalidades concretas, arquitectura, tecnologías, fechas, detalles internos, imágenes, logotipos ni enlaces externos a Aldarte.
 
 ## Selección histórica de Blogger
 
@@ -78,6 +78,7 @@ EC2 y swap, SSH a través de proxy, gestión/pruning de mensajes y SMTP Sender c
 
 - Estilo sobrio, moderno, limpio y atemporal, con carácter personal y tecnológico sin resultar excesivamente corporativo.
 - Contenido y legibilidad como protagonistas, mucho espacio visual, pocos colores y un único acento azul discreto/apagado. La paleta y los tokens iniciales de src/styles/global.css están aprobados e implementados; se mantienen 68rem de ancho máximo, 65ch de lectura y breakpoint principal de 48rem.
+- Todas las páginas comparten .editorial-container de 56rem y el mismo eje izquierdo para H1 y cuerpo. Artículos individuales y Aldarte aprovechan los 56rem completos también en subtítulos, metadatos y párrafos, sin límites interiores de 65ch u 80ch. El texto permanece alineado a la izquierda y las imágenes pequeñas conservan su tamaño natural. Las demás páginas mantienen sus límites interiores de lectura, alineados al borde izquierdo. La introducción de Inicio aprovecha todo el ancho editorial. Cabecera y pie conservan 68rem. Proyectos y Artículos comparten filas editoriales con separadores horizontales; el proyecto muestra nombre enlazado, descripción y estado secundario, sin enlaces redundantes. Se conservan 80px superiores, 32px entre encabezado y contenido cuando corresponde, 24px entre H1 y descripción, 80px entre secciones de Inicio y 24px entre párrafos. Se reserva espacio estable para la barra vertical para evitar desplazamientos horizontales entre páginas.
 - Evitar efectos innecesarios, animaciones gratuitas, glassmorphism, degradados llamativos y tendencias que envejezcan rápidamente.
 - Artículos con diseño editorial: legibilidad, columna de lectura cómoda, jerarquía tipográfica, código legible, imágenes bien integradas y ausencia de distracciones. Los proyectos podrán tener una presentación algo más visual.
 - Diseño responsive/mobile-first, sin depender de hover para funciones importantes.
@@ -101,7 +102,7 @@ V1 no publicará dirección de correo, no expondrá el correo personal ni tendr�
 
 La primera versión pública será deliberadamente pequeña: Inicio, Sobre mí, Proyectos, Artículos, Privacidad y los dos artículos históricos seleccionados de Top Eleven. Los proyectos públicos solo se incorporarán cuando se decida expresamente qué información mostrar. La página de privacidad debe existir antes de publicar, junto con la revisión final indicada en [privacidad](privacy.md).
 
-El diseño inicial y la infraestructura de artículos están implementados, con páginas secundarias provisionales y los dos artículos históricos de Top Eleven migrados. Los demás textos definitivos siguen pendientes. RSS/Atom, un selector manual de tema y un posible correo público son posibilidades futuras, no requisitos pendientes de V1.
+El diseño inicial, la presentación de Inicio, la presentación pública bilingüe de Aldarte y la infraestructura de artículos están implementados, con los dos artículos históricos de Top Eleven migrados. Sobre mí y Privacidad mantienen contenido provisional. Los metadatos de las páginas existentes se conservan, incluida la descripción provisional de Proyectos; las páginas nuevas de Aldarte usan su descripción breve aprobada y mantienen noindex. Los demás textos definitivos siguen pendientes. RSS/Atom, un selector manual de tema y un posible correo público son posibilidades futuras, no requisitos pendientes de V1.
 
 ## Cabecera y navegación responsive
 
@@ -111,13 +112,15 @@ En V1 no habrá menú hamburguesa. Los cuatro elementos permanecerán directamen
 
 En artículos, el enlace de idioma lleva a la traducción pública relacionada por translationKey, si existe. Si no existe o es draft/futura, lleva a la portada del otro idioma. Las páginas de sección mantienen sus parejas explícitas ES/EN. No se crean traducciones inexistentes.
 
+En las páginas individuales de Aldarte, el enlace de idioma lleva directamente a su página equivalente mediante languageHref de BaseLayout. Proyectos sigue marcado como sección activa y existe un enlace de regreso al listado del idioma actual.
+
 ## Modelo de artículos implementado
 
 - Colección articles en src/content.config.ts mediante defineCollection, glob y esquema Zod 4 estricto de astro/zod. Consulta con getCollection y renderizado con render(entry), sin JavaScript cliente ni dependencias adicionales.
 - Markdown en src/content/articles/es/<slug>.md y en/<slug>.md. Slug derivado del archivo e ID es/<slug> o en/<slug>, sin campo slug en frontmatter. Solo ASCII minúsculo, números y guiones; sin subdirectorios adicionales. Después de publicar, cambiar el nombre requiere revisar la URL y preparar redirección.
 - Campos obligatorios: title, description, published, lang y category. description tiene una sola línea y máximo 300 caracteres. draft es boolean con defecto true. Opcionales: updated, translationKey, series y seriesPart; se omiten si no se usan, nunca se dejan vacíos/null.
 - published y updated son strings ISO válidos YYYY-MM-DD entre comillas. updated >= published; solo se añade por actualización sustancial explícita. Migración, build, Git y fecha del archivo no alteran las fechas. Cada traducción conserva su propia published.
-- Fechas visibles largas con es-ES/en-GB y conversión UTC para conservar el día. El día de referencia pública es el día editorial de Europe/Madrid; las funciones aceptan una fecha explícita para pruebas deterministas.
+- Fechas largas con es-ES/en-GB en artículos individuales; día y mes abreviado en filas (ES: 8 oct., 7 sept.; EN: Oct 8, Sep 7), con año completo en el encabezado del grupo. Conversión UTC para conservar el día. El día de referencia pública es el día editorial de Europe/Madrid; las funciones aceptan una fecha explícita para pruebas deterministas.
 - Público significa draft === false y published <= día de referencia. Portada, listados, rutas y traducciones utilizan la misma regla central. No hay scheduler: cambiar de día no altera un build ya generado, hace falta reconstruirlo.
 - Rutas finas ES/EN: /es/articulos/<slug>/ y /en/articles/<slug>/, con getStaticPaths y utilidades compartidas. No se añade año/mes a la URL. El listado agrupa por año de published; la portada muestra hasta tres artículos públicos recientes. Sin artículos públicos, ambos muestran un estado vacío.
 - translationKey es identificador ASCII minúsculo/números/guiones, opcional. Máximo una entrada por clave e idioma; una traducción puede faltar o tener slug distinto.
@@ -128,7 +131,9 @@ En artículos, el enlace de idioma lleva a la traducción pública relacionada p
 
 ## Presentación de proyectos y artículos
 
-Los proyectos destacados en portada podrán mostrar sobriamente nombre, descripción breve, tecnologías si aportan información, estado/fecha cuando corresponda y enlace a la página del proyecto. No se exigirá imagen a todos los proyectos; algunos proyectos importantes podrán utilizar imágenes o capturas cuando aporten valor. No se publica ahora información concreta de Aldarte ni de otros proyectos.
+La ficha de Aldarte sustituye el proyecto ficticio de Inicio y se reutiliza en Proyectos. Muestra nombre enlazado, descripción breve y estado secundario en una fila editorial con un único enlace. No incorpora tecnologías, fechas ni imágenes. ProjectCard utiliza h3 en Inicio y h2 en Proyectos para conservar la jerarquía de encabezados.
+
+src/data/projects.ts centraliza exclusivamente los datos públicos aprobados y las rutas localizadas de Aldarte. AldartePage comparte la estructura visual entre idiomas; dos entradas estáticas generan sus rutas. No se añade una colección, un esquema rígido de proyectos, dependencias ni JavaScript cliente.
 
 Las páginas de proyecto tendrán una estructura flexible: podrán incluir título, descripción, imágenes/capturas opcionales, explicación, tecnologías, estado y enlaces públicos. No todos los proyectos deberán utilizar los mismos apartados; no se define todavía un esquema técnico rígido.
 

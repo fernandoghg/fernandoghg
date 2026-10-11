@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ArticleList from './ArticleList.astro';
+import ProjectCard from './ProjectCard.astro';
 import { getPublicArticles } from '../lib/articles';
 import { navigation, type Language } from '../data/navigation';
 interface Props { lang: Language }
@@ -8,11 +9,13 @@ const { lang } = Astro.props;
 const es = lang === 'es';
 const links = navigation[lang];
 const articles = (await getPublicArticles(lang)).slice(0, 3);
-const intro = es ? 'Este es mi espacio personal sobre tecnología, proyectos y otras cosas que me interesan.' : "This is my personal space for technology, projects, and other things I'm interested in.";
+const description = es ? 'Este es mi espacio personal sobre tecnología, proyectos y otras cosas que me interesan.' : "This is my personal space for technology, projects, and other things I'm interested in.";
+const intro = es ? 'Soy Fernando. Me gusta la tecnología, crear proyectos y seguir aprendiendo. En esta web comparto experiencias, ideas y cosas que me parecen interesantes o que creo que pueden resultar útiles a otros.' : "I'm Fernando. I enjoy technology, building projects, and learning new things. On this site, I share experiences, ideas, and things I find interesting or think others might find useful.";
 ---
-<BaseLayout lang={lang} page="home" title={links.home.label} description={intro}>
-  <section class="intro" aria-labelledby="intro-title">
-    <h1 id="intro-title">{es ? 'Hola, soy Fernando.' : "Hi, I'm Fernando."}</h1>
+<BaseLayout lang={lang} page="home" title={links.home.label} description={description}>
+  <div class="editorial-container page-start section-stack">
+  <section class="home-intro" aria-labelledby="intro-title">
+    <h1 id="intro-title">{es ? 'Siempre hay algo nuevo que aprender.' : 'Developing the future.'}</h1>
     <p class="lead">{intro}</p>
     <ul class="intro-links">
       <li><a href={links.projects.href}>{es ? 'Explorar proyectos' : 'Explore projects'} <span aria-hidden="true">→</span></a></li>
@@ -24,13 +27,7 @@ const intro = es ? 'Este es mi espacio personal sobre tecnología, proyectos y o
       <h2 id="projects-title">{es ? 'Proyectos destacados' : 'Featured projects'}</h2>
       <a href={links.projects.href}>{es ? 'Todos los proyectos' : 'All projects'}</a>
     </div>
-    <article class="project">
-      <p class="eyebrow">{es ? 'Ejemplo ficticio' : 'Fictional example'}</p>
-      <h3><a href={links.projects.href}>{es ? 'Proyecto de ejemplo' : 'Example project'}</a></h3>
-      <p>{es ? 'Una breve descripción provisional para evaluar cómo se presenta un proyecto personal.' : 'A short temporary description to explore how a personal project is presented.'}</p>
-      <ul class="technologies" aria-label={es ? 'Tecnologías de ejemplo' : 'Example technologies'}><li>HTML</li><li>CSS</li><li>TypeScript</li></ul>
-      <a href={links.projects.href}>{es ? 'Ver proyecto de ejemplo' : 'View example project'} <span aria-hidden="true">→</span></a>
-    </article>
+    <ProjectCard lang={lang} headingLevel={3} />
   </section>
   <section class="home-section" aria-labelledby="articles-title">
     <div class="section-heading">
@@ -39,4 +36,5 @@ const intro = es ? 'Este es mi espacio personal sobre tecnología, proyectos y o
     </div>
     {articles.length > 0 ? <ArticleList articles={articles} lang={lang} /> : <p class="empty-articles">{es ? 'Todavía no hay artículos publicados.' : 'No articles have been published yet.'}</p>}
   </section>
+  </div>
 </BaseLayout>

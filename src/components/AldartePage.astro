@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { aldarte } from '../data/projects';
+import { navigation, type Language } from '../data/navigation';
+interface Props { lang: Language }
+const { lang } = Astro.props;
+const project = aldarte[lang];
+const other = lang === 'es' ? 'en' : 'es';
+---
+<BaseLayout lang={lang} page="projects" title={aldarte.name} description={project.description} languageHref={aldarte[other].href}>
+  <article class="editorial-container project-page page-start">
+    <header>
+      <p class="eyebrow">{project.status}</p>
+      <h1>{aldarte.name}</h1>
+      <p class="lead">{project.subtitle}</p>
+    </header>
+    <div class="page-content prose-stack">
+      {project.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+      <p class="project-note">{project.note}</p>
+    </div>
+    <ul class="intro-links">
+      <li><a href={navigation[lang].projects.href}>{lang === 'es' ? 'Volver a Proyectos' : 'Back to Projects'}</a></li>
+    </ul>
+  </article>
+</BaseLayout>

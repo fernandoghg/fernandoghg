@@ -9,7 +9,7 @@ const { title, description, published, updated, lang, category } = article.data;
 const es = lang === 'es';
 ---
 <BaseLayout lang={lang} page="articles" title={title} description={description} languageHref={languageHref}>
-  <article class="article-page reading-width">
+  <article class="editorial-container article-page">
     <header class="article-header">
       <p class="eyebrow">{articleCategoryLabels[category][lang]}</p>
       <h1>{title}</h1>

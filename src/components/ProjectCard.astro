@@ -1,0 +1,15 @@
+---
+import { aldarte } from '../data/projects';
+import type { Language } from '../data/navigation';
+interface Props { lang: Language; headingLevel: 2 | 3 }
+const { lang, headingLevel } = Astro.props;
+const project = aldarte[lang];
+const Heading = headingLevel === 2 ? 'h2' : 'h3';
+---
+<article class="editorial-row project">
+  <div class="project-summary">
+    <Heading><a href={project.href}>{aldarte.name}</a></Heading>
+    <p>{project.description}</p>
+  </div>
+  <p class="project-status">{project.status}</p>
+</article>
