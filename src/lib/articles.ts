@@ -1,11 +1,12 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import type { Language } from '../data/navigation';
-import { articleLanguageHref, articleSlug, articleUrl, currentArticleDate, selectPublicArticles, selectSeriesNeighbors, validateArticles } from './article-model';
+import { articleLanguageHref, articleTranslationHref, articleSlug, articleUrl, currentArticleDate, selectPublicArticles, selectSeriesNeighbors, validateArticles } from './article-model';
 
 export type Article = CollectionEntry<'articles'>;
 export interface ArticlePageProps {
   article: Article;
   languageHref: string;
+  translationHref: string | undefined;
   previous: { title: string; url: string } | undefined;
   next: { title: string; url: string } | undefined;
 }
@@ -32,6 +33,7 @@ export async function getArticlePaths(lang: Language, today = publicationDate) {
       params: { slug: articleSlug(article) },
       props: {
         article, languageHref: articleLanguageHref(article, articles, today),
+        translationHref: articleTranslationHref(article, articles, today),
         previous: previous ? { title: previous.data.title, url: articleUrl(previous) } : undefined,
         next: next ? { title: next.data.title, url: articleUrl(next) } : undefined,
       } satisfies ArticlePageProps,

@@ -5,6 +5,7 @@ import ProjectCard from '../../components/ProjectCard.astro';
 import PrivacyContent from '../../components/PrivacyContent.astro';
 import { getPublicArticles } from '../../lib/articles';
 import { navigation, type Language, type Page } from '../../data/navigation';
+import { pageDescriptions } from '../../data/page-descriptions';
 export function getStaticPaths() {
   return (['es', 'en'] as const).flatMap((lang) =>
     (['projects', 'articles', 'about', 'privacy'] as const).map((key) => ({
@@ -18,7 +19,8 @@ const { lang, page } = Astro.props;
 const title = navigation[lang][page].label;
 const articles = page === 'articles' ? await getPublicArticles(lang) : [];
 const years = [...new Set(articles.map((article) => article.data.published.slice(0, 4)))];
-const description = lang === 'es' ? 'Página provisional. El contenido se incorporará posteriormente.' : 'Temporary page. Content will be added later.';
+const description = pageDescriptions[lang][page];
+const other = lang === 'es' ? 'en' : 'es';
 const aboutParagraphs = lang === 'es' ? [
   'Soy Fernando, ingeniero técnico en informática y alguien a quien siempre le ha gustado entender cómo funcionan las cosas.',
   'La tecnología forma parte de mi vida profesional, pero también de muchas de mis aficiones. Me gusta desarrollar proyectos personales, experimentar con nuevas herramientas y aprender por el simple placer de descubrir algo nuevo.',
@@ -31,7 +33,7 @@ const aboutParagraphs = lang === 'es' ? [
   "This website is my own space to share experiences, projects, ideas, and anything else I find interesting. I don't want to limit it to a single topic. I simply want a place of my own to write about the things I discover along the way.",
 ];
 ---
-<BaseLayout lang={lang} page={page} title={title} description={description}>
+<BaseLayout lang={lang} page={page} title={title} description={description} translationHref={navigation[other][page].href}>
   <div class="editorial-container page-start">
     <header>
       <h1>{page === 'about' && lang === 'en' ? 'About me' : title}</h1>

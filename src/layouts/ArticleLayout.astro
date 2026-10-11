@@ -4,11 +4,11 @@ import { articleCategoryLabels } from '../data/article-categories';
 import { formatArticleDate } from '../lib/article-model';
 import type { ArticlePageProps } from '../lib/articles';
 type Props = ArticlePageProps;
-const { article, languageHref, previous, next } = Astro.props;
+const { article, languageHref, translationHref, previous, next } = Astro.props;
 const { title, description, published, updated, lang, category } = article.data;
 const es = lang === 'es';
 ---
-<BaseLayout lang={lang} page="articles" title={title} description={description} languageHref={languageHref}>
+<BaseLayout lang={lang} page="articles" title={title} description={description} languageHref={languageHref} translationHref={translationHref}>
   <article class="editorial-container article-page">
     <header class="article-header">
       <p class="eyebrow">{articleCategoryLabels[category][lang]}</p>

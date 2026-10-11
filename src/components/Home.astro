@@ -4,15 +4,17 @@ import ArticleList from './ArticleList.astro';
 import ProjectCard from './ProjectCard.astro';
 import { getPublicArticles } from '../lib/articles';
 import { navigation, type Language } from '../data/navigation';
+import { pageDescriptions } from '../data/page-descriptions';
 interface Props { lang: Language }
 const { lang } = Astro.props;
 const es = lang === 'es';
 const links = navigation[lang];
 const articles = (await getPublicArticles(lang)).slice(0, 3);
-const description = es ? 'Este es mi espacio personal sobre tecnología, proyectos y otras cosas que me interesan.' : "This is my personal space for technology, projects, and other things I'm interested in.";
+const description = pageDescriptions[lang].home;
+const other = es ? 'en' : 'es';
 const intro = es ? 'Soy Fernando. Me gusta la tecnología, crear proyectos y seguir aprendiendo. En esta web comparto experiencias, ideas y cosas que me parecen interesantes o que creo que pueden resultar útiles a otros.' : "I'm Fernando. I enjoy technology, building projects, and learning new things. On this site, I share experiences, ideas, and things I find interesting or think others might find useful.";
 ---
-<BaseLayout lang={lang} page="home" title={links.home.label} description={description}>
+<BaseLayout lang={lang} page="home" title={links.home.label} description={description} translationHref={navigation[other].home.href}>
   <div class="editorial-container page-start section-stack">
   <section class="home-intro" aria-labelledby="intro-title">
     <h1 id="intro-title">{es ? 'Siempre hay algo nuevo que aprender.' : 'Developing the future.'}</h1>

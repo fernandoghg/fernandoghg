@@ -91,12 +91,17 @@ export function articleUrl(article: ArticleRecord): string {
   return `${navigation[article.data.lang].articles.href}${articleSlug(article)}/`;
 }
 
-export function articleLanguageHref(article: ArticleRecord, articles: readonly ArticleRecord[], today: string): string {
+export function articleTranslationHref(article: ArticleRecord, articles: readonly ArticleRecord[], today: string): string | undefined {
   const other = article.data.lang === 'es' ? 'en' : 'es';
   const translation = article.data.translationKey === undefined ? undefined : articles.find((candidate) =>
     candidate.data.lang === other && candidate.data.translationKey === article.data.translationKey && isPublicArticle(candidate, today),
   );
-  return translation ? articleUrl(translation) : navigation[other].home.href;
+  return translation ? articleUrl(translation) : undefined;
+}
+
+export function articleLanguageHref(article: ArticleRecord, articles: readonly ArticleRecord[], today: string): string {
+  const other = article.data.lang === 'es' ? 'en' : 'es';
+  return articleTranslationHref(article, articles, today) ?? navigation[other].home.href;
 }
 
 export function selectSeriesArticles<T extends ArticleRecord>(articles: readonly T[], series: string, lang: Language, today: string): T[] {

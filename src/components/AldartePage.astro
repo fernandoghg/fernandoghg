@@ -7,7 +7,7 @@ const { lang } = Astro.props;
 const project = aldarte[lang];
 const other = lang === 'es' ? 'en' : 'es';
 ---
-<BaseLayout lang={lang} page="projects" title={aldarte.name} description={project.description} languageHref={aldarte[other].href}>
+<BaseLayout lang={lang} page="projects" title={aldarte.name} description={project.description} languageHref={aldarte[other].href} translationHref={aldarte[other].href}>
   <article class="editorial-container project-page page-start">
     <header>
       <p class="eyebrow">{project.status}</p>

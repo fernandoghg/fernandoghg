@@ -17,6 +17,67 @@ function expectBuild() {
 }
 function output(file) { return readFileSync(resolve(root, 'dist', file), 'utf8'); }
 
+const canonicalOrigin = 'https://fernandoghg.com';
+function attributes(tag) {
+  return Object.fromEntries([...tag.matchAll(/([\w-]+)="([^"]*)"/g)].map(([, name, value]) => [name, value.replace(/&(?:amp|quot|apos|#39|lt|gt);/g, (entity) => ({ '&amp;': '&', '&quot;': '"', '&apos;': "'", '&#39;': "'", '&lt;': '<', '&gt;': '>' })[entity])]));
+}
+function seo(file) {
+  const html = output(file);
+  const links = [...html.matchAll(/<link\b[^>]*>/g)].map(([tag]) => attributes(tag));
+  const metas = [...html.matchAll(/<meta\b[^>]*>/g)].map(([tag]) => attributes(tag));
+  const canonicals = links.filter((link) => link.rel === 'canonical');
+  assert.equal(canonicals.length, 1, `Canonical único: ${file}`);
+  const pathname = file === 'index.html' ? '/es/' : `/${file.replaceAll('\\', '/').replace(/index\.html$/, '')}`;
+  assert.equal(canonicals[0].href, `${canonicalOrigin}${pathname}`, file);
+  const robots = metas.filter((meta) => meta.name === 'robots');
+  assert.deepEqual(robots.map((meta) => meta.content), ['noindex'], file);
+  const alternates = links.filter((link) => link.hreflang !== undefined);
+  assert.ok(alternates.every((link) => link.rel === 'alternate' && ['es', 'en'].includes(link.hreflang)), file);
+  assert.equal(new Set(alternates.map((link) => link.hreflang)).size, alternates.length, file);
+  if (file !== 'index.html') {
+    const head = html.match(/<head>[\s\S]*?<\/head>/)?.[0];
+    assert.ok(head, file);
+    for (const tag of html.match(/<link\b[^>]*>/g) ?? []) {
+      if (/rel="canonical"|hreflang=/.test(tag)) assert.ok(head.includes(tag), file);
+    }
+    assert.equal(metas.filter((meta) => meta.name === 'description').length, 1, file);
+  }
+  return { canonical: canonicals[0].href, alternates, description: metas.find((meta) => meta.name === 'description')?.content };
+}
+function checkSeo(file, description, alternates) {
+  const actual = seo(file);
+  assert.equal(actual.description, description, file);
+  assert.deepEqual(Object.fromEntries(actual.alternates.map((link) => [link.hreflang, link.href])), alternates, file);
+}
+function checkSeoPages() {
+  for (const [es, en, esDescription, enDescription] of [
+    ['/es/', '/en/', 'Una web personal sobre tecnología, proyectos, videojuegos, simulación y experiencias que merece la pena compartir.', 'A personal website about technology, projects, video games, simulation, and experiences worth sharing.'],
+    ['/es/proyectos/', '/en/projects/', 'Proyectos personales relacionados con la tecnología, el desarrollo de aplicaciones y nuevas ideas.', 'Personal projects exploring technology, app development, and new ideas.'],
+    ['/es/articulos/', '/en/articles/', 'Artículos sobre tecnología, videojuegos, simulación y otras experiencias, ideas y aprendizajes.', "Articles about technology, video games, simulation, and other experiences, ideas, and things I've learned."],
+    ['/es/sobre-mi/', '/en/about/', 'Conoce un poco más sobre Fernando, su relación con la informática y sus aficiones, desde la tecnología hasta la simulación de vuelo.', 'Learn more about Fernando, his background in computing, and his interests, from technology to flight simulation.'],
+    ['/es/privacidad/', '/en/privacy/', 'Información sobre la privacidad de fernandoghg.com, el tratamiento de datos personales y los derechos de los visitantes.', "Information about privacy at fernandoghg.com, personal data processing, and visitors' data protection rights."],
+    ['/es/proyectos/aldarte/', '/en/projects/aldarte/', 'Un proyecto personal relacionado con el bienestar emocional, con especial atención a la sencillez y la privacidad.', 'A personal project related to emotional wellbeing, with a particular focus on simplicity and privacy.'],
+  ]) {
+    const alternates = { es: `${canonicalOrigin}${es}`, en: `${canonicalOrigin}${en}` };
+    checkSeo(`${es.slice(1)}index.html`, esDescription, alternates);
+    checkSeo(`${en.slice(1)}index.html`, enDescription, alternates);
+  }
+  for (const [slug, title, description, published] of [
+    ['mi-experiencia-top-eleven', 'Mi experiencia con Top Eleven', 'Mi experiencia con Top Eleven tras años jugando de forma intermitente: gestión, progresión, anuncios, recursos y el nuevo Complejo Deportivo.', '2025-09-07'],
+    ['mi-experiencia-top-eleven-un-mes-despues', 'Mi experiencia con Top Eleven (1 mes más tarde)', 'Balance de una temporada de Top Eleven: plantilla, resultados, costes del Complejo Deportivo y pérdida de calidad al comenzar una nueva temporada.', '2025-10-08'],
+  ]) {
+    const file = `es/articulos/${slug}/index.html`;
+    checkSeo(file, description, {});
+    const html = output(file);
+    assert.ok(html.includes(`<title>${title} — fernandoghg.com</title>`), file);
+    assert.ok(html.includes(`<time datetime="${published}">`), file);
+    assert.match(html, /class="language-link" href="\/en\/"/);
+    assert.equal(existsSync(resolve(root, `dist/en/articles/${slug}/index.html`)), false);
+  }
+  checkSeo('index.html', undefined, {});
+  assert.match(output('index.html'), /http-equiv="refresh" content="2;url=\/es\/"/);
+}
+
 function checkPrivacyPages() {
   const sections = {
     es: ['Responsable del tratamiento', 'Qué datos se tratan', 'Finalidades y bases jurídicas', 'Cookies y seguimiento', 'Alojamiento y servicios externos', 'Conservación de los datos', 'Derechos de protección de datos', 'Cambios en esta política'],
@@ -81,8 +142,6 @@ function checkProjectPages() {
         assert.ok(listing);
         assert.deepEqual([...listing.matchAll(/<h([1-6])\b/g)].map((match) => match[1]), ['1', '2']);
         assert.doesNotMatch(listing, /Contenido provisional|Temporary content|Página provisional|Temporary page/);
-        // Existing section metadata is intentionally unchanged.
-        assert.ok(html.includes(lang === 'es' ? 'content="Página provisional. El contenido se incorporará posteriormente."' : 'content="Temporary page. Content will be added later."'));
       }
     }
   }
@@ -97,6 +156,20 @@ function checkGeneratedResources() {
       assert.doesNotMatch(entry.name, /\.(?:[cm]?js)$/i, `JavaScript cliente: ${file}`);
       if (entry.name.endsWith('.html')) {
         const html = readFileSync(file, 'utf8');
+        const metadata = seo(file.slice(dist.length + 1));
+        if (metadata.alternates.length) {
+          assert.equal(metadata.alternates.length, 2, file);
+          const lang = html.match(/<html lang="(es|en)"/)?.[1];
+          assert.equal(metadata.alternates.find((link) => link.hreflang === lang)?.href, metadata.canonical, file);
+          for (const link of metadata.alternates) {
+            const url = new URL(link.href);
+            assert.equal(url.origin, canonicalOrigin, file);
+            assert.equal(url.search + url.hash, '', file);
+            const target = `${url.pathname.slice(1)}index.html`;
+            const reciprocal = seo(target);
+            assert.deepEqual(Object.fromEntries(reciprocal.alternates.map((item) => [item.hreflang, item.href])), Object.fromEntries(metadata.alternates.map((item) => [item.hreflang, item.href])), file);
+          }
+        }
         assert.doesNotMatch(html, /<script\b/i, `Script inesperado: ${file}`);
         for (const tag of html.match(/<[^>]+>/g) ?? []) {
           const resource = /^<(?:img|iframe|audio|video|source|embed|object)\b/i.test(tag)
@@ -155,6 +228,9 @@ test('Build real: Markdown, traducciones públicas, exclusión de drafts/futuros
     assert.match(es, /Actualizado:/);
     assert.match(es, /href="\/en\/articles\/fixture-public\/"/);
     assert.match(en, /href="\/es\/articulos\/fixture-publico\/"/);
+    const fixtureAlternates = { es: `${canonicalOrigin}/es/articulos/fixture-publico/`, en: `${canonicalOrigin}/en/articles/fixture-public/` };
+    checkSeo('es/articulos/fixture-publico/index.html', 'Contenido técnico temporal, no publicar.', fixtureAlternates);
+    checkSeo('en/articles/fixture-public/index.html', 'Contenido técnico temporal, no publicar.', fixtureAlternates);
     for (const file of ['es/articulos/fixture-draft/index.html', 'en/articles/fixture-future/index.html']) {
       assert.equal(existsSync(resolve(root, 'dist', file)), false, file);
     }
@@ -215,7 +291,10 @@ test('Build real: Markdown, traducciones públicas, exclusión de drafts/futuros
     checkSeries('en/articles/fixture-last/index.html', 'Series navigation', [
       ['/en/articles/fixture-public/', 'Previous article', 'Fixture temporal en/fixture-public.md'],
     ]);
-    for (const slug of ['fixture-single', 'fixture-no-series']) checkSeries(`es/articulos/${slug}/index.html`, '', []);
+    for (const slug of ['fixture-single', 'fixture-no-series']) {
+      checkSeries(`es/articulos/${slug}/index.html`, '', []);
+      checkSeo(`es/articulos/${slug}/index.html`, 'Contenido técnico temporal, no publicar.', {});
+    }
     checkSeries('es/articulos/mi-experiencia-top-eleven/index.html', 'Navegación de la serie', [
       ['/es/articulos/mi-experiencia-top-eleven-un-mes-despues/', 'Siguiente artículo', 'Mi experiencia con Top Eleven (1 mes más tarde)'],
     ]);
@@ -237,11 +316,13 @@ test('Build real: Markdown, traducciones públicas, exclusión de drafts/futuros
     expectBuild();
     assert.match(output('es/articulos/fixture-publico/index.html'), /class="language-link" href="\/en\/"/);
     assert.equal(existsSync(resolve(root, 'dist/en/articles/fixture-public/index.html')), false);
+    checkSeo('es/articulos/fixture-publico/index.html', 'Contenido técnico temporal, no publicar.', {});
 
     fixture(names[1], { lang: 'en', published: '9999-12-31', translationKey: 'fixture' });
     expectBuild();
     assert.match(output('es/articulos/fixture-publico/index.html'), /class="language-link" href="\/en\/"/);
 
+    checkSeo('es/articulos/fixture-publico/index.html', 'Contenido técnico temporal, no publicar.', {});
     fixture(names[4], { lang: 'es', draft: true, translationKey: 'fixture' });
     const invalid = build();
     assert.notEqual(invalid.status, 0);
@@ -259,5 +340,6 @@ test('Build real: Markdown, traducciones públicas, exclusión de drafts/futuros
     assert.ok(restoredHtml.every((file) => !file.includes('fixture-')));
     checkProjectPages();
     checkPrivacyPages();
+    checkSeoPages();
   }
 });

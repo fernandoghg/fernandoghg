@@ -1,11 +1,13 @@
 ---
 import '../styles/global.css';
 import { navigation, primaryPages, type Language, type Page } from '../data/navigation';
-interface Props { lang: Language; page: Page; title: string; description: string; languageHref?: string }
-const { lang, page, title, description, languageHref } = Astro.props;
+interface Props { lang: Language; page: Page; title: string; description: string; languageHref?: string; translationHref?: string }
+const { lang, page, title, description, languageHref, translationHref } = Astro.props;
 const links = navigation[lang];
 const other = lang === 'es' ? 'en' : 'es';
 const es = lang === 'es';
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const translation = translationHref ? new URL(translationHref, Astro.site) : undefined;
 ---
 <!doctype html>
 <html lang={lang}>
@@ -14,6 +16,11 @@ const es = lang === 'es';
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="robots" content="noindex" />
+    <link rel="canonical" href={canonical.href} />
+    {translation && <>
+      <link rel="alternate" hreflang={lang} href={canonical.href} />
+      <link rel="alternate" hreflang={other} href={translation.href} />
+    </>}
     <title>{title} — fernandoghg.com</title>
   </head>
   <body>

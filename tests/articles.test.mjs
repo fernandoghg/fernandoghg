@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
-  articleSchema, articleLanguageHref, articleUrl, currentArticleDate,
+  articleSchema, articleLanguageHref, articleTranslationHref, articleUrl, currentArticleDate,
   formatArticleDate, formatArticleListDate, generateArticleId, selectPublicArticles, selectSeriesArticles,
   validateArticles, selectSeriesNeighbors,
 } from '../src/lib/article-model.ts';
@@ -84,6 +84,12 @@ test('Traducción con slug distinto; ausente, borrador o futura llevan a portada
   assert.equal(articleLanguageHref(es, [es, { ...en, data: { ...en.data, draft: true } }], '2026-10-04'), '/en/');
   assert.equal(articleLanguageHref(es, [es, en], '2013-05-17'), '/en/');
   assert.equal(articleLanguageHref(article('es/solo'), [en], '2026-10-04'), '/en/');
+  assert.equal(articleTranslationHref(es, [es, en], '2026-10-04'), '/en/articles/different-slug/');
+  assert.equal(articleTranslationHref(en, [es, en], '2026-10-04'), '/es/articulos/original/');
+  assert.equal(articleTranslationHref(es, [es], '2026-10-04'), undefined);
+  assert.equal(articleTranslationHref(es, [es, { ...en, data: { ...en.data, draft: true } }], '2026-10-04'), undefined);
+  assert.equal(articleTranslationHref(es, [es, en], '2013-05-17'), undefined);
+  assert.equal(articleTranslationHref(article('es/solo'), [en], '2026-10-04'), undefined);
 });
 
 test('Series públicas ordenadas por parte, con huecos y traducciones parciales', () => {
