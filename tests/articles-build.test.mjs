@@ -15,6 +15,7 @@ function expectBuild() {
   assert.equal(result.status, 0, result.error?.message ?? result.stdout + result.stderr);
   checkGeneratedResources();
   checkNavigationFiles();
+  checkSecurityHeadersAndTable();
 }
 function output(file) { return readFileSync(resolve(root, 'dist', file), 'utf8'); }
 
@@ -245,6 +246,19 @@ function checkGeneratedResources() {
           }
         }
         assert.doesNotMatch(html, /<script\b/i, `Script inesperado: ${file}`);
+        assert.doesNotMatch(html, /<style\b/i, `Bloque style inline: ${file}`);
+        // Existing temporary code fixtures exercise Shiki, whose pre has inline colors.
+        // Keep that Markdown coverage; the CSP contract applies to every real page.
+        const styleCheck = /[\\/]fixture-[^\\/]+[\\/]index\.html$/.test(file)
+          ? html.replace(/(<pre\b[^>]*?)\sstyle="background-color:#[0-9a-f]+;color:#[0-9a-f]+; overflow-x: auto;"/gi, '$1')
+          : html;
+        assert.doesNotMatch(styleCheck, /\sstyle\s*=/i, `Estilo inline: ${file}`);
+        const stylesheets = [...html.matchAll(/<link\b[^>]*>/g)].map(([tag]) => attributes(tag)).filter((link) => link.rel === 'stylesheet');
+        if (file !== resolve(dist, 'index.html')) assert.ok(stylesheets.length > 0, `CSS ausente: ${file}`);
+        for (const stylesheet of stylesheets) {
+          assert.match(stylesheet.href, /^\/_astro\/[^?#]+\.css$/, file);
+          assert.ok(existsSync(resolve(dist, stylesheet.href.slice(1))), file);
+        }
         for (const tag of html.match(/<[^>]+>/g) ?? []) {
           const resource = /^<(?:img|iframe|audio|video|source|embed|object)\b/i.test(tag)
             || (/^<link\b/i.test(tag) && /\brel\s*=\s*["'][^"']*\b(?:stylesheet|icon|preload|modulepreload|prefetch|preconnect|dns-prefetch)\b/i.test(tag));
@@ -257,6 +271,37 @@ function checkGeneratedResources() {
     }
   }
   visit(dist);
+}
+
+function checkSecurityHeadersAndTable() {
+  const headers = output('_headers');
+  assert.equal(headers, readFileSync(resolve(root, 'public/_headers'), 'utf8'));
+  const lines = headers.trim().split(/\r?\n/);
+  assert.deepEqual(lines, [
+    '/*',
+    "  Content-Security-Policy: default-src 'none'; script-src 'none'; style-src 'self'; img-src 'self'; font-src 'none'; connect-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
+    '  X-Content-Type-Options: nosniff',
+    '  Referrer-Policy: no-referrer',
+    '  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), fullscreen=()',
+    '  X-Frame-Options: DENY',
+  ]);
+  assert.doesNotMatch(headers, /unsafe-inline|unsafe-eval|Strict-Transport-Security/i);
+  assert.ok(lines.every((line) => line.length <= 2000));
+
+  const article = output('es/articulos/mi-experiencia-top-eleven-un-mes-despues/index.html');
+  assert.match(article, /class="article-body top-eleven-complex-table"/);
+  const table = article.match(/<table>[\s\S]*?<\/table>/)?.[0];
+  assert.ok(table);
+  const rows = [...table.matchAll(/<tr>[\s\S]*?<\/tr>/g)];
+  assert.equal(rows.length, 7);
+  for (const [row] of rows) assert.equal([...row.matchAll(/<t[hd]\b/g)].length, 5);
+  assert.deepEqual([...table.matchAll(/<th>([^<]+)<\/th>/g)].map(([, text]) => text), ['Instalación', 'Nivel', 'Estado (%)', 'Mantenimiento/Reparación', 'Genera']);
+  const cssHref = [...article.matchAll(/<link\b[^>]*>/g)].map(([tag]) => attributes(tag)).find((link) => link.rel === 'stylesheet').href;
+  const css = output(cssHref.slice(1));
+  for (const [columns, alignment] of [[[2, 3], 'center'], [[4, 5], 'left']]) {
+    assert.ok(css.includes(columns.map((column) => `.top-eleven-complex-table :is(th,td):nth-child(${column})`).join(',') + `{text-align:${alignment}}`));
+  }
+  assert.doesNotMatch(output('es/articulos/mi-experiencia-top-eleven/index.html'), /top-eleven-complex-table/);
 }
 
 test('Build real: Markdown, traducciones públicas, exclusión de drafts/futuros y validación global', () => {

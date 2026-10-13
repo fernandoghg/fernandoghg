@@ -96,6 +96,11 @@ main { flex: 1; padding-bottom: var(--space-6); }
 .article-body img { display: block; max-width: 100%; height: auto; }
 .article-body table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; }
 .article-body :is(th, td) { padding: var(--space-1) var(--space-2); border: 1px solid var(--border); }
+/* Original Markdown table alignment, scoped to the historical Top Eleven article. */
+.top-eleven-complex-table :is(th, td):nth-child(2),
+.top-eleven-complex-table :is(th, td):nth-child(3) { text-align: center; }
+.top-eleven-complex-table :is(th, td):nth-child(4),
+.top-eleven-complex-table :is(th, td):nth-child(5) { text-align: left; }
 .series-navigation { margin-top: var(--space-5); padding-top: var(--space-3); border-top: 1px solid var(--border); overflow-wrap: anywhere; }
 .series-navigation ul { display: grid; gap: var(--space-3); }
 .series-navigation li { min-width: 0; }

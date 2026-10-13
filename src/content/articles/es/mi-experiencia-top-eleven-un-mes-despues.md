@@ -64,7 +64,7 @@ Es una buena idea en cuanto a profundidad de gestión, pero su mantenimiento pue
 A continuación, dejo algunos datos de mi propio complejo en el **nivel 10** (a modo de ejemplo real de cómo se comportan las instalaciones tras varios días):
 
 | Instalación | Nivel | Estado (%) | Mantenimiento/Reparación | Genera |
-| --- | :---: | :---: | :--- | :--- |
+| --- | --- | --- | --- | --- |
 | **Academia de Juveniles** | 10 | 0% | Reparar 24,6M | — |
 | **Estadio** | 10 | 0% | Reparar 49,2M | Ingresos por entradas |
 | **Parking** | 10 | 40% → 20% | +10% cuesta 24,6M | 2/hora |

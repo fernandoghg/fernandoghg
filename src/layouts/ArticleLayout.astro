@@ -19,7 +19,7 @@ const es = lang === 'es';
         {updated && <p>{es ? 'Actualizado:' : 'Updated:'} <time datetime={updated}>{formatArticleDate(updated, lang)}</time></p>}
       </div>
     </header>
-    <div class="article-body"><slot /></div>
+    <div class:list={['article-body', { 'top-eleven-complex-table': article.id === 'es/mi-experiencia-top-eleven-un-mes-despues' }]}><slot /></div>
     {(previous || next) && (
       <nav class="series-navigation" aria-label={es ? 'Navegación de la serie' : 'Series navigation'}>
         <ul>

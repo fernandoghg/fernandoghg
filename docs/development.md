@@ -36,6 +36,16 @@ Para desactivar la telemetría de la herramienta Astro en una sesión de PowerSh
 
 Versiones instaladas: Astro 7.3.5, TypeScript 6.0.3 y `@astrojs/check` 0.9.10. El sitio actual genera 16 páginas HTML estáticas con los dos artículos públicos, las páginas ES/EN de Aldarte y la 404 bilingüe, sin JavaScript cliente ni recursos externos automáticos. El aviso inicial de npm sobre el script de instalación de esbuild no requirió cambios para las comprobaciones y el build.
 
+## Cabeceras de seguridad HTTP
+
+`public/_headers` prepara las cabeceras para los recursos estáticos de Cloudflare Pages y se copia a `dist/_headers`: CSP con recursos denegados por defecto, solo CSS e imágenes locales, sin scripts ni estilos inline; `nosniff`, `no-referrer`, restricciones de capacidades y prohibición de incrustar las páginas. No se activa HSTS: se evaluará después de comprobar HTTPS en producción. No hay servicios externos configurados por este archivo. La generación local no verifica las cabeceras HTTP del alojamiento; `astro preview` no aplica necesariamente `_headers`.
+
+Astro 7.3.5 utiliza `build.inlineStylesheets: 'never'`. La tabla del segundo artículo de Top Eleven conserva sus alineaciones mediante CSS limitado a `.top-eleven-complex-table`, aplicado solo al ID español de ese artículo: columnas 2/3 centradas y 4/5 a la izquierda, tanto encabezados como celdas; la columna 1 conserva su comportamiento anterior. La fila delimitadora Markdown ya no solicita alineación, evitando los atributos `style` generados por Sätteri. No cambia el contenido editorial ni se transforman otras tablas.
+
+Las pruebas de integración comprueban ausencia de estilos inline y scripts, hojas CSS locales, alineación declarada de la tabla y copia exacta de las cabeceras sin `unsafe-inline`, `unsafe-eval` ni HSTS, además de las comprobaciones existentes de rutas, SEO y recursos externos. Pages aplica `_headers` a recursos estáticos, no a respuestas de Functions; la validación HTTP efectiva y las redirecciones quedan pendientes del despliegue autorizado.
+
+Los fixtures temporales de código conservan la cobertura de Shiki y permiten exclusivamente su atributo de colores en `pre`; las páginas reales no tienen esta excepción. Antes de publicar artículos con bloques de código habrá que adaptar el resaltado, que genera estilos inline incompatibles con esta CSP.
+
 ## Sitemap, rastreo y página 404
 
 `src/pages/sitemap.xml.ts` genera `dist/sitemap.xml` durante el build, sin SSR ni dependencias nuevas. Reutiliza las rutas de navegación, Aldarte y getArticlePaths para incluir solo artículos públicos y sus traducciones reales. Actualmente contiene 14 URL canónicas absolutas con relaciones ES/EN equivalentes a las del HTML. Excluye la raíz y la 404; no inventa lastmod. Las nuevas páginas generales o de proyecto deberán incorporarse a esta fuente de rutas y a las pruebas.
