@@ -1,44 +1,64 @@
 # Privacidad por diseño
 
-La privacidad es un requisito de arquitectura desde el inicio. El proyecto debe atender RGPD/ePrivacy y la normativa aplicable durante su diseño y publicación. Este documento recoge principios y trabajo pendiente; no constituye una afirmación de cumplimiento legal absoluto.
+La privacidad es un requisito de arquitectura y mantenimiento. El proyecto debe atender RGPD, LOPDGDD y ePrivacy y la normativa aplicable. Este documento distingue hechos confirmados y verificaciones pendientes; no constituye una afirmación de cumplimiento legal absoluto.
 
-## Principios actuales
+## Configuración actual confirmada por el titular
 
-- No usar cookies salvo necesidad futura expresamente justificada.
-- No usar localStorage para seguimiento ni preferencias en V1, ni fingerprinting o identificadores persistentes para seguimiento.
-- No recopilar datos personales salvo necesidad futura expresamente aprobada.
-- La primera versión se desarrollará sin sistema de analítica. No utilizar Google Analytics, Google Tag Manager, Cloudflare Web Analytics, píxeles publicitarios ni ningún otro sistema de seguimiento o analítica por ahora.
-- Evitar recursos externos que permitan seguimiento de visitantes; preferir recursos autocontenidos y fuentes del sistema en V1. No cargar Google Fonts ni otras fuentes externas. Si se utiliza una fuente personalizada en el futuro, preferir alojamiento local.
-- Minimizar datos, dependencias y servicios externos.
-- Proteger las comunicaciones de producción con HTTPS y redirigir HTTP a HTTPS.
+- fernandoghg.com es una web personal para compartir proyectos, artículos y experiencias, sin actividad comercial ni servicios profesionales actualmente.
+- El sitio está publicado en https://fernandoghg.com mediante Cloudflare Pages. Cloudflare presta DNS, proxy/CDN y seguridad. El dominio sigue registrado en IONOS. No se presupone un mecanismo concreto de despliegue desde GitHub.
+- El responsable es Fernando García-Herrera Gómez. La identidad pública general conserva la grafía Fernando Garcia-Herrera Gomez.
+- El correo está contratado con IONOS Correo Básico (Mail Basic). contacto@fernandoghg.com es el contacto general y se reenvía al buzón privacidad@fernandoghg.com, canal específico de privacidad y ejercicio de derechos. Ambas direcciones funcionan.
+- Email Address Obfuscation de Cloudflare está desactivado y se ha comprobado que los enlaces mailto funcionan sin JavaScript. Esta confirmación del titular no equivale a una auditoría de todas las funciones de Cloudflare.
+- No se utiliza analítica propia, publicidad, formularios ni seguimiento de visitantes. No se ha confirmado la ausencia absoluta de cookies técnicas de Cloudflare en todas las circunstancias.
+- El sitio mantiene noindex. Su publicación no autoriza retirar esta directiva: hace falta autorización expresa.
 
-Estos principios también deben guiar la configuración futura de Cloudflare Pages, el alojamiento seleccionado inicialmente, y su integración con GitHub. Todavía no existe cuenta/configuración de Cloudflare para este proyecto y esta fase no autoriza crear ni modificar servicios externos. Un sitio estático puede implicar tratamiento de direcciones IP y otros datos en registros del proveedor; no se debe asumir ausencia de tratamiento por el mero hecho de no incluir formularios o analítica.
+## Principios que se mantienen
 
-## Evaluación pendiente antes de publicar
+- No añadir cookies salvo necesidad futura expresamente justificada. No añadir banners por precaución sin determinar antes si hay mecanismos que requieran consentimiento.
+- No usar localStorage para preferencias o seguimiento, fingerprinting ni identificadores persistentes de seguimiento en V1.
+- No incorporar recogida adicional de datos personales sin necesidad expresamente aprobada. La entrega técnica de páginas y las comunicaciones por correo sí implican tratamiento de datos.
+- No utilizar Google Analytics, Google Tag Manager, Cloudflare Web Analytics, píxeles publicitarios ni otro sistema de analítica o seguimiento. La posible analítica futura se evaluará separadamente.
+- Preferir recursos autocontenidos y fuentes del sistema. No cargar fuentes externas, feeds, widgets ni publicaciones incrustadas. GitHub e Instagram son enlaces normales; al seguirlos se accede a servicios externos y a sus políticas.
+- Minimizar datos, dependencias y servicios. Mantener HTTPS, redirección de HTTP a HTTPS y las cabeceras de seguridad, incluida la CSP sin scripts.
+- La raíz / redirige estáticamente a /es/. No se utilizan cookies, localStorage, geolocalización ni tracking para seleccionar o recordar idioma. El modo de color sigue el sistema sin selector manual persistente.
+- No publicar DNI, domicilio particular ni correo personal. No configurar servicios externos, DNS o correo en tareas locales sin autorización expresa.
 
-- Identificar los datos que trate la configuración efectiva, incluidos registros de acceso del alojamiento y servicios asociados.
-- Revisar, según corresponda, finalidad, base jurídica, minimización, conservación, ubicación del tratamiento, encargados y posibles transferencias internacionales.
-- Determinar la información de privacidad y demás obligaciones aplicables a la configuración final.
-- Verificar el comportamiento real del sitio: cookies, almacenamiento del navegador, solicitudes externas y ausencia de mecanismos de seguimiento.
+## Finalidades, bases jurídicas y conservación
 
-Si surge una necesidad de recoger datos personales, deberá obtenerse aprobación expresa antes de implementarla y documentarse su finalidad y tratamiento. Cualquier futura necesidad de cookies deberá justificarse expresamente y evaluarse conforme a la normativa aplicable antes de introducirlas.
+La revisión mantiene y concreta las bases ya contempladas en la política: interés legítimo en entregar y proteger la web y responder a consultas recibidas (artículo 6.1.f RGPD), y cumplimiento de obligaciones legales para tramitar derechos (artículo 6.1.c RGPD). No se incorpora consentimiento ficticio por navegar o enviar correo ni una base contractual comercial que no corresponde a la finalidad actual. Queda pendiente documentar la ponderación de necesidad, proporcionalidad e impacto para los tratamientos basados en interés legítimo; no se presenta como realizada.
 
-La posibilidad de incorporar analítica respetuosa con la privacidad se evaluará separadamente en el futuro; no está aprobada para la primera versión.
+Los correos generales se revisarán periódicamente y se eliminarán cuando estén resueltos y ya no sean necesarios, salvo obligación legal o causa justificada de conservación. Las solicitudes de derechos se gestionarán diferenciadamente, conservando lo necesario para acreditar su atención durante los plazos aplicables. No se fija un número de años sin identificar la obligación o justificación correspondiente. Quedan por concretar el procedimiento de revisión y borrado, los plazos aplicables a la evidencia de atención de derechos y el efecto de las copias de seguridad del servicio.
 
-## Idioma, preferencias y enlaces públicos
+La política no atribuye un plazo único inventado a los registros técnicos de los proveedores. Deben identificarse los registros efectivos, finalidades, accesos y plazos o criterios de conservación antes de dar por cerrada la revisión de transparencia.
 
-La raíz / redirigirá a /es/, con /es/ y /en/ como raíces de idioma. No se utilizarán cookies, localStorage, geolocalización ni tracking para seleccionar o recordar el idioma. V1 podrá seguir la preferencia del sistema mediante prefers-color-scheme, sin selector manual inicial que necesite JavaScript, cookies o localStorage. Se respetará prefers-reduced-motion cuando corresponda.
+## Verificaciones contractuales y técnicas pendientes
 
-V1 no tendrá publicidad ni tracking. Los enlaces a [GitHub](https://github.com/fernandoghg) e [Instagram](https://www.instagram.com/fernandoghg/) serán enlaces web normales, sin feeds, widgets, scripts ni publicaciones incrustadas. Al seguirlos, el visitante accederá al servicio externo y a sus condiciones de privacidad.
+Estos puntos no se dan por acreditados por la disponibilidad de documentación pública ni por el resultado de un build:
 
-La identidad pública aprobada es Fernando Garcia-Herrera Gomez; las políticas aprobadas utilizan la grafía Fernando García-Herrera Gómez. No se expondrá el correo personal ni habrá formulario de contacto. Se ha aprobado publicar únicamente privacidad@fernandoghg.com como contacto para consultas de privacidad y ejercicio de derechos.
+- Cloudflare: identificar la entidad contratada, condiciones aceptadas y versión del DPA contractualmente aplicable. No se ha verificado esa versión. Revisar el alcance de los tratamientos por cuenta del titular y los fines propios del proveedor, servicios activos y subencargados.
+- IONOS: confirmar la entidad y condiciones del producto Mail Basic y el contrato de encargo aplicable. IONOS ofrece documentación sobre contratos de tratamiento, pero no se ha confirmado la aplicabilidad del contrato consultado a este producto.
+- Ambos proveedores: comprobar ubicaciones de procesamiento y almacenamiento, posibles transferencias internacionales y el mecanismo o garantías efectivamente aplicables. No se han verificado ubicaciones concretas ni garantías específicas. No afirmar alojamiento exclusivamente europeo, adhesiones, cláusulas contractuales o decisiones de adecuación sin evidencia aplicable al servicio contratado.
+- Cloudflare: inventariar registros, métricas operativas, funciones de seguridad y posibles cookies técnicas según las circunstancias, incluidos desafíos. La ausencia de Set-Cookie en una consulta no acredita ausencia de cookies en todos los escenarios.
+- IONOS: verificar retención, eliminación y copias de mensajes y metadatos, y si existen otros destinatarios o reenvíos adicionales. Solo está confirmado el reenvío de contacto@ al buzón privacidad@.
+- Completar con los resultados la información pública de destinatarios, transferencias y conservación que corresponda conforme al artículo 13 RGPD. Los enlaces a políticas de proveedores y la redacción prudente no sustituyen esta verificación ni acreditan cumplimiento completo.
 
-privacidad@fernandoghg.com está **pendiente de configurar y verificar** antes del despliegue. Su enlace mailto no acredita que el buzón exista ni funcione. Comprobar recepción y respuesta de mensajes y el tratamiento de datos del servicio de correo que se seleccione; no se ha configurado ningún servicio externo en esta tarea.
+Fuentes de referencia, sin presuponer su incorporación al contrato concreto:
 
-## Revisión final y página pública de privacidad
+- [RGPD](https://eur-lex.europa.eu/eli/reg/2016/679/oj?locale=es), especialmente artículos 5, 6, 12, 13, 21, 28 y 44 y siguientes.
+- [LOPDGDD](https://www.boe.es/buscar/act.php?id=BOE-A-2018-16673).
+- [DPA público de Cloudflare](https://www.cloudflare.com/cloudflare-customer-dpa/).
+- [Información de IONOS sobre el contrato de tratamiento](https://www.ionos.es/ayuda/proteccion-de-datos/informacion-general-sobre-el-rgpd/contrato-de-tratamiento-de-datos/).
 
-Las rutas /es/privacidad/ y /en/privacy/ contienen las dos políticas aprobadas, con introducción y ocho secciones, mediante PrivacyContent.astro. Se mantienen noindex y los marcadores [fecha de publicación] / [publication date]. La fecha de actualización está **pendiente de publicación**; deberá fijarse al publicar, sin calcularla desde build, Git o la fecha del archivo.
+## Política ES/EN y aprobación pendiente
 
-Antes de publicar deberá revisarse que la política corresponde al funcionamiento efectivo del sitio. Este documento interno y la incorporación del texto aprobado no sustituyen la revisión final de privacidad, RGPD/ePrivacy y obligaciones legales aplicables.
+PrivacyContent.astro genera /es/privacidad/ y /en/privacy/ con contenido equivalente, ocho secciones, ambos correos y enlaces a Cloudflare, IONOS y AEPD. Los derechos se mantienen, incluida la oposición al interés legítimo y la reclamación ante la AEPD. Los enlaces no cargan automáticamente servicios externos.
 
-La revisión incluirá la información del proveedor de alojamiento/CDN, logs y tratamiento técnico inevitable, así como la necesidad real de datos de contacto o información legal adicional. Se evaluarán estos puntos junto con los ya enumerados arriba, sin afirmar cumplimiento legal absoluto antes de la evaluación fundamentada. El alojamiento está seleccionado, pero su configuración efectiva aún no permite dar por verificados estos aspectos.
+La fecha editorial fija preparada es **17 de octubre de 2026 / 17 October 2026**, con datetime 2026-10-17, condicionada a la aprobación y publicación de estos cambios. No deriva de build, Git ni fecha del archivo. La revisión está preparada localmente: no está aprobada ni desplegada por el hecho de editar el componente. Si la aprobación o publicación exige otra fecha, deberá acordarse expresamente; no actualizarla automáticamente.
+
+README.md, docs/development.md y AGENTS.md recogen el contexto confirmado. docs/architecture.md conserva referencias de una fase anterior al despliegue y al correo pendiente; no se modifica en esta actualización. Para el estado operativo actual debe consultarse este documento. Queda pendiente armonizar esas referencias cuando se autorice actualizar arquitectura.
+
+## Valoración del aviso legal independiente
+
+Con la finalidad personal confirmada y la ausencia actual de actividad comercial o servicios profesionales, no se identifica por ahora una necesidad acreditada de crear una página independiente de aviso legal por el artículo 10 LSSI. La definición de servicios de la sociedad de la información del anexo de la [LSSI](https://www.boe.es/buscar/act.php?id=BOE-A-2002-13758) vincula su alcance a una actividad económica, también cuando el destinatario no paga. Esta es una valoración limitada al contexto actual, no una exención general de otras obligaciones ni del RGPD/LOPDGDD.
+
+No se crea esa página sin autorización. Reevaluar si se incorporan promoción comercial o profesional, servicios, publicidad, afiliación, ventas o monetización, incluida una eventual evolución de Aldarte. No publicar datos identificativos adicionales sin determinar antes la obligación aplicable.

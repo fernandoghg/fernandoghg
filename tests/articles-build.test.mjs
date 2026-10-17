@@ -159,8 +159,8 @@ function checkPrivacyPages() {
     en: ['Data controller', 'What data is processed', 'Purposes and legal bases', 'Cookies and tracking', 'Hosting and external services', 'Data retention', 'Your data protection rights', 'Changes to this policy'],
   };
   for (const [lang, page, title, date, intro] of [
-    ['es', 'privacidad', 'Privacidad', '[fecha de publicación]', 'La privacidad es importante para mí.'],
-    ['en', 'privacy', 'Privacy', '[publication date]', 'Privacy matters to me.'],
+    ['es', 'privacidad', 'Privacidad', '17 de octubre de 2026', 'La privacidad es importante para mí.'],
+    ['en', 'privacy', 'Privacy', '17 October 2026', 'Privacy matters to me.'],
   ]) {
     const html = output(`${lang}/${page}/index.html`);
     const main = html.match(/<main\b[\s\S]*?<\/main>/)?.[0];
@@ -168,7 +168,10 @@ function checkPrivacyPages() {
     assert.match(html, /<meta name="robots" content="noindex"/);
     assert.match(main, new RegExp(`<h1>${title}</h1>`));
     assert.deepEqual([...main.matchAll(/<h2>([^<]+)<\/h2>/g)].map((match) => match[1]), sections[lang]);
-    assert.equal([...main.matchAll(/<p\b/g)].length, 24);
+    assert.ok(main.includes('href="mailto:contacto@fernandoghg.com"'));
+    assert.ok(main.includes('href="https://www.ionos.es/terms-gtc/politica-de-privacidad/"'));
+    assert.match(main, /<time datetime="2026-10-17">/);
+    assert.ok(main.includes('Mail Basic'));
     assert.ok(main.includes(date));
     assert.ok(main.includes(intro));
     assert.ok(main.indexOf(intro) < main.indexOf('<h2>'));
@@ -176,7 +179,7 @@ function checkPrivacyPages() {
     assert.equal([...main.matchAll(/href="mailto:privacidad@fernandoghg.com"/g)].length, 2);
     assert.ok(main.includes('href="https://www.cloudflare.com/privacypolicy/"'));
     assert.ok(main.includes('href="https://www.aepd.es/"'));
-    assert.doesNotMatch(main, /Contenido provisional|Temporary content|Página provisional|Temporary page/);
+    assert.doesNotMatch(main, /Contenido provisional|Temporary content|Página provisional|Temporary page|\[fecha de publicación\]|\[publication date\]/);
   }
 }
 
