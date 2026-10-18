@@ -106,6 +106,8 @@ El diseño inicial, la presentación de Inicio, la presentación pública biling
 
 ## Cabecera y navegación responsive
 
+El orden del DOM es identificador, navegación principal y enlace de idioma. Bajo 48rem la cabecera utiliza Flexbox con flex-wrap: el identificador ocupa la primera fila y navegación e idioma comparten la siguiente cuando caben a su anchura natural. Si no caben, el idioma pasa debajo de la navegación y permanece alineado a la derecha. La lista de navegación puede ocupar varias líneas si necesita más espacio. Desde 48rem se conserva Grid en una sola fila: identificador, navegación e idioma. Se mantienen fuentes, separaciones y tamaños de objetivos interactivos. No se utiliza tabindex positivo, posicionamiento absoluto ni la propiedad order para alterar la secuencia.
+
 En escritorio, la navegación principal será Inicio · Proyectos · Artículos · Sobre mí y sus equivalentes en inglés indicados arriba. Debe ser visible, sencilla y accesible. El enlace de idioma será discreto: EN desde español y ES desde inglés, sin banderas.
 
 En V1 no habrá menú hamburguesa. Los cuatro elementos permanecerán directamente accesibles también en móvil; en pantallas estrechas podrán distribuirse en varias líneas o reorganizarse mediante CSS. El diseño será mobile-first y no se añadirá JavaScript para gestionar la navegación.

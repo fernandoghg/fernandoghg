@@ -46,11 +46,11 @@ ul { margin: 0; padding: 0; list-style: none; }
 .reading-width { max-width: var(--reading-width); }
 .skip-link { position: absolute; top: var(--space-2); left: var(--space-2); padding: var(--space-2); background: var(--background); z-index: 1; transform: translateY(-200%); }
 .skip-link:focus { transform: translateY(0); }
-.site-header { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: var(--space-1) var(--space-2); padding-block: var(--space-3); border-bottom: 1px solid var(--border); }
-.site-name { font-weight: 650; color: var(--text); text-decoration: none; letter-spacing: -.02em; }
+.site-header { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-2); padding-block: var(--space-3); border-bottom: 1px solid var(--border); }
+.site-name { flex: 0 0 100%; font-weight: 650; color: var(--text); text-decoration: none; letter-spacing: -.02em; }
 .site-name, .language-link { display: inline-flex; align-items: center; min-height: 44px; }
-.language-link { grid-column: 2; grid-row: 1; padding-inline: var(--space-1); font-size: .875rem; font-weight: 650; }
-.primary-nav { grid-column: 1 / -1; }
+.language-link { flex: 0 0 auto; margin-inline-start: auto; padding-inline: var(--space-1); font-size: .875rem; font-weight: 650; }
+.primary-nav { flex: 0 1 auto; min-width: 0; max-width: 100%; }
 .primary-nav ul { display: flex; flex-wrap: wrap; gap: .25rem var(--space-2); }
 .primary-nav a { display: inline-flex; align-items: center; min-height: 44px; color: var(--muted); text-decoration: none; }
 .primary-nav a[aria-current="page"] { color: var(--text); font-weight: 650; text-decoration: underline; }
@@ -121,9 +121,9 @@ main { flex: 1; padding-bottom: var(--page-space); }
 @media (min-width: 48rem) {
   :root { --page-space: var(--space-6); --page-gutter: var(--space-3); }
   .series-navigation ul { grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
-  .site-header { grid-template-columns: 1fr auto auto; column-gap: var(--space-4); }
+  .site-header { display: grid; grid-template-columns: 1fr auto auto; column-gap: var(--space-4); }
   .primary-nav { grid-column: 2; grid-row: 1; }
-  .language-link { grid-column: 3; }
+  .language-link { grid-column: 3; grid-row: 1; margin-inline-start: 0; }
   .editorial-row { align-items: center; gap: var(--space-3); }
   .article-list li { grid-template-columns: 4.5rem minmax(0, 1fr) auto; }
   .project { grid-template-columns: minmax(0, 1fr) auto; }

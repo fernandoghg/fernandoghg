@@ -71,6 +71,14 @@ function attributes(tag) {
 function seo(file) {
   const html = output(file);
   const links = [...html.matchAll(/<link\b[^>]*>/g)].map(([tag]) => attributes(tag));
+  if (file !== 'index.html') {
+    const header = html.match(/<header class="site-header container">([\s\S]*?)<\/header>/)?.[1];
+    assert.ok(header, file);
+    assert.match(header, /^\s*<a class="site-name"[\s\S]*?<\/a>\s*<nav class="primary-nav"[\s\S]*?<\/nav>\s*<a class="language-link"[\s\S]*?<\/a>\s*$/, `Orden DOM: identificador, navegación, idioma: ${file}`);
+    assert.match(html, /<a class="skip-link" href="#main">/);
+    assert.match(html, /<main id="main" class="container" tabindex="-1">/);
+    assert.doesNotMatch(html, /tabindex="[1-9]\d*"/);
+  }
   const metas = [...html.matchAll(/<meta\b[^>]*>/g)].map(([tag]) => attributes(tag));
   const canonicals = links.filter((link) => link.rel === 'canonical');
   const errorPage = file === '404.html';
