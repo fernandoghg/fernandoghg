@@ -16,8 +16,53 @@ function expectBuild() {
   checkGeneratedResources();
   checkNavigationFiles();
   checkSecurityHeadersAndTable();
+  checkFavicons();
 }
 function output(file) { return readFileSync(resolve(root, 'dist', file), 'utf8'); }
+
+function checkFavicons() {
+  const approved = readFileSync(resolve(root, 'docs/design/favicon-fg.svg'));
+  const svg = output('favicon.svg');
+  assert.deepEqual(Buffer.from(svg), approved, 'El SVG mantiene el diseño aprobado');
+  assert.match(svg, /viewBox="0 0 64 64"/);
+  assert.doesNotMatch(svg, /<(?:script|style|text|image|foreignObject)\b|\b(?:href|style|on\w+)\s*=|url\(|<!DOCTYPE|<!ENTITY/i);
+  for (const file of ['favicon.svg', 'favicon.ico', 'apple-touch-icon.png']) {
+    assert.deepEqual(readFileSync(resolve(root, 'dist', file)), readFileSync(resolve(root, 'public', file)), file);
+  }
+  const pngSignature = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
+  const ico = readFileSync(resolve(root, 'dist/favicon.ico'));
+  assert.equal(ico.readUInt16LE(0), 0);
+  assert.equal(ico.readUInt16LE(2), 1);
+  assert.equal(ico.readUInt16LE(4), 3);
+  for (const [index, size] of [16, 32, 48].entries()) {
+    const entry = 6 + index * 16;
+    assert.equal(ico[entry], size);
+    assert.equal(ico[entry + 1], size);
+    const length = ico.readUInt32LE(entry + 8);
+    const offset = ico.readUInt32LE(entry + 12);
+    assert.ok(offset >= 54 && offset + length <= ico.length);
+    const image = ico.subarray(offset, offset + length);
+    assert.deepEqual(image.subarray(0, 8), pngSignature);
+    assert.equal(image.readUInt32BE(16), size);
+    assert.equal(image.readUInt32BE(20), size);
+  }
+  const apple = readFileSync(resolve(root, 'dist/apple-touch-icon.png'));
+  assert.deepEqual(apple.subarray(0, 8), pngSignature);
+  assert.equal(apple.readUInt32BE(16), 180);
+  assert.equal(apple.readUInt32BE(20), 180);
+  assert.equal(apple[25], 2, 'PNG Apple RGB sin canal alfa');
+  for (const file of readdirSync(resolve(root, 'dist'), { recursive: true }).filter((file) => file.endsWith('.html') && file !== 'index.html')) {
+    const head = output(file).match(/<head>[\s\S]*?<\/head>/)?.[0];
+    assert.ok(head, file);
+    const links = [...head.matchAll(/<link\b[^>]*>/g)].map(([tag]) => attributes(tag));
+    assert.deepEqual(links.filter((link) => ['icon', 'apple-touch-icon'].includes(link.rel)), [
+      { rel: 'icon', href: '/favicon.ico', sizes: '16x16 32x32 48x48' },
+      { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml', sizes: 'any' },
+      { rel: 'apple-touch-icon', href: '/apple-touch-icon.png', sizes: '180x180' },
+    ], file);
+    assert.ok(!links.some((link) => link.rel === 'manifest'), file);
+  }
+}
 
 const canonicalOrigin = 'https://fernandoghg.com';
 function attributes(tag) {

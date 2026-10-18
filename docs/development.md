@@ -149,6 +149,18 @@ No hay autor por artículo, tags, imagen destacada, RSS ni colecciones de catego
 - Antes de publicar archivos descargables, comprobar que no contienen secretos, credenciales, datos personales, datos sanitarios ni información privada o corporativa.
 - No incorporar recursos externos cuando podamos servirlos localmente.
 
+## Favicon FG
+
+El original aprobado es `docs/design/favicon-fg.svg`. `public/favicon.svg` es una copia exacta, autocontenida, con letras trazadas y los mismos colores en temas claro y oscuro. `public/favicon.ico` contiene tres imágenes PNG internas de 16, 32 y 48px. `public/apple-touch-icon.png` es RGB de 180 × 180px, sin transparencia, con el fondo azul extendido hasta los bordes; conserva los trazados del monograma. No hay manifiesto web.
+
+Los rásteres se generaron con `sharp`, ya disponible como dependencia de la instalación de Astro, sin modificar package.json ni el lockfile. Se rasterizó el SVG con densidad 384 y se redujo a cada tamaño. El ICO utiliza un directorio de tres entradas de 32 bits que referencia los PNG. Para Apple se retiró únicamente rx del rectángulo en una copia en memoria y se exportó como PNG RGB sobre #253B52. El SVG aprobado no se modificó.
+
+BaseLayout declara los tres recursos con rutas absolutas locales para ES/EN y 404. La raíz sigue siendo una redirección estática. Se mantienen noindex, CSP y cabeceras. Las pruebas comprueban referencias, recursos copiados sin cambios, igualdad del SVG aprobado, tamaños internos del ICO y dimensiones/formato RGB del PNG.
+
+Para revisar antes de publicar, ejecutar `npm run build` y `npm run preview -- --host 127.0.0.1 --port 4327`. Abrir en Chrome y Firefox las portadas /es/ y /en/, un artículo y /404.html; revisar pestañas en temas claro y oscuro. Comprobar en la pestaña de red que los iconos responden correctamente y no hay errores CSP; abrir los tres recursos directamente. La elección entre SVG e ICO depende del navegador: no se exige que descargue ambos. Revisar opcionalmente un marcador nuevo y el acceso guardado en un dispositivo Apple real.
+
+Los navegadores mantienen cachés propias de favicons y la recarga normal puede no actualizar pestañas o marcadores. Ante un icono antiguo, probar primero con un perfil limpio o una sesión privada nueva. En futuras revisiones puede versionarse la URL declarada, sin cambiar la configuración de Cloudflare. No se han modificado cabeceras de caché.
+
 ## Incremento visual 1
 
 El contenedor .article-table-scroll tiene width: 100% y contain: inline-size para que su tamaño horizontal dependa del padre y no de la anchura intrínseca de la tabla. overscroll-behavior-x: contain evita encadenar el gesto horizontal al alcanzar los extremos. No se oculta el overflow global. La estructura inspeccionada es body (flex en columna) > main.container > article.editorial-container.article-page > .article-body > .article-table-scroll > table. La necesidad de contain: inline-size no está demostrada en esta estructura; se conserva la versión validada manualmente. Su retirada requeriría repetir la comprobación visual.

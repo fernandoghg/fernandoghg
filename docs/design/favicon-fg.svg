@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>FG</title>
+  <rect width="64" height="64" rx="13" fill="#253B52"/>
+  <path fill="#FFFFFF" d="M12 18H28V23H17V30H26V35H17V47H12Z"/>
+  <path fill="#FFFFFF" d="M53 25H48C47 22 45 21 42 21C37 21 35 25 35 32C35 39 37 43 42 43C45 43 47 42 48 40V35H42V31H53V42C50 46 47 48 42 48C34 48 30 42 30 32C30 22 34 17 42 17C48 17 52 20 53 25Z"/>
+</svg>
