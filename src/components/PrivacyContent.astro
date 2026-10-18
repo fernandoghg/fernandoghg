@@ -4,7 +4,7 @@ interface Props { lang: Language }
 const { lang } = Astro.props;
 const es = lang === 'es';
 ---
-<div class="page-content article-body">
+<div class="page-content article-body privacy-content">
   <p><strong>{es ? 'Última actualización:' : 'Last updated:'}</strong> <time datetime="2026-10-17">{es ? '17 de octubre de 2026' : '17 October 2026'}</time></p>
   <p>{es ? 'La privacidad es importante para mí. Esta web personal sirve para compartir proyectos, artículos y experiencias, sin actividad comercial ni prestación de servicios profesionales actualmente. Puedes navegar sin registrarte y sin herramientas propias de seguimiento de visitantes.' : 'Privacy matters to me. This personal website is a place to share projects, articles and experiences, with no current commercial activity or provision of professional services. You can browse without registering and without visitor tracking tools of my own.'}</p>
 

@@ -152,3 +152,7 @@ El footer será discreto y podrá contener GitHub, Instagram, Privacidad y copyr
 V1 intentará funcionar con cero JavaScript de cliente para la estructura básica del sitio. No es una prohibición absoluta para el futuro: cualquier funcionalidad que lo necesite deberá justificarse por una mejora real de funcionalidad o experiencia. No se añadirá para menú móvil, selector automático de idioma, animaciones decorativas ni modo oscuro automático.
 
 La implementación será propia, sin copiar diseños, código, identidad visual ni textos de otros sitios. No es necesario registrar nombres de webs externas utilizadas como inspiración.
+
+## Incremento visual 1
+
+Este incremento sustituye los espaciados principales fijos descritos anteriormente: --page-space utiliza 3rem bajo 48rem y 5rem desde 48rem para el inicio de página, separación de secciones y espacio inferior de main. --page-gutter utiliza 1rem bajo 48rem y 1.5rem desde 48rem para los márgenes laterales. Se mantienen las anchuras máximas, la paleta y la tipografía principal. La 404 bilingüe separa sus elementos internos con 1rem. Privacidad tiene margen superior de 2rem. Los hr de los artículos tienen borde superior de 1px con --border y márgenes verticales de 2rem. H4 tiene margen inicial cero, tamaño 1.05rem, interlineado 1.35 y peso 650; conserva la separación editorial existente de 3rem. No cambia el espaciado de H2/H3 ni se añade JavaScript cliente.

@@ -295,6 +295,7 @@ function checkSecurityHeadersAndTable() {
   assert.match(article, /class="article-body top-eleven-complex-table"/);
   const table = article.match(/<table>[\s\S]*?<\/table>/)?.[0];
   assert.ok(table);
+  assert.ok(article.includes(`<div class="article-table-scroll" tabindex="0">${table}</div>`), 'Tabla semántica dentro de su contenedor desplazable y accesible por teclado');
   const rows = [...table.matchAll(/<tr>[\s\S]*?<\/tr>/g)];
   assert.equal(rows.length, 7);
   for (const [row] of rows) assert.equal([...row.matchAll(/<t[hd]\b/g)].length, 5);
@@ -333,7 +334,7 @@ test('Build real: Markdown, traducciones públicas, exclusión de drafts/futuros
       ...(translationKey ? [`translationKey: ${translationKey}`] : []),
       ...(series ? [`series: ${series}`, `seriesPart: ${seriesPart}`] : []), '---',
     ];
-    const body = ['## Cuerpo técnico', '', 'Texto **Markdown**.', '', '- Una lista', '', '```text', 'Sin scripts', '```'];
+    const body = ['## Cuerpo técnico', '', 'Texto **Markdown**.', '', '- Una lista', '', '```text', 'Sin scripts', '```', '', '| Column | Value |', '| --- | --- |', '| First | 1 |', '', '| Other | Value |', '| --- | --- |', '| Second | 2 |'];
     writeFileSync(file, frontmatter.join('\n') + '\n\n' + body.join('\n') + '\n');
   }
   try {
@@ -344,6 +345,15 @@ test('Build real: Markdown, traducciones públicas, exclusión de drafts/futuros
     expectBuild();
     const es = output('es/articulos/fixture-publico/index.html');
     const en = output('en/articles/fixture-public/index.html');
+    for (const html of [es, en]) {
+      assert.equal((html.match(/<table>/g) ?? []).length, 2);
+      const wrapped = [...html.matchAll(/<div class="article-table-scroll" tabindex="0">(<table>[\s\S]*?<\/table>)<\/div>/g)];
+      assert.equal(wrapped.length, 2, 'Cada tabla ES/EN tiene un único contenedor desplazable');
+      for (const [, table] of wrapped) {
+        assert.match(table, /<thead>[\s\S]*<th>/);
+        assert.match(table, /<tbody>[\s\S]*<td>/);
+      }
+    }
     assert.match(es, /<strong>Markdown<\/strong>/);
     assert.match(es, /17 de mayo de 2013/);
     assert.match(en, /18 May 2013/);
