@@ -12,6 +12,25 @@ La privacidad es un requisito de arquitectura y mantenimiento. El proyecto debe 
 - No se utiliza analítica propia, publicidad, formularios ni seguimiento de visitantes. No se ha confirmado la ausencia absoluta de cookies técnicas de Cloudflare en todas las circunstancias.
 - El sitio mantiene noindex. Su publicación no autoriza retirar esta directiva: hace falta autorización expresa.
 
+### Configuración de Cloudflare observada en la cuenta
+
+Según la revisión del panel comunicada por el titular:
+
+- El sitio utiliza Cloudflare Pages y el dominio se administra en Cloudflare con el plan Free; el registro del dominio permanece en IONOS.
+- Cloudflare Web Analytics no está configurado.
+- Bot Fight Mode, AI Labyrinth, Continuous Script Monitoring y Email Address Obfuscation están desactivados.
+- Browser Integrity Check, Cloudflare Managed Ruleset, HTTP DDoS Protection y Replace Insecure JavaScript Libraries están activados.
+- El panel muestra estadísticas técnicas de tráfico y seguridad, independientes del servicio Cloudflare Web Analytics. El periodo consultable de esas estadísticas no acredita la conservación interna de todos los registros o datos personales del proveedor.
+- En una prueba con Chrome en modo incógnito no se observaron cookies de fernandoghg.com. El resultado corresponde a esa prueba y no acredita su ausencia en todos los escenarios, especialmente ante desafíos de seguridad.
+
+Estos hechos proceden de la revisión de la cuenta comunicada por el titular; no se deducen del código del repositorio ni acreditan todas las operaciones internas de Cloudflare.
+
+### Documentación pública de Cloudflare revisada
+
+El [DPA público de Cloudflare](https://www.cloudflare.com/cloudflare-customer-dpa/), versión 6.4, efectiva desde el 3 de abril de 2026, contempla tratamientos por cuenta del cliente y acuerdos de autoservicio. Las [condiciones públicas de autoservicio](https://www.cloudflare.com/terms/), en su apartado 6.1, incorporan el DPA por referencia para los tratamientos comprendidos en su ámbito.
+
+Esta información describe la documentación publicada por el proveedor. No acredita por sí sola las condiciones ni la versión contractualmente aplicables a esta cuenta. Permanecen pendientes las verificaciones contractuales, de conservación y de transferencias indicadas más abajo, así como la ponderación del interés legítimo.
+
 ## Principios que se mantienen
 
 - No añadir cookies salvo necesidad futura expresamente justificada. No añadir banners por precaución sin determinar antes si hay mecanismos que requieran consentimiento.
@@ -35,10 +54,10 @@ La política no atribuye un plazo único inventado a los registros técnicos de 
 
 Estos puntos no se dan por acreditados por la disponibilidad de documentación pública ni por el resultado de un build:
 
-- Cloudflare: identificar la entidad contratada, condiciones aceptadas y versión del DPA contractualmente aplicable. No se ha verificado esa versión. Revisar el alcance de los tratamientos por cuenta del titular y los fines propios del proveedor, servicios activos y subencargados.
+- Cloudflare: identificar la entidad contratada, condiciones aceptadas y versión del DPA contractualmente aplicable. No se ha acreditado su aplicación concreta a esta cuenta; la revisión del DPA público indicada arriba no cierra este pendiente. Revisar el alcance de los tratamientos por cuenta del titular y los fines propios del proveedor y subencargados, teniendo en cuenta las funciones ya confirmadas en el panel.
 - IONOS: confirmar la entidad y condiciones del producto Mail Basic y el contrato de encargo aplicable. IONOS ofrece documentación sobre contratos de tratamiento, pero no se ha confirmado la aplicabilidad del contrato consultado a este producto.
 - Ambos proveedores: comprobar ubicaciones de procesamiento y almacenamiento, posibles transferencias internacionales y el mecanismo o garantías efectivamente aplicables. No se han verificado ubicaciones concretas ni garantías específicas. No afirmar alojamiento exclusivamente europeo, adhesiones, cláusulas contractuales o decisiones de adecuación sin evidencia aplicable al servicio contratado.
-- Cloudflare: inventariar registros, métricas operativas, funciones de seguridad y posibles cookies técnicas según las circunstancias, incluidos desafíos. La ausencia de Set-Cookie en una consulta no acredita ausencia de cookies en todos los escenarios.
+- Cloudflare: completar el inventario de registros y métricas operativas y sus criterios de conservación, y comprobar el comportamiento de las funciones de seguridad y posibles cookies técnicas según las circunstancias, incluidos desafíos. Las funciones confirmadas y la prueba de incógnito constan arriba; esta prueba y la ausencia de Set-Cookie en una consulta no acreditan ausencia de cookies en todos los escenarios.
 - IONOS: verificar retención, eliminación y copias de mensajes y metadatos, y si existen otros destinatarios o reenvíos adicionales. Solo está confirmado el reenvío de contacto@ al buzón privacidad@.
 - Completar con los resultados la información pública de destinatarios, transferencias y conservación que corresponda conforme al artículo 13 RGPD. Los enlaces a políticas de proveedores y la redacción prudente no sustituyen esta verificación ni acreditan cumplimiento completo.
 
