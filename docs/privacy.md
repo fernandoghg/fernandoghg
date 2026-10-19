@@ -29,7 +29,7 @@ Estos hechos proceden de la revisión de la cuenta comunicada por el titular; no
 
 El [DPA público de Cloudflare](https://www.cloudflare.com/cloudflare-customer-dpa/), versión 6.4, efectiva desde el 3 de abril de 2026, contempla tratamientos por cuenta del cliente y acuerdos de autoservicio. Las [condiciones públicas de autoservicio](https://www.cloudflare.com/terms/), en su apartado 6.1, incorporan el DPA por referencia para los tratamientos comprendidos en su ámbito.
 
-Esta información describe la documentación publicada por el proveedor. No acredita por sí sola las condiciones ni la versión contractualmente aplicables a esta cuenta. Permanecen pendientes las verificaciones contractuales, de conservación y de transferencias indicadas más abajo, así como la ponderación del interés legítimo.
+Esta información describe la documentación publicada por el proveedor. No acredita por sí sola las condiciones ni la versión contractualmente aplicables a esta cuenta. Permanecen pendientes las verificaciones contractuales, de conservación técnica y de transferencias indicadas más abajo. El criterio operativo del correo y su justificación inicial se documentan a continuación, sin declarar completada la revisión jurídica.
 
 ## Principios que se mantienen
 
@@ -44,9 +44,17 @@ Esta información describe la documentación publicada por el proveedor. No acre
 
 ## Finalidades, bases jurídicas y conservación
 
-La revisión mantiene y concreta las bases ya contempladas en la política: interés legítimo en entregar y proteger la web y responder a consultas recibidas (artículo 6.1.f RGPD), y cumplimiento de obligaciones legales para tramitar derechos (artículo 6.1.c RGPD). No se incorpora consentimiento ficticio por navegar o enviar correo ni una base contractual comercial que no corresponde a la finalidad actual. Queda pendiente documentar la ponderación de necesidad, proporcionalidad e impacto para los tratamientos basados en interés legítimo; no se presenta como realizada.
+La revisión mantiene y concreta las bases ya contempladas en la política: interés legítimo en entregar y proteger la web y responder a consultas recibidas (artículo 6.1.f RGPD), y cumplimiento de obligaciones legales para tramitar derechos (artículo 6.1.c RGPD). No se incorpora consentimiento ficticio por navegar o enviar correo ni una base contractual comercial que no corresponde a la finalidad actual.
 
-Los correos generales se revisarán periódicamente y se eliminarán cuando estén resueltos y ya no sean necesarios, salvo obligación legal o causa justificada de conservación. Las solicitudes de derechos se gestionarán diferenciadamente, conservando lo necesario para acreditar su atención durante los plazos aplicables. No se fija un número de años sin identificar la obligación o justificación correspondiente. Quedan por concretar el procedimiento de revisión y borrado, los plazos aplicables a la evidencia de atención de derechos y el efecto de las copias de seguridad del servicio.
+Para las consultas, el interés es responder a comunicaciones iniciadas voluntariamente por quien escribe. Utilizar la dirección de respuesta y el contenido pertinente del mensaje es necesario para atender esa comunicación, una finalidad razonablemente esperable en este contexto. Se limita el uso a los datos necesarios para gestionar y responder la consulta, sin publicidad, perfilado ni cesiones comerciales; se pide evitar información innecesaria y se eliminan los mensajes cuando dejan de ser necesarios. Estas limitaciones reducen el impacto sobre quien escribe, que conserva sus derechos, incluida la oposición. Esta es una justificación inicial y proporcionada, no una declaración de revisión jurídica completa. Deben reconsiderarse la base jurídica y la información pública si cambian las finalidades o el uso de los datos. La evaluación del interés legítimo del tratamiento técnico de la web permanece pendiente.
+
+### Criterio operativo del correo confirmado por el propietario
+
+IONOS Mail Basic se utiliza para recibir consultas y responderlas. El propietario confirma que revisará habitualmente el buzón y eliminará los mensajes cuando la consulta esté resuelta y ya no sean necesarios, salvo obligación legal o causa justificada de conservación. No se fija un plazo uniforme de conservación ni una frecuencia de revisión no acordada.
+
+Las solicitudes de derechos se identificarán y gestionarán diferenciadamente, aunque compartan buzón con las consultas generales, conforme a los plazos legales aplicables. Se conservará únicamente la información necesaria para acreditar su atención durante el tiempo que corresponda a esa finalidad. El propietario asume esta operativa; no se atribuye al proveedor una eliminación automática ni inmediata de todas las copias.
+
+Quedan pendientes de concretar los plazos o criterios aplicables a la evidencia de atención de derechos y de verificar la conservación técnica, la eliminación y el efecto de las copias de seguridad del servicio. El criterio operativo no resuelve las verificaciones contractuales o de transferencias de Cloudflare e IONOS.
 
 La política no atribuye un plazo único inventado a los registros técnicos de los proveedores. Deben identificarse los registros efectivos, finalidades, accesos y plazos o criterios de conservación antes de dar por cerrada la revisión de transparencia.
 
@@ -68,13 +76,13 @@ Fuentes de referencia, sin presuponer su incorporación al contrato concreto:
 - [DPA público de Cloudflare](https://www.cloudflare.com/cloudflare-customer-dpa/).
 - [Información de IONOS sobre el contrato de tratamiento](https://www.ionos.es/ayuda/proteccion-de-datos/informacion-general-sobre-el-rgpd/contrato-de-tratamiento-de-datos/).
 
-## Política ES/EN y aprobación pendiente
+## Política ES/EN publicada y estado de indexación
 
 PrivacyContent.astro genera /es/privacidad/ y /en/privacy/ con contenido equivalente, ocho secciones, ambos correos y enlaces a Cloudflare, IONOS y AEPD. Los derechos se mantienen, incluida la oposición al interés legítimo y la reclamación ante la AEPD. Los enlaces no cargan automáticamente servicios externos.
 
-La fecha editorial fija preparada es **17 de octubre de 2026 / 17 October 2026**, con datetime 2026-10-17, condicionada a la aprobación y publicación de estos cambios. No deriva de build, Git ni fecha del archivo. La revisión está preparada localmente: no está aprobada ni desplegada por el hecho de editar el componente. Si la aprobación o publicación exige otra fecha, deberá acordarse expresamente; no actualizarla automáticamente.
+Las políticas ES/EN están publicadas técnicamente. Conservan la fecha editorial **17 de octubre de 2026 / 17 October 2026**, con datetime 2026-10-17; no deriva de build, Git ni fecha del archivo y no se actualiza automáticamente. El incremento sobre estadísticas técnicas de Cloudflare se integró en main en el commit 4c4364df1edddf50335fd30bdd48b50021d42a5b. Los cambios posteriores requieren su propia aprobación antes de publicarse.
 
-README.md, docs/development.md y AGENTS.md recogen el contexto confirmado. docs/architecture.md conserva referencias de una fase anterior al despliegue y al correo pendiente; no se modifica en esta actualización. Para el estado operativo actual debe consultarse este documento. Queda pendiente armonizar esas referencias cuando se autorice actualizar arquitectura.
+La publicación técnica no equivale a autorización de lanzamiento público o indexación. Todas las páginas deben conservar noindex hasta autorización expresa. Este cierre operativo no declara completadas la revisión jurídica ni las verificaciones contractuales, de conservación técnica y de transferencias de los proveedores.
 
 ## Valoración del aviso legal independiente
 
