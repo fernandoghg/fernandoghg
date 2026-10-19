@@ -18,8 +18,23 @@ function expectBuild() {
   checkSecurityHeadersAndTable();
   checkFavicons();
   checkInternalLinks();
+  checkRootRedirect();
 }
 function output(file) { return readFileSync(resolve(root, 'dist', file), 'utf8'); }
+
+function checkRootRedirect() {
+  const source = readFileSync(resolve(root, 'public/_redirects'), 'utf8');
+  assert.equal(source.trim(), '/ /es/ 301', 'Única regla autorizada de Pages');
+  assert.equal(output('_redirects'), source, 'Copia exacta de _redirects al build');
+  const [from, destination, status] = source.trim().split(/\s+/);
+  assert.equal(from, '/');
+  assert.equal(status, '301');
+  const html = output('index.html');
+  const metas = [...html.matchAll(/<meta\b[^>]*>/g)].map(([tag]) => attributes(tag));
+  const refresh = metas.filter((meta) => meta['http-equiv'] === 'refresh');
+  assert.deepEqual(refresh.map((meta) => meta.content), [`2;url=${destination}`], 'Respaldo HTML coherente con Pages');
+  assert.equal(seo('index.html').canonical, new URL(destination, canonicalOrigin).href);
+}
 
 function checkFavicons() {
   const approved = readFileSync(resolve(root, 'docs/design/favicon-fg.svg'));

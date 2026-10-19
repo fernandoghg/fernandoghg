@@ -7,7 +7,7 @@
 - La arquitectura inicial evitará backend, base de datos y procesamiento dinámico en servidor mientras no exista una necesidad funcional expresamente justificada.
 - Los dominios están registrados actualmente en IONOS. No se transferirán ni se modificará DNS en esta fase.
 - Contenido previsto principalmente en Markdown/MDX, en español e inglés. No todo el contenido tendrá necesariamente traducción.
-- El sitio es bilingüe, con raíces /es/ y /en/. Las traducciones de artículos se relacionan mediante translationKey; canonical/hreflang multilingües quedan pendientes. La raíz redirige estáticamente a /es/, sin cookies, localStorage, geolocalización ni tracking para seleccionar o recordar idioma. Sin adaptador, Astro genera meta refresh; una redirección HTTP real depende del alojamiento posterior.
+- El sitio es bilingüe, con raíces /es/ y /en/. Las traducciones de artículos se relacionan mediante translationKey; canonical/hreflang multilingües quedan pendientes. La raíz redirige estáticamente a /es/, sin cookies, localStorage, geolocalización ni tracking para seleccionar o recordar idioma. SEO 3 prepara la regla nativa de Cloudflare Pages `/ /es/ 301` en public/_redirects, pendiente de autorización de publicación. Astro conserva sin cambios el meta refresh de dos segundos como respaldo HTML; no se añaden adaptadores ni procesamiento en servidor.
 - Privacidad por diseño y atención a RGPD/ePrivacy y normativa aplicable como requisitos de primer nivel.
 - Accesibilidad, SEO, rendimiento y seguridad como requisitos del proyecto.
 - Recursos preferentemente autocontenidos; fuentes locales si se emplean fuentes personalizadas. Evitar recursos externos que permitan seguimiento.
