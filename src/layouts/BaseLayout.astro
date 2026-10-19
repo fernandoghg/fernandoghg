@@ -1,13 +1,16 @@
 ---
 import '../styles/global.css';
 import { navigation, primaryPages, type Language, type Page } from '../data/navigation';
-interface Props { lang: Language; page?: Page; title: string; description: string; languageHref?: string; translationHref?: string; isErrorPage?: boolean }
-const { lang, page, title, description, languageHref, translationHref, isErrorPage = false } = Astro.props;
+import { socialImage, socialLocales } from '../data/social';
+interface Props { lang: Language; page?: Page; title: string; description: string; languageHref?: string; translationHref?: string; isErrorPage?: boolean; socialType?: 'website' | 'article' }
+const { lang, page, title, description, languageHref, translationHref, isErrorPage = false, socialType = 'website' } = Astro.props;
 const links = navigation[lang];
 const other = lang === 'es' ? 'en' : 'es';
 const es = lang === 'es';
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const translation = translationHref ? new URL(translationHref, Astro.site) : undefined;
+const fullTitle = `${title} — fernandoghg.com`;
+const socialImageUrl = new URL(socialImage.path, Astro.site);
 ---
 <!doctype html>
 <html lang={lang}>
@@ -24,7 +27,25 @@ const translation = translationHref ? new URL(translationHref, Astro.site) : und
       <link rel="alternate" hreflang={lang} href={canonical.href} />
       <link rel="alternate" hreflang={other} href={translation.href} />
     </>}
-    <title>{title} — fernandoghg.com</title>
+    <title>{fullTitle}</title>
+    {!isErrorPage && <>
+      <meta property="og:title" content={fullTitle} />
+      <meta property="og:description" content={description} />
+      <meta property="og:type" content={socialType} />
+      <meta property="og:url" content={canonical.href} />
+      <meta property="og:image" content={socialImageUrl.href} />
+      <meta property="og:image:alt" content={socialImage.alt[lang]} />
+      <meta property="og:image:width" content={String(socialImage.width)} />
+      <meta property="og:image:height" content={String(socialImage.height)} />
+      <meta property="og:image:type" content={socialImage.type} />
+      <meta property="og:site_name" content="fernandoghg.com" />
+      <meta property="og:locale" content={socialLocales[lang]} />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={fullTitle} />
+      <meta name="twitter:description" content={description} />
+      <meta name="twitter:image" content={socialImageUrl.href} />
+      <meta name="twitter:image:alt" content={socialImage.alt[lang]} />
+    </>}
   </head>
   <body>
     <a class="skip-link" href="#main">{es ? 'Saltar al contenido' : 'Skip to content'}</a>

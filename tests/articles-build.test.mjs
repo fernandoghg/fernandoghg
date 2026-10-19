@@ -19,8 +19,77 @@ function expectBuild() {
   checkFavicons();
   checkInternalLinks();
   checkRootRedirect();
+  checkSocialMetadata();
 }
 function output(file) { return readFileSync(resolve(root, 'dist', file), 'utf8'); }
+
+function checkSocialMetadata() {
+  const png = readFileSync(resolve(root, 'dist/social/site.png'));
+  assert.deepEqual(png, readFileSync(resolve(root, 'public/social/site.png')));
+  assert.deepEqual(png.subarray(0, 8), Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
+  assert.equal(png.readUInt32BE(16), 1200);
+  assert.equal(png.readUInt32BE(20), 630);
+  const source = readFileSync(resolve(root, 'docs/design/social-site.svg'), 'utf8');
+  assert.match(source, /viewBox="0 0 1200 630"/);
+  assert.doesNotMatch(source, /<(?:script|style|text|image|foreignObject)\b|\b(?:href|style|on\w+)\s*=|url\(|<!DOCTYPE|<!ENTITY/i);
+  const monogram = source.match(/<g id="approved-favicon"[^>]*>([\s\S]*?)<\/g>/)?.[1];
+  assert.ok(monogram, 'Grupo del favicon aprobado');
+  const geometry = (svg) => svg.match(/<(?:rect|path)\b[^>]*>/g);
+  assert.deepEqual(geometry(monogram), geometry(output('favicon.svg')), 'Geometría y colores del favicon sin cambios');
+  for (const file of readdirSync(resolve(root, 'dist'), { recursive: true }).filter((file) => file.endsWith('.html'))) {
+    const html = output(file);
+    const metaTags = html.match(/<meta\b[^>]*>/g) ?? [];
+    const metas = metaTags.map(attributes);
+    const socialTags = metaTags.filter((tag) => {
+      const meta = attributes(tag);
+      return meta.property?.startsWith('og:') || meta.name?.startsWith('twitter:');
+    });
+    assert.ok(!metas.some((meta) => meta.property?.startsWith('article:')), file);
+    if (['index.html', '404.html'].includes(file)) {
+      assert.equal(socialTags.length, 0, `Sin etiquetas sociales en raíz o error: ${file}`);
+      continue;
+    }
+    const head = html.match(/<head>[\s\S]*?<\/head>/)?.[0];
+    for (const tag of socialTags) assert.ok(head?.includes(tag), file);
+    assert.equal(socialTags.length, 16, `Número de etiquetas sociales: ${file}`);
+    const social = socialTags.map(attributes);
+    const keys = social.map((meta) => meta.property ?? meta.name);
+    assert.equal(new Set(keys).size, keys.length, `Unicidad social: ${file}`);
+    const lang = html.match(/<html lang="(es|en)"/)?.[1];
+    const alt = lang === 'es'
+      ? 'Monograma FG blanco sobre un cuadrado azul oscuro de esquinas redondeadas, con el dominio fernandoghg.com debajo sobre fondo claro.'
+      : 'White FG monogram on a dark blue rounded square, with the domain fernandoghg.com below on a light background.';
+    const title = decodeHtml(html.match(/<title>([\s\S]*?)<\/title>/)?.[1] ?? '');
+    const description = metas.find((meta) => meta.name === 'description')?.content;
+    const canonical = [...html.matchAll(/<link\b[^>]*>/g)].map(([tag]) => attributes(tag)).find((link) => link.rel === 'canonical')?.href;
+    const imageUrl = `${canonicalOrigin}/social/site.png`;
+    const expected = {
+      'og:title': title,
+      'og:description': description,
+      'og:type': html.includes('<article class="editorial-container article-page">') ? 'article' : 'website',
+      'og:url': canonical,
+      'og:image': imageUrl,
+      'og:image:alt': alt,
+      'og:image:width': '1200',
+      'og:image:height': '630',
+      'og:image:type': 'image/png',
+      'og:site_name': 'fernandoghg.com',
+      'og:locale': lang === 'es' ? 'es_ES' : 'en_GB',
+      'twitter:card': 'summary_large_image',
+      'twitter:title': title,
+      'twitter:description': description,
+      'twitter:image': imageUrl,
+      'twitter:image:alt': alt,
+    };
+    assert.ok(Object.values(expected).every((value) => typeof value === 'string' && value.trim()), file);
+    assert.deepEqual(Object.fromEntries(social.map((meta) => [meta.property ?? meta.name, meta.content])), expected, file);
+    assert.ok(social.every((meta) => meta.property?.startsWith('og:') ? meta.name === undefined : meta.name?.startsWith('twitter:') && meta.property === undefined), file);
+    const image = new URL(imageUrl);
+    assert.equal(image.protocol, 'https:');
+    assert.equal(image.origin, canonicalOrigin);
+    assert.ok(existsSync(resolve(root, 'dist', image.pathname.slice(1))), file);
+  }
+}
 
 function checkRootRedirect() {
   const source = readFileSync(resolve(root, 'public/_redirects'), 'utf8');
