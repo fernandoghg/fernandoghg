@@ -149,6 +149,14 @@ No hay autor por artículo, tags, imagen destacada, RSS ni colecciones de catego
 - Antes de publicar archivos descargables, comprobar que no contienen secretos, credenciales, datos personales, datos sanitarios ni información privada o corporativa.
 - No incorporar recursos externos cuando podamos servirlos localmente.
 
+## Regresión SEO previa al lanzamiento
+
+`tests/articles-build.test.mjs` comprueba todos los HTML de cada build válido, incluidos los fixtures y la 404: un único título no vacío, una única descripción no vacía, lang coherente con /es/ o /en/, un único viewport con width=device-width e initial-scale=1, y una única directiva robots con noindex. Comprueba también que los metadatos estén en head. La 404 conserva lang=es con sus bloques bilingües, sin canonical ni hreflang. La raíz index.html es la excepción explícita de descripción, lang y viewport porque es HTML de redirección generado por Astro; sí debe tener título no vacío, noindex y canonical a /es/. Se mantienen las pruebas de canonical, reciprocidad de hreflang, exclusión de traducciones inexistentes y correspondencia del sitemap con las páginas generadas.
+
+Se comprueban los href de los enlaces a archivos locales, tanto relativos como absolutos del dominio canónico, y sus fragmentos HTML mediante id o el atributo name de anclas. Se resuelven consultas, entidades HTML comunes y numéricas, fragmentos codificados y rutas de directorio; los enlaces externos y mailto no se consultan. Los fragmentos de recursos no HTML, como páginas de PDF, y las directivas de selección de texto no se validan. No es un parser HTML general: se valida el HTML generado por Astro con los atributos entre comillas dobles que utiliza actualmente. Hay casos negativos en memoria para comprobar que las validaciones rechazan errores sin modificar páginas reales.
+
+La raíz utiliza actualmente una redirección HTML diferida de dos segundos a /es/ y no una respuesta HTTP 3xx. Su posible sustitución queda pendiente de decisión y autorización; este incremento no la modifica. Las pruebas locales verifican destinos presentes en dist, pero no códigos HTTP, cadenas de redirección, cabeceras ni comportamiento de buscadores en producción; estos aspectos requieren una comprobación HTTP independiente. No se consultan servicios externos ni se añaden dependencias. Se mantienen noindex y todas las restricciones de publicación.
+
 ## Favicon FG
 
 El original aprobado es `docs/design/favicon-fg.svg`. `public/favicon.svg` es una copia exacta, autocontenida, con letras trazadas y los mismos colores en temas claro y oscuro. `public/favicon.ico` contiene tres imágenes PNG internas de 16, 32 y 48px. `public/apple-touch-icon.png` es RGB de 180 × 180px, sin transparencia, con el fondo azul extendido hasta los bordes; conserva los trazados del monograma. No hay manifiesto web.

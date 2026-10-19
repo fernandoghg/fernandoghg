@@ -17,6 +17,7 @@ function expectBuild() {
   checkNavigationFiles();
   checkSecurityHeadersAndTable();
   checkFavicons();
+  checkInternalLinks();
 }
 function output(file) { return readFileSync(resolve(root, 'dist', file), 'utf8'); }
 
@@ -66,10 +67,78 @@ function checkFavicons() {
 
 const canonicalOrigin = 'https://fernandoghg.com';
 function attributes(tag) {
-  return Object.fromEntries([...tag.matchAll(/([\w-]+)="([^"]*)"/g)].map(([, name, value]) => [name, value.replace(/&(?:amp|quot|apos|#39|lt|gt);/g, (entity) => ({ '&amp;': '&', '&quot;': '"', '&apos;': "'", '&#39;': "'", '&lt;': '<', '&gt;': '>' })[entity])]));
+  return Object.fromEntries([...tag.matchAll(/([\w-]+)="([^"]*)"/g)].map(([, name, value]) => [name, decodeHtml(value)]));
+}
+function decodeHtml(value) {
+  const named = { amp: '&', quot: '"', apos: "'", lt: '<', gt: '>', nbsp: '\u00a0' };
+  return value.replace(/&(#x[\da-f]+|#\d+|amp|quot|apos|lt|gt|nbsp);/gi, (_, entity) => {
+    if (!entity.startsWith('#')) return named[entity.toLowerCase()];
+    const code = entity[1].toLowerCase() === 'x' ? parseInt(entity.slice(2), 16) : Number(entity.slice(1));
+    return code > 0 && code <= 0x10ffff ? String.fromCodePoint(code) : '\ufffd';
+  });
+}
+function checkSeoMetadata(html, file) {
+  const titles = [...html.matchAll(/<title\b[^>]*>([\s\S]*?)<\/title>/gi)];
+  assert.equal(titles.length, 1, `Un único title: ${file}`);
+  assert.ok(decodeHtml(titles[0][1]).trim(), `Title vacío: ${file}`);
+  const metaTags = html.match(/<meta\b[^>]*>/gi) ?? [];
+  const metas = metaTags.map(attributes);
+  assert.deepEqual(metas.filter((meta) => meta.name === 'robots').map((meta) => meta.content), ['noindex'], `Noindex: ${file}`);
+  // Astro's static redirect intentionally has no html/head wrapper, description or viewport.
+  if (file === 'index.html') return;
+  const head = html.match(/<head\b[^>]*>([\s\S]*?)<\/head>/i)?.[1];
+  assert.ok(head, `Head ausente: ${file}`);
+  assert.ok(head.includes(titles[0][0]), `Title fuera del head: ${file}`);
+  for (const tag of metaTags) assert.ok(head.includes(tag), `Meta fuera del head: ${file}`);
+  const descriptions = metas.filter((meta) => meta.name === 'description');
+  assert.equal(descriptions.length, 1, `Una única description: ${file}`);
+  assert.ok(descriptions[0].content?.trim(), `Description vacía: ${file}`);
+  const htmlTag = html.match(/<html\b[^>]*>/i)?.[0];
+  assert.ok(htmlTag, `Html ausente: ${file}`);
+  const expectedLang = file === '404.html' ? 'es' : file.replaceAll('\\', '/').split('/')[0];
+  assert.ok(['es', 'en'].includes(expectedLang), `Ruta sin idioma previsto: ${file}`);
+  assert.equal(attributes(htmlTag).lang, expectedLang, `Lang: ${file}`);
+  const viewports = metas.filter((meta) => meta.name === 'viewport');
+  assert.equal(viewports.length, 1, `Un único viewport: ${file}`);
+  const viewport = Object.fromEntries((viewports[0].content ?? '').split(',').map((part) => part.trim().split(/\s*=\s*/)));
+  assert.equal(viewport.width, 'device-width', `Viewport width: ${file}`);
+  assert.equal(viewport['initial-scale'], '1', `Viewport initial-scale: ${file}`);
+}
+
+function checkLocalHref(href, source, files, htmlPages) {
+  const sourcePath = source.replaceAll('\\', '/');
+  const basePath = sourcePath === 'index.html' ? '/' : `/${sourcePath.replace(/index\.html$/, '')}`;
+  const url = new URL(href, canonicalOrigin + basePath);
+  // No network requests: mailto, external sites and other protocols are outside this check.
+  if (url.origin !== canonicalOrigin) return;
+  const pathname = decodeURIComponent(url.pathname);
+  const direct = pathname.slice(1);
+  const target = pathname.endsWith('/') ? `${direct}index.html` : files.has(direct) ? direct : `${direct}/index.html`;
+  assert.ok(files.has(target), `Destino interno ausente: ${source} → ${href}`);
+  const fragment = decodeURIComponent(url.hash.slice(1).split(':~:')[0]);
+  if (!fragment || !htmlPages.has(target)) return;
+  const tags = htmlPages.get(target).match(/<[^>]+>/g) ?? [];
+  const found = tags.some((tag) => {
+    const attrs = attributes(tag);
+    return attrs.id === fragment || (/^<a\b/i.test(tag) && attrs.name === fragment);
+  });
+  assert.ok(found, `Fragmento interno ausente: ${source} → ${href}`);
+}
+function checkInternalLinks() {
+  const files = new Set(readdirSync(resolve(root, 'dist'), { recursive: true, withFileTypes: true })
+    .filter((entry) => entry.isFile())
+    .map((entry) => resolve(entry.parentPath, entry.name).slice(resolve(root, 'dist').length + 1).replaceAll('\\', '/')));
+  const htmlPages = new Map([...files].filter((file) => file.endsWith('.html')).map((file) => [file, output(file)]));
+  for (const [file, html] of htmlPages) {
+    for (const tag of html.match(/<a\b[^>]*>/gi) ?? []) {
+      const { href } = attributes(tag);
+      if (href !== undefined) checkLocalHref(href, file, files, htmlPages);
+    }
+  }
 }
 function seo(file) {
   const html = output(file);
+  checkSeoMetadata(html, file);
   const links = [...html.matchAll(/<link\b[^>]*>/g)].map(([tag]) => attributes(tag));
   if (file !== 'index.html') {
     const header = html.match(/<header class="site-header container">([\s\S]*?)<\/header>/)?.[1];
@@ -85,8 +154,6 @@ function seo(file) {
   assert.equal(canonicals.length, errorPage ? 0 : 1, `Canonical de contenido: ${file}`);
   const pathname = file === 'index.html' ? '/es/' : `/${file.replaceAll('\\', '/').replace(/index\.html$/, '')}`;
   if (!errorPage) assert.equal(canonicals[0].href, `${canonicalOrigin}${pathname}`, file);
-  const robots = metas.filter((meta) => meta.name === 'robots');
-  assert.deepEqual(robots.map((meta) => meta.content), ['noindex'], file);
   const alternates = links.filter((link) => link.hreflang !== undefined);
   if (errorPage) assert.deepEqual(alternates, [], file);
   assert.ok(alternates.every((link) => link.rel === 'alternate' && ['es', 'en'].includes(link.hreflang)), file);
@@ -97,7 +164,6 @@ function seo(file) {
     for (const tag of html.match(/<link\b[^>]*>/g) ?? []) {
       if (/rel="canonical"|hreflang=/.test(tag)) assert.ok(head.includes(tag), file);
     }
-    assert.equal(metas.filter((meta) => meta.name === 'description').length, 1, file);
   }
   return { canonical: canonicals[0]?.href, alternates, description: metas.find((meta) => meta.name === 'description')?.content };
 }
@@ -360,6 +426,45 @@ function checkSecurityHeadersAndTable() {
   }
   assert.doesNotMatch(output('es/articulos/mi-experiencia-top-eleven/index.html'), /top-eleven-complex-table/);
 }
+
+test('Metadatos globales: rechaza ausencias, duplicados, vacíos e idioma incorrecto', () => {
+  const html = '<html lang="es"><head><title>Prueba</title><meta name="description" content="Descripción"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"></head><body></body></html>';
+  assert.doesNotThrow(() => checkSeoMetadata(html, 'es/index.html'));
+  assert.doesNotThrow(() => checkSeoMetadata(html.replace('lang="es"', 'lang="en"'), 'en/articles/example/index.html'));
+  assert.doesNotThrow(() => checkSeoMetadata(html, '404.html'));
+  for (const invalid of [
+    html.replace('<title>Prueba</title>', ''),
+    html.replace('Prueba</title>', 'Prueba</title><title>Duplicado</title>'),
+    html.replace('Prueba</title>', ' &#32;&nbsp;</title>'),
+    html.replace('<meta name="description" content="Descripción">', ''),
+    html.replace('content="Descripción"', 'content=" &#x20;&nbsp;"'),
+    html.replace('<meta name="description"', '<meta name="description" content="Otra"><meta name="description"'),
+    html.replace('lang="es"', 'lang="en"'),
+    html.replace('<meta name="viewport" content="width=device-width, initial-scale=1">', ''),
+    html.replace('width=device-width', 'width=393'),
+    html.replace('name="viewport"', 'name="viewport" content="width=device-width, initial-scale=1"><meta name="viewport"'),
+    html.replace('name="robots" content="noindex"', 'name="robots" content="index"'),
+    html.replace('<meta name="robots"', '<meta name="robots" content="noindex"><meta name="robots"'),
+  ]) assert.throws(() => checkSeoMetadata(invalid, 'es/index.html'), assert.AssertionError);
+  const redirect = '<title>Redirecting to: /es/</title><meta name="robots" content="noindex">';
+  assert.doesNotThrow(() => checkSeoMetadata(redirect, 'index.html'));
+  assert.throws(() => checkSeoMetadata(redirect.replace('noindex', 'index'), 'index.html'), assert.AssertionError);
+});
+
+test('Enlaces locales: resuelve rutas y fragmentos sin consultar servicios externos', () => {
+  const pages = new Map([
+    ['es/index.html', '<main id="main"><h2 id="sección">Texto</h2><a name="legacy"></a></main>'],
+    ['en/index.html', '<h1 id="home">Home</h1>'],
+    ['index.html', '<a href="/es/">Redirect</a>'],
+  ]);
+  const files = new Set([...pages.keys(), 'downloads/file.pdf']);
+  for (const href of ['#main', './#main', '?a=1#main', '/es/#secci%C3%B3n', '#legacy', '#main:~:text=Texto', '/en', 'https://fernandoghg.com/en/#home', '/downloads/file.pdf#page=1', '/', 'mailto:contacto@example.com', 'https://example.com/missing#id']) {
+    assert.doesNotThrow(() => checkLocalHref(href, 'es/index.html', files, pages), href);
+  }
+  for (const href of ['/es/missing/', '#missing', '/en/#missing', '/downloads/missing.pdf']) {
+    assert.throws(() => checkLocalHref(href, 'es/index.html', files, pages), assert.AssertionError, href);
+  }
+});
 
 test('Build real: Markdown, traducciones públicas, exclusión de drafts/futuros y validación global', () => {
   const names = ['es/fixture-publico.md', 'en/fixture-public.md', 'es/fixture-draft.md', 'en/fixture-future.md', 'es/fixture-duplicate.md'];
