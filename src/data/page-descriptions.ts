@@ -11,7 +11,7 @@ export const pageDescriptions: Record<Language, Record<Page, string>> = {
   en: {
     home: 'A personal website about technology, projects, video games, simulation, and experiences worth sharing.',
     projects: 'Personal projects exploring technology, app development, and new ideas.',
-    articles: "Articles about technology, video games, simulation, and other experiences, ideas, and things I've learned.",
+    articles: 'Articles in English will be published here as they become available.',
     about: 'Learn more about Fernando, his background in computing, and his interests, from technology to flight simulation.',
     privacy: "Information about privacy at fernandoghg.com, personal data processing, and visitors' data protection rights.",
   },
