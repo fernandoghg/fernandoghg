@@ -6,8 +6,8 @@
 - Astro es el framework/generador seleccionado. TypeScript se utilizará cuando sea necesario para desarrollo y lógica. Priorizar HTML5 semántico y generación estática siempre que sea posible.
 - La arquitectura inicial evitará backend, base de datos y procesamiento dinámico en servidor mientras no exista una necesidad funcional expresamente justificada.
 - Los dominios están registrados actualmente en IONOS. No se transferirán ni se modificará DNS en esta fase.
-- Contenido previsto principalmente en Markdown/MDX, en español e inglés. No todo el contenido tendrá necesariamente traducción.
-- El sitio es bilingüe, con raíces /es/ y /en/. Las traducciones de artículos se relacionan mediante translationKey; canonical/hreflang multilingües quedan pendientes. La raíz redirige estáticamente a /es/, sin cookies, localStorage, geolocalización ni tracking para seleccionar o recordar idioma. SEO 3 prepara la regla nativa de Cloudflare Pages `/ /es/ 301` en public/_redirects, pendiente de autorización de publicación. Astro conserva sin cambios el meta refresh de dos segundos como respaldo HTML; no se añaden adaptadores ni procesamiento en servidor.
+- Contenido en Markdown, en español e inglés; MDX queda para una fase posterior. No todo el contenido tendrá necesariamente traducción.
+- El sitio es bilingüe, con raíces /es/ y /en/. Las traducciones de artículos se relacionan mediante translationKey; canonical/hreflang multilingües están implementados para equivalentes reales. La raíz redirige a /es/ mediante la regla `/ /es/ 301` de public/_redirects, aplicada en producción, sin cookies, localStorage, geolocalización ni tracking para seleccionar o recordar idioma. Astro conserva el meta refresh de dos segundos como respaldo HTML; no se añaden adaptadores ni procesamiento en servidor.
 - Privacidad por diseño y atención a RGPD/ePrivacy y normativa aplicable como requisitos de primer nivel.
 - Accesibilidad, SEO, rendimiento y seguridad como requisitos del proyecto.
 - Recursos preferentemente autocontenidos; fuentes locales si se emplean fuentes personalizadas. Evitar recursos externos que permitan seguimiento.
@@ -20,9 +20,9 @@
 
 ## Alojamiento y dominios aprobados
 
-Cloudflare Pages es el alojamiento seleccionado inicialmente. GitHub seguirá siendo el repositorio y sistema de control de versiones; se prevé integrar posteriormente el repositorio con Cloudflare Pages para despliegue. Todavía no existe cuenta/configuración de Cloudflare para este proyecto. AWS S3 + CloudFront, AWS Amplify y GitHub Pages quedan como alternativas no seleccionadas inicialmente, no como decisiones pendientes.
+Cloudflare Pages aloja el sitio desplegado técnicamente en producción. GitHub es el repositorio y sistema de control de versiones, integrado con despliegues automáticos de Preview para ramas y Production para main. El lanzamiento público y la indexación siguen sin autorización; se mantiene noindex. AWS S3 + CloudFront, AWS Amplify y GitHub Pages quedan como alternativas no seleccionadas inicialmente, no como decisiones pendientes.
 
-El dominio canónico será **https://fernandoghg.com**. Se conservará fernandoghg.es. Las redirecciones permanentes previstas son:
+El dominio canónico es **https://fernandoghg.com**. Se conserva fernandoghg.es. Las redirecciones permanentes activas son:
 
 | Origen | Destino |
 | --- | --- |
@@ -30,21 +30,21 @@ El dominio canónico será **https://fernandoghg.com**. Se conservará fernandog
 | https://www.fernandoghg.com | https://fernandoghg.com |
 | https://www.fernandoghg.es | https://fernandoghg.com |
 
-HTTP deberá redirigir siempre a HTTPS y HTTPS será obligatorio en producción. Los dominios permanecen registrados en IONOS y no se transferirán. Blogger debe seguir funcionando mientras se desarrolla la nueva web.
+HTTP redirige a HTTPS, obligatorio en producción. Los dominios permanecen registrados en IONOS y no se transferirán. Blogger debe seguir funcionando mientras se desarrolla la nueva web.
 
-Estas decisiones no autorizan cambios externos: no se creará ni modificará Cloudflare, DNS, configuración de IONOS ni ningún servicio externo. El diseño visual local está aprobado y la infraestructura inicial de artículos está implementada, sin nuevas dependencias ni despliegue.
+Estas decisiones no autorizan cambios externos: no se creará ni modificará Cloudflare, DNS, configuración de IONOS ni ningún servicio externo. El diseño visual está aprobado y la infraestructura de artículos está implementada y desplegada; su mantenimiento requiere autorización dentro del alcance de cada tarea.
 
 ## Por decidir
 
 | Tema | Estado y orientación actual |
 | --- | --- |
-| Publicación y configuración de producción | **Por decidir**: detalles de integración GitHub–Cloudflare Pages, configuración efectiva de HTTPS, certificados y redirecciones ya aprobadas, y transición desde Blogger. |
-| Organización interna del contenido | Artículos Markdown y translationKey implementados según el modelo descrito abajo. Aldarte utiliza datos públicos localizados y componentes compartidos, sin colección de proyectos. **Por decidir**: eventual evolución del modelo de proyectos, MDX y SEO multilingüe completo. |
-| Diseño concreto y contenido definitivo | Diseño visual inicial y presentación de Inicio aprobados e implementados. Presentación pública limitada de Aldarte aprobada en ES/EN. **Por decidir**: restantes textos definitivos, incorporación de otros proyectos y posible reutilización de fotografías históricas. |
-| Herramientas y comprobaciones de desarrollo | Node.js v24.20.0 y npm 11.19.0; comandos de Astro y comprobación de tipos documentados en [desarrollo](development.md). Herramientas adicionales de pruebas **por decidir**. |
+| Publicación y configuración de producción | Integración GitHub–Cloudflare Pages, HTTPS y redirecciones activos. **Pendiente**: autorización de lanzamiento público e indexación, tras revisar los asuntos de privacidad documentados. No se autoriza modificar Blogger. |
+| Organización interna del contenido | Artículos Markdown y translationKey implementados según el modelo descrito abajo. Aldarte utiliza datos públicos localizados y componentes compartidos, sin colección de proyectos. **Por decidir**: eventual evolución del modelo de proyectos y MDX. Canonical/hreflang, sitemap y metadatos sociales están implementados. |
+| Diseño concreto y contenido definitivo | Diseño visual, Inicio, Sobre mí, Privacidad y presentación pública limitada de Aldarte aprobados e implementados en ES/EN. **Por decidir**: incorporación de otros proyectos y posible reutilización de fotografías históricas. |
+| Herramientas y comprobaciones de desarrollo | Node.js v24.20.0 y npm 11.19.0; comandos de Astro, comprobación de tipos, pruebas con node:test y validación manual documentados en [desarrollo](development.md). |
 | Configuración y evaluación de privacidad | Política ES/EN publicada técnicamente con noindex. Antes de autorizar la indexación, revisar los pendientes de proveedores y tratamiento técnico de docs/privacy.md, sin declarar completada la revisión jurídica o contractual. |
 
-La configuración futura del alojamiento deberá considerar coste, mantenimiento, privacidad, seguridad, rendimiento y compatibilidad con los dominios y HTTPS previstos. El proveedor está seleccionado, pero los costes efectivos y la configuración de infraestructura aún no están verificados ni definidos. Se mantiene el objetivo próximo a 0 EUR/mes. No se introducirán servicios AWS por su mera disponibilidad.
+El mantenimiento del alojamiento debe considerar coste, privacidad, seguridad, rendimiento y compatibilidad con los dominios y HTTPS. El alojamiento está configurado; no se presupone un coste efectivo concreto ni se dan por resueltos los pendientes de proveedores de docs/privacy.md. Se mantiene el objetivo próximo a 0 EUR/mes. No se introducirán servicios AWS por su mera disponibilidad.
 
 ## Contenidos e idiomas
 
@@ -55,7 +55,7 @@ La configuración futura del alojamiento deberá considerar coste, mantenimiento
 | Artículos | Articles |
 | Sobre mí | About |
 
-Las raíces de idioma son /es/ y /en/; / redirige estáticamente a /es/. No se usan cookies, localStorage, geolocalización ni tracking para seleccionar o recordar idioma. No se exige traducción de todo el contenido. translationKey relaciona los artículos traducidos para navegar entre versiones públicas; hreflang, canonical adecuado y SEO multilingüe completo quedan para una fase posterior.
+Las raíces de idioma son /es/ y /en/; / redirige estáticamente a /es/. No se usan cookies, localStorage, geolocalización ni tracking para seleccionar o recordar idioma. No se exige traducción de todo el contenido. translationKey relaciona los artículos traducidos para navegar entre versiones públicas; canonical/hreflang para equivalentes reales, sitemap, Open Graph y Twitter Cards están implementados.
 
 Artículos será una sección principal. Tecnología, Juegos, Viajes, Simulación y otras clasificaciones serán categorías/etiquetas creadas únicamente cuando el contenido las justifique, sin elementos permanentes en el menú inicial. RSS/Atom queda como posibilidad futura, sin ser requisito de V1 ni implementarse ahora.
 
@@ -65,12 +65,12 @@ Proyectos es independiente de Artículos. Aldarte tiene una presentación públi
 
 ## Selección histórica de Blogger
 
-Se ha revisado una exportación histórica de los dos Blogger anteriores. Se migrarán únicamente como contenido histórico:
+Se ha revisado una exportación histórica de los dos Blogger anteriores. Se han migrado únicamente como contenido histórico:
 
 - «Mi experiencia con Top Eleven».
 - «Mi experiencia con Top Eleven (1 mes más tarde)».
 
-Al migrarlos se conservarán su carácter histórico y fecha original. No habrá migración automática del resto del contenido. Las fotografías originales de la exportación se conservarán para evaluar después su posible reutilización.
+Conservan su carácter histórico y fecha original. No habrá migración automática del resto del contenido. Las fotografías originales de la exportación se conservarán para evaluar después su posible reutilización.
 
 EC2 y swap, SSH a través de proxy, gestión/pruning de mensajes y SMTP Sender con adjuntos en Mirth Connect / Open Integration Engine podrán inspirar artículos nuevos. No son contenido pendiente de migración: si se publican, deberán escribirse/revisarse con información actual, sin copiar los tutoriales antiguos.
 
@@ -92,7 +92,7 @@ EC2 y swap, SSH a través de proxy, gestión/pruning de mensajes y SMTP Sender c
 
 El nombre público será **Fernando Garcia-Herrera Gomez**. En contextos informales de la interfaz podrá utilizarse «Fernando». La cabecera utilizará discretamente **fernandoghg.com** como identificador y enlace a la portada del idioma correspondiente; el nombre completo no será un gran logotipo ni un elemento protagonista permanente.
 
-Sobre mí será breve y personal, no un CV exhaustivo. Podrá incluir nombre público, presentación breve, intereses y los enlaces públicos previstos. La fotografía puede mencionarse como afición/interés y no será obligatorio publicar una fotografía personal. El contenido definitivo no se redacta todavía.
+Sobre mí contiene la presentación personal aprobada, sin ser un CV exhaustivo. No incluye fotografía personal; incorporarla requiere autorización.
 
 Se prevén enlaces web normales a [GitHub](https://github.com/fernandoghg) e [Instagram](https://www.instagram.com/fernandoghg/), sin feeds, widgets, scripts ni publicaciones incrustadas, evitando dependencias externas, tracking adicional y coste de rendimiento.
 
@@ -141,7 +141,7 @@ Las páginas de proyecto tendrán una estructura flexible: podrán incluir títu
 
 Para los artículos en portada se preferirá una lista editorial limpia frente a una cuadrícula de tarjetas. Cada entrada podrá mostrar fecha, título, categoría y enlace. Debe existir acceso al listado completo de artículos.
 
-El listado de Artículos favorecerá una presentación cronológica/editorial sencilla y permitirá agrupar por año. Así, el contenido histórico podrá convivir con contenido reciente sin aparentar una publicación reciente. Los dos artículos de Top Eleven conservarán sus fechas originales al migrarse, conforme a la selección histórica anterior.
+El listado de Artículos utiliza una presentación cronológica/editorial agrupada por año. Así, el contenido histórico puede convivir con contenido reciente sin aparentar una publicación reciente. Los dos artículos de Top Eleven conservan sus fechas originales, conforme a la selección histórica anterior.
 
 ## Fotografías y footer
 
