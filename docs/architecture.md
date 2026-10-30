@@ -127,7 +127,7 @@ En las páginas individuales de Aldarte, el enlace de idioma lleva directamente 
 - Rutas finas ES/EN: /es/articulos/<slug>/ y /en/articles/<slug>/, con getStaticPaths y utilidades compartidas. No se añade año/mes a la URL. El listado agrupa por año de published; la portada muestra hasta tres artículos públicos recientes. Sin artículos públicos, ambos muestran un estado vacío.
 - translationKey es identificador ASCII minúsculo/números/guiones, opcional. Máximo una entrada por clave e idioma; una traducción puede faltar o tener slug distinto.
 - series y seriesPart aparecen juntos o se omiten juntos. seriesPart es entero positivo; no se permiten partes duplicadas por serie e idioma. Se admiten huecos y traducciones parciales. La navegación anterior/siguiente enlaza las entregas públicas disponibles de la misma serie e idioma, ordenadas por parte. Se genera en el build, sin total ni colección de series.
-- Única categoría inicial juegos, con enum y etiquetas Juegos/Games centralizados. Sin tags, colección de categorías, autor por artículo ni imagen destacada.
+- Categorías admitidas juegos (Juegos/Games), desarrollo (Desarrollo/Development) y proyectos (Proyectos/Projects), con enum y etiquetas centralizados. Sin tags, colección de categorías, autor por artículo ni imagen destacada.
 - Carpeta/lang y formato de ID se validan al cargar. Duplicados se comprueban sobre todas las entradas, incluidos drafts y futuros, antes de cada consulta pública o generación de rutas; un fallo impide el build.
 - Las pruebas de integración generan y retiran fixtures temporales y reconstruyen dist al terminar. Los dos artículos históricos de Top Eleven están migrados, conservando las fechas originales y con navegación anterior/siguiente de serie.
 

@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { navigation, type Language } from '../data/navigation';
-import { aldarte } from '../data/projects';
+import { projectPairs } from '../data/projects';
 import { getArticlePaths } from '../lib/articles';
 import { articleUrl } from '../lib/article-model';
 
@@ -16,7 +16,9 @@ export const GET: APIRoute = async ({ site }) => {
     for (const page of Object.keys(navigation[lang]) as (keyof typeof navigation.es)[]) {
       pages.push({ lang, href: navigation[lang][page].href, translationHref: navigation[other][page].href });
     }
-    pages.push({ lang, href: aldarte[lang].href, translationHref: aldarte[other].href });
+    for (const project of projectPairs) {
+      pages.push({ lang, href: project[lang].href, translationHref: project[other].href });
+    }
     for (const { props } of await getArticlePaths(lang)) {
       pages.push({ lang, href: articleUrl(props.article), translationHref: props.translationHref });
     }

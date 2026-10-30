@@ -1,0 +1,13 @@
+---
+import type { Language } from '../data/navigation';
+import { getPublicProjectArticles } from '../lib/articles';
+interface Props { projectHref: string; lang: Language }
+const { projectHref, lang } = Astro.props;
+const articles = await getPublicProjectArticles(projectHref, lang);
+---
+{articles.length > 0 && <section class="page-content" aria-labelledby="related-articles-title">
+  <h2 id="related-articles-title">{lang === 'es' ? 'Artículos relacionados' : 'Related articles'}</h2>
+  <ul class="intro-links">
+    {articles.map((article) => <li><a href={article.href}>{article.title}</a></li>)}
+  </ul>
+</section>}
