@@ -4,19 +4,19 @@ import { articleCategoryLabels } from '../data/article-categories';
 import { formatArticleDate } from '../lib/article-model';
 import type { ArticlePageProps } from '../lib/articles';
 type Props = ArticlePageProps;
-const { article, languageHref, translationHref, previous, next } = Astro.props;
+const { article, languageHref, translationHref, previous, next, project } = Astro.props;
 const { title, description, published, updated, lang, category } = article.data;
 const es = lang === 'es';
 ---
 <BaseLayout lang={lang} page="articles" title={title} description={description} languageHref={languageHref} translationHref={translationHref} socialType="article">
   <article class="editorial-container article-page">
     <header class="article-header">
-      <p class="eyebrow">{articleCategoryLabels[category][lang]}</p>
       <h1>{title}</h1>
       <p class="lead">{description}</p>
       <div class="article-dates">
-        <p>{es ? 'Publicado:' : 'Published:'} <time datetime={published}>{formatArticleDate(published, lang)}</time></p>
+        <p>{es ? 'Publicado:' : 'Published:'} <time datetime={published}>{formatArticleDate(published, lang)}</time> · {es ? 'Categoría:' : 'Category:'} {articleCategoryLabels[category][lang]}</p>
         {updated && <p>{es ? 'Actualizado:' : 'Updated:'} <time datetime={updated}>{formatArticleDate(updated, lang)}</time></p>}
+        {project && <p>{es ? 'Proyecto:' : 'Project:'} <a href={project.href}>{project.name}</a></p>}
       </div>
     </header>
     <div class:list={['article-body', { 'top-eleven-complex-table': article.id === 'es/mi-experiencia-top-eleven-un-mes-despues' }]}><slot /></div>

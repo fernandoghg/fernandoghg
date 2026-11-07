@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ArticleList from './ArticleList.astro';
 import ProjectCard from './ProjectCard.astro';
+import { aldarte } from '../data/projects';
 import { getPublicArticles } from '../lib/articles';
 import { navigation, type Language } from '../data/navigation';
 import { pageDescriptions } from '../data/page-descriptions';
@@ -29,7 +30,7 @@ const intro = es ? 'Soy Fernando. Me gusta la tecnología, crear proyectos y seg
       <h2 id="projects-title">{es ? 'Proyectos destacados' : 'Featured projects'}</h2>
       <a href={links.projects.href}>{es ? 'Todos los proyectos' : 'All projects'}</a>
     </div>
-    <ProjectCard lang={lang} headingLevel={3} />
+    <ProjectCard project={{ name: aldarte.name, ...aldarte[lang] }} headingLevel={3} />
   </section>
   <section class="home-section" aria-labelledby="articles-title">
     <div class="section-heading">

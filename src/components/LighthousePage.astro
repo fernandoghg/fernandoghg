@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectArticles from './ProjectArticles.astro';
+import { lighthouse } from '../data/projects';
+import { navigation, type Language } from '../data/navigation';
+interface Props { lang: Language }
+const { lang } = Astro.props;
+const project = lighthouse[lang];
+const other = lang === 'es' ? 'en' : 'es';
+---
+<BaseLayout lang={lang} page="projects" title={project.name} description={project.description} languageHref={lighthouse[other].href} translationHref={lighthouse[other].href}>
+  <article class="editorial-container project-page page-start">
+    <header>
+      <p class="eyebrow">{project.status}</p>
+      <h1>{project.name}</h1>
+      <p class="lead">{project.subtitle}</p>
+    </header>
+    <div class="page-content prose-stack">
+      {project.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+      <p class="project-note">{project.note}</p>
+    </div>
+    <ProjectArticles projectHref={project.href} lang={lang} />
+    <ul class="intro-links">
+      <li><a href={navigation[lang].projects.href}>{lang === 'es' ? 'Volver a Proyectos' : 'Back to Projects'}</a></li>
+    </ul>
+  </article>
+</BaseLayout>

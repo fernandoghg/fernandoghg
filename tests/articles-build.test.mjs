@@ -18,6 +18,7 @@ function expectBuild() {
   checkSecurityHeadersAndTable();
   checkFavicons();
   checkInternalLinks();
+  checkLighthousePagesAndDrafts();
   checkRootRedirect();
   checkSocialMetadata();
 }
@@ -331,7 +332,7 @@ function checkSeoPages() {
   for (const [es, en, esDescription, enDescription] of [
     ['/es/', '/en/', 'Una web personal sobre tecnología, proyectos, videojuegos, simulación y experiencias que merece la pena compartir.', 'A personal website about technology, projects, video games, simulation, and experiences worth sharing.'],
     ['/es/proyectos/', '/en/projects/', 'Proyectos personales relacionados con la tecnología, el desarrollo de aplicaciones y nuevas ideas.', 'Personal projects exploring technology, app development, and new ideas.'],
-    ['/es/articulos/', '/en/articles/', 'Artículos sobre tecnología, videojuegos, simulación y otras experiencias, ideas y aprendizajes.', 'Articles in English will be published here as they become available.'],
+    ['/es/articulos/', '/en/articles/', 'Artículos sobre tecnología, videojuegos, simulación y otras experiencias, ideas y aprendizajes.', 'Articles about technology, video games, simulation and other experiences, ideas and lessons learned.'],
     ['/es/sobre-mi/', '/en/about/', 'Conoce un poco más sobre Fernando, su relación con la informática y sus aficiones, desde la tecnología hasta la simulación de vuelo.', 'Learn more about Fernando, his background in computing, and his interests, from technology to flight simulation.'],
     ['/es/privacidad/', '/en/privacy/', 'Información sobre la privacidad de fernandoghg.com, el tratamiento de datos personales y los derechos de los visitantes.', "Information about privacy at fernandoghg.com, personal data processing, and visitors' data protection rights."],
     ['/es/proyectos/aldarte/', '/en/projects/aldarte/', 'Un proyecto personal relacionado con el bienestar emocional, con especial atención a la sencillez y la privacidad.', 'A personal project related to emotional wellbeing, with a particular focus on simplicity and privacy.'],
@@ -421,9 +422,47 @@ function checkProjectPages() {
       if (level === '2') {
         const listing = html.match(/<main\b[\s\S]*?<\/main>/)?.[0];
         assert.ok(listing);
-        assert.deepEqual([...listing.matchAll(/<h([1-6])\b/g)].map((match) => match[1]), ['1', '2']);
+        assert.deepEqual([...listing.matchAll(/<h([1-6])\b/g)].map((match) => match[1]), ['1', '2', '2']);
         assert.doesNotMatch(listing, /Contenido provisional|Temporary content|Página provisional|Temporary page/);
       }
+    }
+  }
+}
+
+function checkLighthousePagesAndDrafts() {
+  for (const [lang, section, slug, other, otherSection, otherSlug, title, subtitle] of [
+    ['es', 'proyectos', 'el-ultimo-farero', 'en', 'projects', 'the-last-lighthouse-keeper', 'El último farero: Los mundos del infinito', 'Una aventura isométrica de exploración y puzles desarrollada con ayuda de inteligencia artificial.'],
+    ['en', 'projects', 'the-last-lighthouse-keeper', 'es', 'proyectos', 'el-ultimo-farero', 'The Last Lighthouse Keeper: Worlds of Infinity', 'An isometric exploration and puzzle adventure developed with the help of artificial intelligence.'],
+  ]) {
+    const href = `/${lang}/${section}/${slug}/`;
+    const translatedHref = `/${other}/${otherSection}/${otherSlug}/`;
+    const file = `${lang}/${section}/${slug}/index.html`;
+    const detail = output(file);
+    const alternates = { [lang]: `${canonicalOrigin}${href}`, [other]: `${canonicalOrigin}${translatedHref}` };
+    checkSeo(file, subtitle, alternates);
+    assert.ok(detail.includes(`<h1>${title}</h1>`));
+    assert.ok(detail.includes(`class="language-link" href="${translatedHref}"`));
+    assert.ok(detail.includes(`href="/${lang}/${section}/" aria-current="page"`));
+    assert.ok(detail.includes('Godot'));
+    assert.ok(detail.includes('GDScript'));
+    const listing = output(`${lang}/${section}/index.html`);
+    const cards = [...listing.matchAll(/<article class="editorial-row project">[\s\S]*?<\/article>/g)].map((match) => match[0]);
+    assert.equal(cards.length, 2);
+    assert.ok(cards[1].includes(`<h2><a href="${href}">${title}</a></h2>`));
+    assert.ok(cards[1].includes(subtitle));
+    assert.equal([...cards[1].matchAll(/<a\b/g)].length, 1);
+    assert.ok(output('sitemap.xml').includes(`<loc>${canonicalOrigin}${href}</loc>`));
+    assert.equal([...output(`${lang}/index.html`).matchAll(/<article class="editorial-row project">/g)].length, 1);
+  }
+  for (const [lang, section, slugs] of [
+    ['es', 'articulos', ['por-que-decidi-crear-mi-propia-web', 'aldarte-como-se-siente-el-mundo-hoy', 'el-ultimo-farero-ia-videojuego']],
+    ['en', 'articles', ['why-i-decided-to-build-my-own-website', 'aldarte-how-is-the-world-feeling-today', 'the-last-lighthouse-keeper-how-far-can-ai-go']],
+  ]) {
+    for (const slug of slugs) {
+      const href = `/${lang}/${section}/${slug}/`;
+      assert.equal(existsSync(resolve(root, `dist${href}index.html`)), false, href);
+      assert.ok(!output('sitemap.xml').includes(href));
+      for (const file of [`${lang}/index.html`, `${lang}/${section}/index.html`]) assert.ok(!output(file).includes(href));
     }
   }
 }
@@ -437,6 +476,7 @@ function checkGeneratedResources() {
       assert.doesNotMatch(entry.name, /\.(?:[cm]?js)$/i, `JavaScript cliente: ${file}`);
       if (entry.name.endsWith('.html')) {
         const html = readFileSync(file, 'utf8');
+        if (html.includes('class="article-header"')) checkArticleMetadataPosition(html);
         const metadata = seo(file.slice(dist.length + 1));
         if (metadata.alternates.length) {
           assert.equal(metadata.alternates.length, 2, file);
@@ -477,6 +517,21 @@ function checkGeneratedResources() {
     }
   }
   visit(dist);
+}
+
+function checkArticleMetadataPosition(html) {
+  const header = html.match(/<header class="article-header">[\s\S]*?<\/header>/)?.[0];
+  assert.ok(header);
+  assert.doesNotMatch(header, /class="eyebrow"/);
+  const description = header.match(/<p class="lead">[\s\S]*?<\/p>/)?.[0];
+  const metadata = header.match(/<div class="article-dates">[\s\S]*?<\/div>/)?.[0];
+  assert.ok(description && metadata);
+  assert.ok(header.indexOf(description) < header.indexOf(metadata));
+  assert.match(metadata, /<p>(?:Publicado:|Published:) <time datetime="\d{4}-\d{2}-\d{2}">[^<]+<\/time> · (?:Categoría:|Category:) (?:Juegos|Games|Desarrollo|Development|Proyectos|Projects)<\/p>/);
+  assert.doesNotMatch(metadata, /<a[^>]*>\s*(?:Juegos|Games|Desarrollo|Development|Proyectos|Projects)\s*<\/a>/);
+  if (metadata.includes('Actualizado:') || metadata.includes('Updated:')) {
+    assert.match(metadata, /<p>(?:Actualizado:|Updated:) <time datetime="\d{4}-\d{2}-\d{2}">[^<]+<\/time><\/p>/);
+  }
 }
 
 function checkSecurityHeadersAndTable() {
@@ -560,7 +615,7 @@ test('Build real: Markdown, traducciones públicas, exclusión de drafts/futuros
     mkdirSync(directory);
     createdDirectories.push(directory);
   }
-  function fixture(name, { lang, draft = false, published = '2013-05-17', translationKey, series, seriesPart } = {}) {
+  function fixture(name, { lang, draft = false, published = '2013-05-17', category = 'juegos', translationKey, series, seriesPart } = {}) {
     const file = resolve(root, 'src/content/articles', name);
     if (!owned.includes(file)) {
       assert.equal(existsSync(file), false, `No sobrescribir contenido existente: ${file}`);
@@ -572,7 +627,7 @@ test('Build real: Markdown, traducciones públicas, exclusión de drafts/futuros
       'description: "Contenido técnico temporal, no publicar."',
       `published: "${published}"`,
       `updated: "${published > '2015-05-17' ? published : '2015-05-17'}"`,
-      `lang: ${lang}`, 'category: juegos', `draft: ${draft}`,
+      `lang: ${lang}`, `category: ${category}`, `draft: ${draft}`,
       ...(translationKey ? [`translationKey: ${translationKey}`] : []),
       ...(series ? [`series: ${series}`, `seriesPart: ${seriesPart}`] : []), '---',
     ];
@@ -580,13 +635,15 @@ test('Build real: Markdown, traducciones públicas, exclusión de drafts/futuros
     writeFileSync(file, frontmatter.join('\n') + '\n\n' + body.join('\n') + '\n');
   }
   try {
-    fixture(names[0], { lang: 'es', translationKey: 'fixture' });
-    fixture(names[1], { lang: 'en', published: '2013-05-18', translationKey: 'fixture' });
+    fixture(names[0], { lang: 'es', category: 'desarrollo', translationKey: 'fixture' });
+    fixture(names[1], { lang: 'en', category: 'proyectos', published: '2013-05-18', translationKey: 'fixture' });
     fixture(names[2], { lang: 'es', draft: true });
     fixture(names[3], { lang: 'en', published: '9999-12-31' });
     expectBuild();
     const es = output('es/articulos/fixture-publico/index.html');
     const en = output('en/articles/fixture-public/index.html');
+    assert.match(es, /<\/time> · Categoría: Desarrollo<\/p>/);
+    assert.match(en, /<\/time> · Category: Projects<\/p>/);
     for (const html of [es, en]) {
       assert.equal((html.match(/<table>/g) ?? []).length, 2);
       const wrapped = [...html.matchAll(/<div class="article-table-scroll" tabindex="0">(<table>[\s\S]*?<\/table>)<\/div>/g)];
@@ -697,6 +754,56 @@ test('Build real: Markdown, traducciones públicas, exclusión de drafts/futuros
     assert.match(output('es/articulos/fixture-publico/index.html'), /class="language-link" href="\/en\/"/);
 
     checkSeo('es/articulos/fixture-publico/index.html', 'Contenido técnico temporal, no publicar.', {});
+    // Public fixtures exercise both directions without changing the six real drafts.
+    for (const lang of ['es', 'en']) {
+      fixture(`${lang}/fixture-aldarte-first.md`, { lang, series: 'aldarte', seriesPart: 2 });
+      fixture(`${lang}/fixture-aldarte-last.md`, { lang, series: 'aldarte', seriesPart: 6, published: '2010-01-01' });
+      fixture(`${lang}/fixture-aldarte-draft.md`, { lang, series: 'aldarte', seriesPart: 3, draft: true });
+      fixture(`${lang}/fixture-aldarte-future.md`, { lang, series: 'aldarte', seriesPart: 4, published: '9999-12-31' });
+      fixture(`${lang}/fixture-lighthouse.md`, { lang, series: 'el-ultimo-farero', seriesPart: 2 });
+      fixture(`${lang}/fixture-web.md`, { lang, series: 'fernandoghg-com', seriesPart: 2 });
+    }
+    expectBuild();
+    function relatedSection(file) {
+      return output(file).match(/<section[^>]*aria-labelledby="related-articles-title"[\s\S]*?<\/section>/)?.[0];
+    }
+    for (const [lang, articleSection, projectSection, lighthouseSlug, name, label] of [
+      ['es', 'articulos', 'proyectos', 'el-ultimo-farero', 'El último farero: Los mundos del infinito', 'Artículos relacionados'],
+      ['en', 'articles', 'projects', 'the-last-lighthouse-keeper', 'The Last Lighthouse Keeper: Worlds of Infinity', 'Related articles'],
+    ]) {
+      const aldarteFile = `${lang}/${projectSection}/aldarte/index.html`;
+      const section = relatedSection(aldarteFile);
+      assert.ok(section?.includes(`<h2 id="related-articles-title">${label}</h2>`));
+      assert.deepEqual([...section.matchAll(/<a href="([^"]+)"/g)].map((match) => match[1]), [
+        `/${lang}/${articleSection}/fixture-aldarte-first/`, `/${lang}/${articleSection}/fixture-aldarte-last/`,
+      ]);
+      const lighthouseFile = `${lang}/${projectSection}/${lighthouseSlug}/index.html`;
+      assert.deepEqual([...relatedSection(lighthouseFile).matchAll(/<a href="([^"]+)"/g)].map((match) => match[1]), [
+        `/${lang}/${articleSection}/fixture-lighthouse/`,
+      ]);
+      for (const [slug, href, title] of [
+        ['fixture-aldarte-first', `/${lang}/${projectSection}/aldarte/`, 'Aldarte'],
+        ['fixture-aldarte-last', `/${lang}/${projectSection}/aldarte/`, 'Aldarte'],
+        ['fixture-lighthouse', `/${lang}/${projectSection}/${lighthouseSlug}/`, name],
+      ]) {
+        const html = output(`${lang}/${articleSection}/${slug}/index.html`);
+        const metadata = html.match(/<div class="article-dates">[\s\S]*?<\/div>/)[0];
+        assert.ok(metadata.includes(`${lang === 'es' ? 'Proyecto:' : 'Project:'} <a href="${href}">${title}</a>`));
+      }
+      const webHeader = output(`${lang}/${articleSection}/fixture-web/index.html`).match(/<header class="article-header">[\s\S]*?<\/header>/)[0];
+      assert.doesNotMatch(webHeader, /(?:Proyecto:|Project:) <a/);
+      for (const slug of ['fixture-aldarte-draft', 'fixture-aldarte-future']) {
+        assert.equal(existsSync(resolve(root, `dist/${lang}/${articleSection}/${slug}/index.html`)), false);
+        assert.ok(!section.includes(slug));
+      }
+    }
+    // No English public entry: hide that section rather than linking to Spanish.
+    fixture('en/fixture-aldarte-first.md', { lang: 'en', series: 'aldarte', seriesPart: 2, draft: true });
+    fixture('en/fixture-aldarte-last.md', { lang: 'en', series: 'aldarte', seriesPart: 6, draft: true });
+    expectBuild();
+    assert.equal(relatedSection('en/projects/aldarte/index.html'), undefined);
+    assert.ok(relatedSection('es/proyectos/aldarte/index.html'));
+
     fixture(names[4], { lang: 'es', draft: true, translationKey: 'fixture' });
     const invalid = build();
     assert.notEqual(invalid.status, 0);
@@ -710,17 +817,27 @@ test('Build real: Markdown, traducciones públicas, exclusión de drafts/futuros
     // Restore dist to the actual repository content even after a failed assertion.
     expectBuild();
     const restoredHtml = readdirSync(resolve(root, 'dist'), { recursive: true }).filter((file) => file.endsWith('.html'));
-    assert.equal(restoredHtml.length, 16);
+    assert.equal(restoredHtml.length, 18);
     assert.ok(restoredHtml.every((file) => !file.includes('fixture-')));
     const expectedUrls = [
       '/es/', '/en/', '/es/proyectos/', '/en/projects/', '/es/articulos/', '/en/articles/',
       '/es/sobre-mi/', '/en/about/', '/es/privacidad/', '/en/privacy/',
       '/es/proyectos/aldarte/', '/en/projects/aldarte/',
+      '/es/proyectos/el-ultimo-farero/', '/en/projects/the-last-lighthouse-keeper/',
       '/es/articulos/mi-experiencia-top-eleven/', '/es/articulos/mi-experiencia-top-eleven-un-mes-despues/',
     ].map((path) => `${canonicalOrigin}${path}`);
     assert.deepEqual([...output('sitemap.xml').matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]).sort(), expectedUrls.sort());
     checkProjectPages();
     checkPrivacyPages();
     checkSeoPages();
+    for (const file of [
+      'es/proyectos/aldarte/index.html', 'en/projects/aldarte/index.html',
+      'es/proyectos/el-ultimo-farero/index.html', 'en/projects/the-last-lighthouse-keeper/index.html',
+    ]) assert.doesNotMatch(output(file), /related-articles-title/);
+    for (const slug of ['mi-experiencia-top-eleven', 'mi-experiencia-top-eleven-un-mes-despues']) {
+      const html = output(`es/articulos/${slug}/index.html`);
+      const header = html.match(/<header class="article-header">[\s\S]*?<\/header>/)[0];
+      assert.doesNotMatch(header, /(?:Proyecto:|Project:) <a|Actualizado:/);
+    }
   }
 });

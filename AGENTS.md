@@ -80,5 +80,5 @@
 - Guarda published y updated como strings ISO entre comillas. Conserva published original; updated solo corresponde a una actualización sustancial explícita, nunca a migración, build, Git o fecha del archivo. Cada traducción tiene su propia fecha de publicación.
 - draft tiene valor por defecto true. Reutiliza getPublicArticles/getArticlePaths: solo draft === false y published <= día editorial de Europe/Madrid. No implementes publicación programada.
 - Valida todos los artículos, incluidos drafts: carpeta/lang, IDs, translationKey + lang y series + lang + seriesPart. series y seriesPart se omiten juntos o aparecen juntos; no añadas total de partes.
-- La única categoría inicial es juegos, con etiquetas Juegos/Games centralizadas. No añadas tags, autor por artículo, imagen destacada ni colecciones de categorías/series sin necesidad aprobada.
+- Las categorías admitidas son juegos (Juegos/Games), desarrollo (Desarrollo/Development) y proyectos (Proyectos/Projects), con etiquetas centralizadas. No añadas tags, autor por artículo, imagen destacada ni colecciones de categorías/series sin necesidad aprobada.
 - Las pruebas de build deben retirar sus fixtures temporales y reconstruir dist al terminar.

@@ -1,6 +1,7 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import type { Language } from '../data/navigation';
 import { articleLanguageHref, articleTranslationHref, articleSlug, articleUrl, currentArticleDate, selectPublicArticles, selectSeriesNeighbors, validateArticles } from './article-model';
+import { relatedArticlesForProject, relatedProjectForArticle, type ProjectLink } from './project-relations';
 
 export type Article = CollectionEntry<'articles'>;
 export interface ArticlePageProps {
@@ -9,6 +10,7 @@ export interface ArticlePageProps {
   translationHref: string | undefined;
   previous: { title: string; url: string } | undefined;
   next: { title: string; url: string } | undefined;
+  project: ProjectLink | undefined;
 }
 
 // A single day per module evaluation/build; callers can inject a day in tests.
@@ -25,6 +27,10 @@ export async function getPublicArticles(lang?: Language, today = publicationDate
   return selectPublicArticles(await getValidatedArticles(), today, lang);
 }
 
+export async function getPublicProjectArticles(projectHref: string, lang: Language, today = publicationDate) {
+  return relatedArticlesForProject(await getValidatedArticles(), projectHref, lang, today);
+}
+
 export async function getArticlePaths(lang: Language, today = publicationDate) {
   const articles = await getValidatedArticles();
   return selectPublicArticles(articles, today, lang).map((article) => {
@@ -36,6 +42,7 @@ export async function getArticlePaths(lang: Language, today = publicationDate) {
         translationHref: articleTranslationHref(article, articles, today),
         previous: previous ? { title: previous.data.title, url: articleUrl(previous) } : undefined,
         next: next ? { title: next.data.title, url: articleUrl(next) } : undefined,
+        project: relatedProjectForArticle(article, today),
       } satisfies ArticlePageProps,
     };
   });
