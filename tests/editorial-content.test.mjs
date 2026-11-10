@@ -32,16 +32,19 @@ test('Catálogo ES/EN: categorías editoriales sin retirar Juegos', () => {
   }
 });
 
-test('Seis borradores editoriales válidos, tres parejas y series independientes', () => {
+test('Ocho borradores editoriales válidos, cuatro parejas y serie web de dos partes', () => {
   validateArticles(articles);
-  assert.equal(editorial.length, 6);
+  assert.equal(editorial.length, 8);
   const groups = Map.groupBy(editorial, (article) => article.data.translationKey);
-  assert.deepEqual([...groups.keys()].sort(), ['aldarte-como-se-siente-el-mundo', 'el-ultimo-farero-ia-videojuego', 'por-que-mi-propia-web']);
+  assert.deepEqual([...groups.keys()].sort(), ['aldarte-como-se-siente-el-mundo', 'crear-mi-web-con-ia-el-experimento', 'el-ultimo-farero-ia-videojuego', 'por-que-mi-propia-web']);
   for (const group of groups.values()) {
     assert.deepEqual(group.map((article) => article.data.lang).sort(), ['en', 'es']);
     assert.equal(new Set(group.map((article) => article.data.series)).size, 1);
     for (const article of group) {
-      assert.equal(article.data.seriesPart, 1);
+      assert.equal(article.data.seriesPart, article.data.translationKey === 'crear-mi-web-con-ia-el-experimento' ? 2 : 1);
+      if (['por-que-mi-propia-web', 'crear-mi-web-con-ia-el-experimento'].includes(article.data.translationKey)) {
+        assert.equal(article.data.series, 'fernandoghg-com');
+      }
       assert.equal(article.data.published, '2026-10-25');
       assert.equal(article.data.updated, undefined);
       assert.doesNotMatch(article.body, /^# /m, 'El título solo aparece en frontmatter');
@@ -56,7 +59,12 @@ test('Seis borradores editoriales válidos, tres parejas y series independientes
   for (const article of hypothetical) {
     const target = articleTranslationHref(article, hypothetical, '2026-10-25');
     assert.ok(target?.startsWith(article.data.lang === 'es' ? '/en/articles/' : '/es/articulos/'));
-    assert.deepEqual(selectSeriesNeighbors(article, hypothetical, '2026-10-25'), { previous: undefined, next: undefined });
+    const otherPart = hypothetical.find((candidate) => candidate.data.lang === article.data.lang
+      && candidate.data.series === 'fernandoghg-com' && candidate.data.seriesPart !== article.data.seriesPart);
+    assert.deepEqual(selectSeriesNeighbors(article, hypothetical, '2026-10-25'), {
+      previous: article.data.series === 'fernandoghg-com' && article.data.seriesPart === 2 ? otherPart : undefined,
+      next: article.data.series === 'fernandoghg-com' && article.data.seriesPart === 1 ? otherPart : undefined,
+    });
   }
 });
 
@@ -66,7 +74,8 @@ test('Aldarte conserva el cierre colectivo y el videojuego su nombre inglés', (
   assert.ok(es.body.includes('Aldarte no pretende ser un estudio sociológico ni medir científicamente la felicidad del mundo.'));
   assert.ok(es.body.includes('pequeño juego o experimento colectivo'));
   assert.ok(en.body.includes('small collective game or experiment'));
-  for (const article of editorial.filter((article) => article.data.lang === 'en' && article.data.series !== 'aldarte')) {
+  for (const article of editorial.filter((article) => article.data.lang === 'en'
+    && ['el-ultimo-farero-ia-videojuego', 'por-que-mi-propia-web'].includes(article.data.translationKey))) {
     assert.ok(article.body.includes('The Last Lighthouse Keeper: Worlds of Infinity'));
   }
 });

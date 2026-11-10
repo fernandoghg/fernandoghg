@@ -754,14 +754,14 @@ test('Build real: Markdown, traducciones públicas, exclusión de drafts/futuros
     assert.match(output('es/articulos/fixture-publico/index.html'), /class="language-link" href="\/en\/"/);
 
     checkSeo('es/articulos/fixture-publico/index.html', 'Contenido técnico temporal, no publicar.', {});
-    // Public fixtures exercise both directions without changing the six real drafts.
+    // Public fixtures exercise both directions without changing the eight real drafts.
     for (const lang of ['es', 'en']) {
       fixture(`${lang}/fixture-aldarte-first.md`, { lang, series: 'aldarte', seriesPart: 2 });
       fixture(`${lang}/fixture-aldarte-last.md`, { lang, series: 'aldarte', seriesPart: 6, published: '2010-01-01' });
       fixture(`${lang}/fixture-aldarte-draft.md`, { lang, series: 'aldarte', seriesPart: 3, draft: true });
       fixture(`${lang}/fixture-aldarte-future.md`, { lang, series: 'aldarte', seriesPart: 4, published: '9999-12-31' });
       fixture(`${lang}/fixture-lighthouse.md`, { lang, series: 'el-ultimo-farero', seriesPart: 2 });
-      fixture(`${lang}/fixture-web.md`, { lang, series: 'fernandoghg-com', seriesPart: 2 });
+      fixture(`${lang}/fixture-web.md`, { lang, series: 'fernandoghg-com', seriesPart: 3 });
     }
     expectBuild();
     function relatedSection(file) {
