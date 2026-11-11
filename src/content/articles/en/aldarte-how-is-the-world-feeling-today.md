@@ -1,6 +1,6 @@
 ---
 title: "Aldarte: How Is the World Feeling Today?"
-description: "The idea behind Aldarte: a collective game or experiment for sharing moods and exploring aggregated responses, without claiming to provide a scientific measurement."
+description: "The idea behind Aldarte: a voluntary collective experiment exploring how participants feel, with privacy at its heart and no claim to scientific measurement."
 published: "2026-10-25"
 lang: en
 category: proyectos
@@ -10,102 +10,82 @@ series: aldarte
 seriesPart: 1
 ---
 
-Every day, the news brings us stories about events taking place in different parts of the world. Many of them are sad: conflicts, disasters, accidents or difficult situations affecting thousands of people.
+Every day, we hear about events taking place in different parts of the world. Many of these stories are sad: conflicts, disasters, accidents or difficult situations affecting thousands of people.
 
-But there are also events that bring people together in celebration. A national team winning the World Cup, the Olympic Games, a historic achievement or some good news that lifts the spirits of an entire country.
+But there are also events that bring people together in celebration. A national team winning the World Cup, a historic event or some good news that lifts the spirits of an entire country.
 
 Thinking about these situations led me to a question:
 
 **Would it be possible to find out how the world feels on a particular day?**
 
-That question was the starting point for Aldarte.
+That question was the starting point for **Aldarte**.
 
-## A Mood Thermometer
+## Where the Idea Came From
 
-The original idea was relatively simple: to create a kind of thermometer for the world's happiness or unhappiness.
+I was interested in observing how people's moods change over time and whether certain events might be reflected in those changes.
 
-I thought it would be interesting to observe how people's moods change over time and whether particular events might be reflected in those changes.
+For example, would we see more positive responses in a country after a major sporting victory? Could we notice a change following a particularly difficult event?
 
-For example, would we see more positive responses in a country after a major sporting victory? Could a particularly difficult event be reflected in the responses from a region?
+The idea was to create a kind of collective mood thermometer, allowing us to explore how people who choose to participate are feeling.
 
-Today's technology makes it possible to collect voluntary responses and present aggregated results by geographical area, region or country.
+It wouldn't be about finding out how any particular individual feels, but about looking at the responses as a whole and seeing how they might change over time.
 
-The aim wouldn't be to find out how a particular individual feels, but to explore the collective picture created by those who choose to participate.
+That's how Aldarte began to take shape.
 
-## A Survey That Doesn't Have to Come Looking for You
+## An Experiment in Collective Participation
 
-Traditional surveys often involve selecting particular people and asking for their opinions.
+Traditional surveys usually involve selecting particular people and asking for their opinions on a specific subject.
 
-I imagined something different.
+I imagined something different: an application where anyone could take part on their own initiative, simply and without having to explain how they feel.
 
-An application where anyone could choose, on their own initiative, to express how they feel that day.
+Participation would be entirely voluntary. Each person would decide whether or not to contribute to this collective picture.
 
-Without waiting for someone to call, without completing a long questionnaire and without having to explain their mood.
+However, there's an important difference between this approach and a survey designed to represent a population: people who choose to participate don't necessarily reflect the views or feelings of society as a whole.
 
-Simply open the application, indicate how you're feeling and contribute to a collective picture.
+That's why **Aldarte isn't intended to be a sociological study or a scientific measurement of the world's happiness**.
 
-Of course, there's an important limitation: people who participate voluntarily don't necessarily represent the population as a whole. The results therefore couldn't be interpreted as a scientific measurement of a country's happiness.
+Its results would represent only the responses of those who have chosen to take part. They might spark curiosity, reveal changes or raise new questions, but they couldn't establish how an entire country or population actually feels.
 
-They would instead be **an indicator based on the responses received**—potentially interesting for observing trends and raising questions, but not for drawing definitive conclusions about how an entire society feels.
+## Privacy from the Very Beginning
 
-## From Individual Responses to a Collective Picture
+From the outset, I knew that an application like this should respect people's privacy.
 
-One of the aspects that interested me most was the possibility of exploring results at different geographical scales.
+There should be no need to provide your name, email address or create a personal profile simply to express how you're feeling.
 
-We could start by looking at all participants' responses and then examine how they're distributed across countries or, if the project grows and collects enough data, regions and smaller geographical areas.
+I wanted to avoid turning something as simple as taking part in a collective experience into yet another way of collecting information about the people using it.
 
-It would also be interesting to compare different days and see how responses change over time.
+That's why one of the project's fundamental requirements is to minimise the data collected, avoid unnecessary tracking and pay particular attention to how the results are presented.
 
-The idea isn't to hold a competition to decide which country is happiest, but to offer another way of observing how participating people express their moods.
+Privacy also brings challenges. For example, we need to find ways to limit abusive participation without identifying individuals, and prevent published information from revealing details about groups with very few participants.
 
-Behind every percentage or chart are people living in very different circumstances. Any visualisation should therefore be presented carefully and explain what it actually represents.
+Finding a reasonable balance between simplicity, usefulness and data protection is part of developing Aldarte.
 
-## Taking Part Without Giving Up Privacy
+## An Idea Open to New Possibilities
 
-From the beginning, I was clear that an application like this shouldn't need to know who its participants are.
+Although Aldarte begins with a simple question, I don't want to limit its possibilities from the outset.
 
-To express how you feel today, there should be no reason to provide your name, email address or create a personal profile.
+Over time, other questions and ways of participating could emerge, allowing us to explore different aspects of how we feel or how we perceive certain events.
 
-Privacy shouldn't be a feature added later. It should be a condition of the design itself.
+We could also explore new ways of presenting information, comparing periods or discovering changes in participants' responses.
 
-That means trying to collect as little information as possible, avoiding unnecessary tracking and carefully considering how to prevent abusive participation without identifying individuals.
+But I don't want to start by trying to develop all these possibilities at once.
 
-It also means paying attention to how results are published. For example, a very small geographical grouping could raise privacy concerns if only a few people had participated.
+I'd rather build a simple foundation first, make sure it works and learn from the experience before adding new features.
 
-Finding the right balance between usefulness, reliability and data protection is one of the project's challenges.
+I'm also using artificial intelligence tools in this process, both to explore alternatives and to help develop the project. It's another opportunity to experiment with this way of working, just as I'm doing with my own website and other personal projects.
 
-## An Idea with Room to Grow
-
-Although Aldarte began with a fairly specific question, I soon realised it could offer opportunities for further development.
-
-Once a simple foundation for collecting and displaying responses exists, we could explore other ways of visualising information, comparing periods or examining how trends evolve.
-
-But I didn't want to begin by trying to develop every possible feature at once.
-
-The first objective is much more modest: to build a working application that allows people to participate easily and consult aggregated results, while respecting the privacy principles we've established.
-
-Other ideas will have to wait until there's a solid foundation and we can assess whether they genuinely add value.
-
-## Turning the Idea into a Project
-
-Aldarte is also an opportunity to experiment with application development using artificial intelligence tools.
-
-The project is intended to work on the web and mobile devices, using technologies such as React Native, Expo and TypeScript, with infrastructure designed to keep costs under control.
-
-These technical decisions aren't the heart of the idea, but they do affect whether it can become a viable and sustainable application.
-
-In future articles, I'll explain how we're approaching its architecture, the privacy decisions we've made and the difficulties we encounter during development.
+Later on, I'd like to share some of the technical decisions, challenges and lessons learned along the way.
 
 ## An Open Question
 
-Aldarte isn't intended to be a sociological study or a scientific measurement of the world's happiness.
+Ultimately, Aldarte is based on a fairly simple idea: offering people a voluntary way to express how they feel and discover the responses shared by others.
 
-I see it more as a small collective game or experiment: a simple way to share how we feel and discover how other people in different places have responded.
+It doesn't aim to provide a definitive answer about the world's happiness, but rather to explore a question that I still find interesting.
 
-If it ever attracts enough participants, perhaps the data will reveal interesting trends or provide a starting point for more detailed analysis. That would depend on participation, data quality and how the results are interpreted.
+Perhaps, if it attracts enough participants one day, we'll be able to observe changes or trends that raise new questions. Any such findings would always need to be interpreted with caution.
 
-For now, what interests me is much simpler: turning a personal curiosity into an application that anyone can use voluntarily, without compromising their privacy.
+For now, I simply want to turn a personal curiosity into a small collective experiment, one that can evolve over time while respecting people's privacy.
 
 **How is the world participating in Aldarte feeling today?**
 
-That's the question behind this experiment.
+That's the question at the heart of this project.

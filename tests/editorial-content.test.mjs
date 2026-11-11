@@ -71,9 +71,9 @@ test('Ocho borradores editoriales válidos, cuatro parejas y serie web de dos pa
 test('Aldarte conserva el cierre colectivo y el videojuego su nombre inglés', () => {
   const es = editorial.find((article) => article.id === 'es/aldarte-como-se-siente-el-mundo-hoy');
   const en = editorial.find((article) => article.id === 'en/aldarte-how-is-the-world-feeling-today');
-  assert.ok(es.body.includes('Aldarte no pretende ser un estudio sociológico ni medir científicamente la felicidad del mundo.'));
-  assert.ok(es.body.includes('pequeño juego o experimento colectivo'));
-  assert.ok(en.body.includes('small collective game or experiment'));
+  assert.ok(es.body.includes('Aldarte no pretende ser un estudio sociológico ni una medición científica de la felicidad del mundo'));
+  assert.ok(es.body.includes('pequeño experimento colectivo'));
+  assert.ok(en.body.includes('small collective experiment'));
   for (const article of editorial.filter((article) => article.data.lang === 'en'
     && ['el-ultimo-farero-ia-videojuego', 'por-que-mi-propia-web'].includes(article.data.translationKey))) {
     assert.ok(article.body.includes('The Last Lighthouse Keeper: Worlds of Infinity'));
